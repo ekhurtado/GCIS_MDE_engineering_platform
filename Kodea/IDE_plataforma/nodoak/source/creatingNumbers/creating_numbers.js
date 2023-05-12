@@ -29,20 +29,10 @@ module.exports = function(RED) {
         this.function = config.function;
         var node = this;
 
-        // var xmlDef = {
-        //     application: {
-        //         $: {
-        //             'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
-        //             'xsi:noNamespaceSchemaLocation': '/xmlSchemas/Application.xsd',
-        //             name: 'data_adquisition'
-        //         }
-        //     }
-        // }
-        //
-        // const builder = new xml2js.Builder();
-        // const xml = builder.buildObject(xmlDef);
-        //
-        // node.send(xml);
+
+        var RED2 = require.main.require('node-red');
+        var miflow = RED2.nodes.getFlow(this.z);    // this.z -> nodoa dagoen fluxuaren IDa
+        var appName = miflow.label;
 
         if (node.function === "") {
             node.error(`Ez da funtzionalitaterik aukeratu nodo batean. Jakiteko zein den, klikatu errore mezu honetan.`);
@@ -82,7 +72,7 @@ module.exports = function(RED) {
             let appModelXML = {
                 Application: {
                     $: {
-                        name: "NumbersProcessing", // recogerlo del nombre del flow
+                        name: appName, // recogerlo del nombre del flow
                     },
                     Microservice,
                     channel

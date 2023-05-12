@@ -7,8 +7,8 @@ const fs = require('fs');
 const {FunctionInfo, createLastMicroservice} = require('../appModel_utils');
 
 // Osagaiaren aldagaiak
-const componentName = "ProcessingNumbers";
-const codePath = "gcr.io/gcis/processing-numbers:latest";
+const componentName = "ShowNumbers";
+const codePath = "gcr.io/gcis/show-numbers:latest";
 
 // TODO BORRAR
 var appmodelAnterior = "<Application name=\"NumbersProcessing\">\n" +
@@ -31,6 +31,7 @@ module.exports = function(RED) {
         var node = this;
         
         node.on('input', function(msg) {
+
 
             if (node.function === "") {
                 node.error(`Ez da funtzionalitaterik aukeratu nodo batean. Jakiteko zein den, klikatu errore mezu honetan.`);
@@ -79,7 +80,6 @@ module.exports = function(RED) {
 
                 // XML aplikazio-eredua hurrengo nodoari bidali
                 node.warn(appModelXML);
-                // node.done();
             }
 
 
