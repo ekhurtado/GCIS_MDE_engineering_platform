@@ -1,4 +1,10 @@
 <script type="text/javascript">
+
+    // function doInject(node, customMsg) {
+    //     node.send(customMsg);
+    //     node.error(customMsg);
+    // }
+
     RED.nodes.registerType('Creating numbers',{
         category: 'source',
         color: '#14a7e0',
@@ -11,7 +17,19 @@
         icon: "source.png",
         label: function() {
             return this.name||"CreatingNumbers";
-        }
+        },
+        // button: {
+        //     enabled: function() {
+        //         return !this.changed
+        //     },
+        //     onclick: function () {
+        //         if (this.changed) {
+        //             return RED.notify(RED._("notification.warning", { message: RED._("notification.warnings.undeployedChanges") }), "warning");
+        //         }
+        //         var m = {payload: "props.props"};
+        //         doInject(this, m);
+        //     }
+        // }
     });
 </script>
 

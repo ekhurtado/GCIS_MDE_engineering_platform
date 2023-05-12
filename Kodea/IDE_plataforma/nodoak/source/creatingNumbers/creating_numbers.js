@@ -29,8 +29,20 @@ module.exports = function(RED) {
         this.function = config.function;
         var node = this;
 
-
-        
+        // var xmlDef = {
+        //     application: {
+        //         $: {
+        //             'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance',
+        //             'xsi:noNamespaceSchemaLocation': '/xmlSchemas/Application.xsd',
+        //             name: 'data_adquisition'
+        //         }
+        //     }
+        // }
+        //
+        // const builder = new xml2js.Builder();
+        // const xml = builder.buildObject(xmlDef);
+        //
+        // node.send(xml);
 
         if (node.function === "") {
             node.error(`Ez da funtzionalitaterik aukeratu nodo batean. Jakiteko zein den, klikatu errore mezu honetan.`);
@@ -69,7 +81,9 @@ module.exports = function(RED) {
             // --------------------
             let appModelXML = {
                 Application: {
-                    name: "NumbersProcessing", // recogerlo del nombre del flow
+                    $: {
+                        name: "NumbersProcessing", // recogerlo del nombre del flow
+                    },
                     Microservice,
                     channel
                 }
@@ -78,14 +92,16 @@ module.exports = function(RED) {
             // XML fitxategia sortu
             appModelXMLObject = builder.buildObject(appModelXML);
 
-
-            msg.appmodel = appModelXML;
-            msg.appmodel2 = appModelXMLObject;
+            // let msg = {
+            //     payload: "hola"
+            // };
+            // msg.appmodel = appModelXML;
+            // msg.appmodel2 = appModelXMLObject;
 
             // XML aplikazio-eredua hurrengo nodoari bidali
-            node.send(msg);
+            node.send(appModelXMLObject);
         }
-        
+
 
     }
 

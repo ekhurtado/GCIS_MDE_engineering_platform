@@ -4,11 +4,11 @@ const fs = require('fs');
 
 
 // Aplikazio-eredua osatzeko elementu erabilgarrien liburutegia inportatu
-const {FunctionInfo, createNewMicroservice} = require('../appModel_utils');
+const {FunctionInfo, createLastMicroservice} = require('../appModel_utils');
 
 // Osagaiaren aldagaiak
-const componentName = "ShowNumbers";
-const codePath = "gcr.io/gcis/show-numbers:latest";
+const componentName = "ProcessingNumbers";
+const codePath = "gcr.io/gcis/processing-numbers:latest";
 
 // TODO BORRAR
 var appmodelAnterior = "<Application name=\"NumbersProcessing\">\n" +
@@ -23,7 +23,7 @@ var appmodelAnterior = "<Application name=\"NumbersProcessing\">\n" +
     "</Application>\t\n"
 
 module.exports = function(RED) {
-    function ProcessingNumbers(config) {
+    function ShowNumbers(config) {
         RED.nodes.createNode(this,config);
         
         this.function = config.function;
@@ -32,8 +32,6 @@ module.exports = function(RED) {
         
         node.on('input', function(msg) {
 
-
-
             if (node.function === "") {
                 node.error(`Ez da funtzionalitaterik aukeratu nodo batean. Jakiteko zein den, klikatu errore mezu honetan.`);
             } else {
@@ -41,9 +39,9 @@ module.exports = function(RED) {
                 // Funtzionalitate guztien informazioa betetzen dugu
                 // --------------------
                 const allFunctionsInfo= [
-                    increaseValueInfo = new FunctionInfo("IncreaseValue", "HTTP", "HTTP", "TNumber", "TNumber", "step"),
-                    decreaseValueInfo = new FunctionInfo("DecreaseValue", "HTTP", "HTTP", "TNumber", "TNumber", "step"),
-                    multiplyValueInfo = new FunctionInfo("MultiplyValue", "HTTP", "HTTP", "TNumber", "TNumber", "step"),
+                    consoleDisplay = new FunctionInfo("ConsoleDisplay", "HTTP", null, "TNumber", null, null),
+                    saveTXT = new FunctionInfo("SaveTXT", "HTTP", null, "TNumber", null, "filename"),
+                    saveCSV = new FunctionInfo("SaveCSV", "HTTP", null, "TNumber", null, "filename"),
                 ]
 
                 // Hautatutako funtzionalitatearen informazioa lortzen dugu
@@ -56,7 +54,7 @@ module.exports = function(RED) {
 
                 // Mikrozerbitzu berriaren informazioa eraikitzen dugu
                 // --------------------
-                const newMicroservice = createNewMicroservice(componentName, codePath, selectedFunctionInfo, node.selectedPortNumber);
+                const newMicroservice = createLastMicroservice(componentName, codePath, selectedFunctionInfo, node.selectedPortNumber);
                 // Osagai honen pertsonalizazioa gehitzen diogu (osagai honen bereizgarria dena)
                 //newMicroservice.$.customization = `{${selectedFunctionInfo.customizationName}: ${selectedCustomizationValue}}`;
 
@@ -73,23 +71,20 @@ module.exports = function(RED) {
                     let channelList = result.Application.channel;
                     let lastChannel = channelList.pop();
                     lastChannel.$.to = newMicroservice.inPort.$.name;
-                    channelList.push(lastChannel, { // azkenengo eta kanal berria sartzen ditugu
-                        $: {
-                            from: newMicroservice.outPort.$.name
-                        }
-                    });
+                    channelList.push(lastChannel);
 
                     // XML fitxategia sortu
                     appModelXML = builder.buildObject(result);
                 });
 
                 // XML aplikazio-eredua hurrengo nodoari bidali
-                node.send(appModelXML);
+                node.warn(appModelXML);
+                // node.done();
             }
 
 
         });
     }
 
-    RED.nodes.registerType("Processing numbers",ProcessingNumbers);
+    RED.nodes.registerType("Show numbers",ShowNumbers);
 }
