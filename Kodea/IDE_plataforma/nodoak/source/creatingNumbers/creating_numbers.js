@@ -10,25 +10,14 @@ const {FunctionInfo, createFirstMicroservice} = require('../appModel_utils');
 const componentName = "CreatingNumbers";
 const codePath = "gcr.io/gcis/creating-numbers:latest";
 
-// TODO BORRAR
-var appmodelAnterior = "<Application name=\"NumbersProcessing\">\n" +
-    "\t\t<Microservice name=\"CreatingNumber\" service=\"NaturalValue\"\n" +
-    "\t\t\t\t\t\tcustomization=\"{type: 'random'}\">\n" +
-    "\t\t\t<outPort name=\"CreatingNumberOPort\" \n" +
-    "\t\t\t\tprotocol=\"HTTP\" dataType=\"TNumber\"/>\n" +
-    "\t\t</Microservice>\t\n" +
-    "\n" +
-    "\t\t\n" +
-    "\t\t<channel from=\"CreatingNumbersOPort\"/>" +
-    "</Application>\t\n"
-
 module.exports = function(RED) {
     function CreatingNumbers(config) {
         RED.nodes.createNode(this,config);
         
         this.function = config.function;
+        this.valuetype = config.valuetype;
+        this.firstvalue = config.firstvalue;
         var node = this;
-
 
         var RED2 = require.main.require('node-red');
         var miflow = RED2.nodes.getFlow(this.z);    // this.z -> nodoa dagoen fluxuaren IDa
@@ -41,9 +30,9 @@ module.exports = function(RED) {
             // Funtzionalitate guztien informazioa betetzen dugu
             // --------------------
             const allFunctionsInfo= [
-                naturalValueInfo = new FunctionInfo("NaturalValue", null, "HTTP", "TNumber", "type"),
-                increasingValueInfo = new FunctionInfo("IncreasingValue", null, "HTTP", null, "TNumber", "step"),
-                decreasingValueInfo = new FunctionInfo("DecreasingValue", null, "HTTP", null, "TNumber", "step")
+                naturalValueInfo = new FunctionInfo("NaturalValue", null, "HTTP", null, "TNumber", "type,firstvalue"),
+                integerValue = new FunctionInfo("IntegerValue", null, "HTTP", null, "TNumber", "type,firstvalue"),
+                floatValue = new FunctionInfo("FloatValue", null, "HTTP", null, "TNumber", "type,firstvalue")
             ]
 
             // Hautatutako funtzionalitatearen informazioa lortzen dugu
@@ -54,18 +43,26 @@ module.exports = function(RED) {
                     selectedFunctionInfo = allFunctionsInfo[funcObj];
             }
 
+            // Customization datuak sartu badira konprobatuko da
+            if (node.valuetype === "" || node.firstvalue === -999) {
+                node.error("Customization datuak ez dira sartu. Sar ditzazu, mesedez.");
+                return;
+            }
+
             // Mikrozerbitzu berriaren informazioa eraikitzen dugu
             // --------------------
             const Microservice = createFirstMicroservice(componentName, codePath, selectedFunctionInfo);
             // Osagai honen pertsonalizazioa gehitzen diogu (osagai honen bereizgarria dena)
-            //newMicroservice.$.customization = `{${selectedFunctionInfo.customizationName}: ${selectedCustomizationValue}}`;
+            Microservice.$.customization = `{` +
+                `${selectedFunctionInfo.customizationName.split(',')[0]}: '${node.valuetype}', ` +
+                `${selectedFunctionInfo.customizationName.split(',')[1]}: ${node.firstvalue}`+
+                `}`;
 
             const channel = {
                 $: {
                     from: Microservice.outPort.$.name
                 }
             }
-
 
             // Lehenengo osagaia izanik, aplikazio-eredua eraikiko dugu
             // --------------------
@@ -82,17 +79,9 @@ module.exports = function(RED) {
             // XML fitxategia sortu
             appModelXMLObject = builder.buildObject(appModelXML);
 
-            // let msg = {
-            //     payload: "hola"
-            // };
-            // msg.appmodel = appModelXML;
-            // msg.appmodel2 = appModelXMLObject;
-
             // XML aplikazio-eredua hurrengo nodoari bidali
             node.send(appModelXMLObject);
         }
-
-
     }
 
     RED.nodes.registerType("Creating numbers",CreatingNumbers);

@@ -11,7 +11,16 @@
         inputLabels: "DataType of inPort is TStation",
         icon: "sink.png",
         label: function() {
-            return this.name||"ShowNumbers";
+            return this.label || "ShowNumbers";
+        },
+        oneditprepare: function() {
+            var node = this;
+            $("#node-input-function").on("change", function() {
+                node.label = $(this).val();
+            });
+        },
+        oneditsave: function () {
+            this.label = $("#node-input-function").val();
         }
     });
 </script>

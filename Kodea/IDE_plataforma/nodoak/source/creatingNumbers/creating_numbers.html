@@ -1,3 +1,20 @@
+<!--Customization datuak erakusteko kodea-->
+<script type="text/javascript">
+    function  showCustomizationElements() {
+        const selectElement = document.getElementById("node-input-function");
+        const customizationContainer = document.getElementById("contenedor-customization");
+
+        switch (selectElement.value) {
+            case "":
+                customizationContainer.style.display = "none";
+                break;
+            default:
+                customizationContainer.style.display = "block";
+                break;
+        }
+    }
+</script>
+
 <script type="text/javascript">
 
     // function doInject(node, customMsg) {
@@ -9,38 +26,50 @@
         category: 'source',
         color: '#14a7e0',
         defaults: {
-            function: {value:""}
+            function: {value:""},
+            valuetype: {value:""},
+            firstvalue: {value: -999},
         },
         inputs:0,
         outputs:1,
         outputLabels: "DataType of inPort is TNumber",
         icon: "source.png",
         label: function() {
-            return this.name||"CreatingNumbers";
+            return this.label || "CreatingNumbers";
         },
-        // button: {
-        //     enabled: function() {
-        //         return !this.changed
-        //     },
-        //     onclick: function () {
-        //         if (this.changed) {
-        //             return RED.notify(RED._("notification.warning", { message: RED._("notification.warnings.undeployedChanges") }), "warning");
-        //         }
-        //         var m = {payload: "props.props"};
-        //         doInject(this, m);
-        //     }
-        // }
+        oneditprepare: function() {
+            var node = this;
+            $("#node-input-function").on("change", function() {
+                node.label = $(this).val();
+            });
+        },
+        oneditsave: function () {
+            this.label = $("#node-input-function").val();
+        }
     });
 </script>
 
 <script type="text/html" data-template-name="Creating numbers">
     <div class="form-row">
         <label for="node-input-function"><i class="fa fa-tag"></i> Funtzionalitateak </label><span>&nbsp;&nbsp;</span>
-        <select name="function" id="node-input-function">
-          <option value="NaturalValue">Balio naturalak</option>
-          <option value="IncreasingValue">Goranzko balioak</option>
-          <option value="DecreasingValue">Beheranzko balioak</option>
+        <select name="function" id="node-input-function" onchange="showCustomizationElements()">
+          <option value="NaturalValue">Zenbaki naturalak</option>
+          <option value="IntegerValue">Zenbaki osoak</option>
+          <option value="FloatValue">Koma mugikorreko balioak</option>
         </select>
+        <br>
+        <div id="contenedor-customization" style="display: none;">
+            <label for="node-input-valuetype"><i class="fa fa-tag"></i> Sartu sorkuntza mota </label>
+            <select name="function" id="node-input-valuetype">
+                <option value="Random">Balio aleatorioak</option>
+                <option value="IncreasingValue">Goranzko balioak</option>
+                <option value="DecreasingValue">Beheranzko balioak</option>
+            </select>
+            <br>
+            <label for="node-input-firstvalue"><i class="fa fa-tag"></i> Sartu hasierako balioa </label>
+            <input name="multiplierInput" id="node-input-firstvalue" type="number"
+                   step="any" placeholder="Hasierako balioa">
+        </div>
 </script>
 
 <script type="text/html" data-help-name="Creating numbers">

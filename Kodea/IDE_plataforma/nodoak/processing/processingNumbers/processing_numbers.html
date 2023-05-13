@@ -1,6 +1,6 @@
 <!--Customization datuak erakusteko kodea-->
 <script type="text/javascript">
-    function erakutsiIncreaseStep() {
+    function showCustomizationElements() {
         const selectElement = document.getElementById("node-input-function");
         const stepSizeContainer = document.getElementById("contenedor-step-size");
         const multiplierContainer = document.getElementById("contenedor-multiplier");
@@ -40,12 +40,6 @@
         outputLabels: "Irteera atakaren datu formatua TNumber da",
         icon: "processing.png",
         label: function(customProps) {
-            const selectedFunction = document.getElementById("node-input-function");
-            // if (selectedFunction.value === "")
-            //     return "ProcessingNumbers";
-            // else
-            //     return selectedFunction.value;
-            // return "aa" + customProps;
             return this.label || "ProcessingNumbers";
         },
         oneditprepare: function() {
@@ -63,7 +57,7 @@
 <script type="text/html" data-template-name="Processing numbers">
     <div class="form-row">
         <label for="node-input-function"><i class="fa fa-tag"></i> Funtzionalitateak </label><span>&nbsp;&nbsp;</span>
-        <select name="function" id="node-input-function" onchange="erakutsiIncreaseStep()">
+        <select name="function" id="node-input-function" onchange="showCustomizationElements()">
           <option value="IncreaseValue">Balioa handitu</option>
           <option value="DecreaseValue">Balioa txikitu</option>
           <option value="MultiplyValue">Balioa biderkatu</option>

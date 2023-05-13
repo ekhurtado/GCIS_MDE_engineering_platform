@@ -3,7 +3,7 @@ const xml2js = require('xml2js');
 const builder = new xml2js.Builder();
 
 // Aplikazio-eredua osatzeko elementu erabilgarrien liburutegia inportatu
-const {FunctionInfo, createNewMicroservice} = require('./appModel_utils');
+const {FunctionInfo, createNewMicroservice} = require('../txantiloiak/appModel_utils');
 // import FunctionInfo from './appModel_utils';
 
 // Heltzen de mezua

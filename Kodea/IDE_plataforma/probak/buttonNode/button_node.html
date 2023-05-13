@@ -1,0 +1,60 @@
+<script type="text/javascript">
+
+    function doInject(node, customMsg) {
+        node.send(customMsg);
+        node.error(customMsg);
+    }
+
+    RED.nodes.registerType('Button node',{
+        category: 'source',
+        color: '#14a7e0',
+        defaults: {
+            function: {value:""}
+        },
+        inputs:0,
+        outputs:1,
+        outputLabels: "DataType of inPort is TNumber",
+        icon: "source.png",
+        label: function() {
+            return this.name||"ButtonNode";
+        },
+        button: {
+            enabled: function() {
+                return !this.changed
+            },
+            onclick: function () {
+                this.clickeado = true;
+                if (this.changed) {
+                    return RED.notify(RED._("notification.warning", { message: RED._("notification.warnings.undeployedChanges") }), "warning");
+                }
+                var m = {payload: "props.props"};
+                doInject(this, m);
+            }
+        },
+        oneditprepare: function() {
+            var node = this;
+            var m = {payload: "props.props"};
+            doInject(node, m);
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="Button node">
+    <div class="form-row">
+        <label for="node-input-function"><i class="fa fa-tag"></i> Funtzionalitateak </label><span>&nbsp;&nbsp;</span>
+        <select name="function" id="node-input-function">
+          <option value="NaturalValue">Balio naturalak</option>
+          <option value="IncreasingValue">Goranzko balioak</option>
+          <option value="DecreasingValue">Beheranzko balioak</option>
+        </select>
+</script>
+
+<script type="text/html" data-help-name="Button node">
+    <p>This is a simple node that creates a new instance of source component to read data of eXist database.</p>
+    <p>There are some function to choose in order to create the correct instance for the application.</p>
+    <ul>
+        <li><b>Get assemply station data</b>: This function will get the data of any assembly station of the plant. The data type asociated with this function is TDBStation, so, the outPort will be that type.</li>
+        <li><b>Get transport robot data</b>: This function will get the data of any transport robot of the plant. The data type asociated with this function is TDBTransport, so, the outPort will be that type.</li>
+        <li><b>Get monitor data</b>: This function will get the data of the monitor. The data type asociated with this function is TDBMonitor.</li>
+    </ul>
+</script>
