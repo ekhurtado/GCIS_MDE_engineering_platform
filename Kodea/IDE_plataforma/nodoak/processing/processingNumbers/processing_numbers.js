@@ -7,20 +7,8 @@ const fs = require('fs');
 const {FunctionInfo, createNewMicroservice} = require('../appModel_utils');
 
 // Osagaiaren aldagaiak
-const componentName = "ShowNumbers";
-const codePath = "gcr.io/gcis/show-numbers:latest";
-
-// TODO BORRAR
-var appmodelAnterior = "<Application name=\"NumbersProcessing\">\n" +
-    "\t\t<Microservice name=\"CreatingNumber\" service=\"NaturalValue\"\n" +
-    "\t\t\t\t\t\tcustomization=\"{type: 'random'}\">\n" +
-    "\t\t\t<outPort name=\"CreatingNumberOPort\" \n" +
-    "\t\t\t\tprotocol=\"HTTP\" dataType=\"TNumber\"/>\n" +
-    "\t\t</Microservice>\t\n" +
-    "\n" +
-    "\t\t\n" +
-    "\t\t<channel from=\"CreatingNumbersOPort\"/>" +
-    "</Application>\t\n"
+const componentName = "ProcessingNumbers";
+const codePath = "gcr.io/gcis/processing-numbers:latest";
 
 module.exports = function(RED) {
     function ProcessingNumbers(config) {
@@ -28,11 +16,11 @@ module.exports = function(RED) {
         
         this.function = config.function;
         this.selectedPortNumber = config.portnumber;
+        this.selectedStepSize = config.stepsize;
+        this.selectedMultiplier = config.multiplier;
         var node = this;
         
         node.on('input', function(msg) {
-
-
 
             if (node.function === "") {
                 node.error(`Ez da funtzionalitaterik aukeratu nodo batean. Jakiteko zein den, klikatu errore mezu honetan.`);
@@ -43,22 +31,38 @@ module.exports = function(RED) {
                 const allFunctionsInfo= [
                     increaseValueInfo = new FunctionInfo("IncreaseValue", "HTTP", "HTTP", "TNumber", "TNumber", "step"),
                     decreaseValueInfo = new FunctionInfo("DecreaseValue", "HTTP", "HTTP", "TNumber", "TNumber", "step"),
-                    multiplyValueInfo = new FunctionInfo("MultiplyValue", "HTTP", "HTTP", "TNumber", "TNumber", "step"),
+                    multiplyValueInfo = new FunctionInfo("MultiplyValue", "HTTP", "HTTP", "TNumber", "TNumber", "multiplier"),
                 ]
 
                 // Hautatutako funtzionalitatearen informazioa lortzen dugu
                 // --------------------
                 let selectedFunctionInfo;
+                let selectedCustomizationValue;
                 for (const funcObj in allFunctionsInfo) {
-                    if (node.function === allFunctionsInfo[funcObj].name)
+                    if (node.function === allFunctionsInfo[funcObj].name) {
                         selectedFunctionInfo = allFunctionsInfo[funcObj];
+                        if (node.function === "IncreaseValue" || node.function === "DecreaseValue") {
+                            if (node.selectedStepSize === -1) {
+                                node.error("Ez da urrats-tamainarik aukeratu. Sar ezazu baliodun zenbaki bat, mesedez.");
+                                return;
+                            } else
+                                selectedCustomizationValue = node.selectedStepSize;
+                        } else {
+                            if (node.selectedMultiplier === -1) {
+                                node.error("Ez da biderkatzailerik aukeratu. Sar ezazu baliodun zenbaki bat, mesedez.");
+                                return;
+                            } else
+                                selectedCustomizationValue = node.selectedMultiplier;
+
+                        }
+                    }
                 }
 
                 // Mikrozerbitzu berriaren informazioa eraikitzen dugu
                 // --------------------
                 const newMicroservice = createNewMicroservice(componentName, codePath, selectedFunctionInfo, node.selectedPortNumber);
                 // Osagai honen pertsonalizazioa gehitzen diogu (osagai honen bereizgarria dena)
-                //newMicroservice.$.customization = `{${selectedFunctionInfo.customizationName}: ${selectedCustomizationValue}}`;
+                newMicroservice.$.customization = `{${selectedFunctionInfo.customizationName}: ${selectedCustomizationValue}}`;
 
 
                 // Aurreko osagaiak bidalitako aplikazio-eredua lortzen dugu

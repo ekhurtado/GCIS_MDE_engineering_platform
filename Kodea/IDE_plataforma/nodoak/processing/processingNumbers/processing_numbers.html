@@ -1,17 +1,61 @@
+<!--Customization datuak erakusteko kodea-->
+<script type="text/javascript">
+    function erakutsiIncreaseStep() {
+        const selectElement = document.getElementById("node-input-function");
+        const stepSizeContainer = document.getElementById("contenedor-step-size");
+        const multiplierContainer = document.getElementById("contenedor-multiplier");
+
+        switch (selectElement.value) {
+            case "":
+                stepSizeContainer.style.display = "none";
+                multiplierContainer.style.display = "none";
+                break;
+            case "IncreaseValue" || "DecreaseValue":
+                stepSizeContainer.style.display = "block";
+                multiplierContainer.style.display = "none";
+                break;
+            case "MultiplyValue":
+                stepSizeContainer.style.display = "none";
+                multiplierContainer.style.display = "block";
+                break;
+            default:
+                break;
+        }
+    }
+</script>
+
 <script type="text/javascript">
     RED.nodes.registerType('Processing numbers',{
         category: 'processing',
         color: '#f0e007',
         defaults: {
             function: {value:""},
-            portnumber: {value: -1}
+            portnumber: {value: -1},
+            stepsize: {value: -1},
+            multiplier: {value: -1}
         },
         inputs:1,
         outputs:1,
-        inputLabels: "DataType of inPort is TStation",
+        inputLabels: "Sarrera atakaren datu formatua TNumber da",
+        outputLabels: "Irteera atakaren datu formatua TNumber da",
         icon: "processing.png",
-        label: function() {
-            return this.name||"ProcessingNumbers";
+        label: function(customProps) {
+            const selectedFunction = document.getElementById("node-input-function");
+            // if (selectedFunction.value === "")
+            //     return "ProcessingNumbers";
+            // else
+            //     return selectedFunction.value;
+            // return "aa" + customProps;
+            return this.label || "ProcessingNumbers";
+        },
+        oneditprepare: function() {
+            var node = this;
+            $("#node-input-function").on("change", function() {
+                node.label = $(this).val();
+            });
+        },
+        oneditsave: function () {
+            this.label = $("#node-input-function").val();
         }
     });
 </script>
@@ -19,15 +63,26 @@
 <script type="text/html" data-template-name="Processing numbers">
     <div class="form-row">
         <label for="node-input-function"><i class="fa fa-tag"></i> Funtzionalitateak </label><span>&nbsp;&nbsp;</span>
-        <select name="function" id="node-input-function">
+        <select name="function" id="node-input-function" onchange="erakutsiIncreaseStep()">
           <option value="IncreaseValue">Balioa handitu</option>
           <option value="DecreaseValue">Balioa txikitu</option>
           <option value="MultiplyValue">Balioa biderkatu</option>
         </select>
         <br>
-        <label for="node-input-portnumber"><i class="fa fa-tag"></i> Input port number </label>
+        <label for="node-input-portnumber"><i class="fa fa-tag"></i> Aukeratu ataka zenbakia </label>
         <input name="portnumber" id="node-input-portnumber" 
-        type="number" min="0" max= "65536" step="1" placeholder="Ataka zenbakia"/>
+               type="number" min="0" max= "65536" step="1" placeholder="Ataka zenbakia"/>
+        <br><br>
+        <div id="contenedor-step-size" style="display: none;">
+            <label for="node-input-stepsize"><i class="fa fa-tag"></i> Sartu urrats tamaina </label>
+            <input name="stepSize" id="node-input-stepsize" type="number"
+                   min="0" step="1" placeholder="Urrats-tamaina">
+        </div>
+        <div id="contenedor-multiplier" style="display: none;">
+            <label for="node-input-multiplier"><i class="fa fa-tag"></i> Sartu biderkatzailea </label>
+            <input name="multiplierInput" id="node-input-multiplier" type="number"
+                   min="0" step="1" placeholder="Biderkatzailea">
+        </div>
 </script>
 
 <script type="text/html" data-help-name="Processing numbers">
