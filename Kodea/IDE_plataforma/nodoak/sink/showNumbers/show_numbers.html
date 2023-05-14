@@ -1,10 +1,30 @@
+<!--Customization datuak erakusteko kodea-->
+<script type="text/javascript">
+    function showCustomizationElements() {
+        const selectElement = document.getElementById("node-input-function");
+        const fileNameContainer = document.getElementById("contenedor-file-name");
+
+        switch (selectElement.value) {
+            case "":
+                fileNameContainer.style.display = "none";
+                break;
+            case "SaveTXT" || "SaveCSV":
+                fileNameContainer.style.display = "block";
+                break;
+            default:
+                break;
+        }
+    }
+</script>
+
 <script type="text/javascript">
     RED.nodes.registerType('Show numbers',{
         category: 'sink',
         color: '#08bd08',
         defaults: {
             function: {value:""},
-            portnumber: {value: -1}
+            portnumber: {value: -1},
+            filename: {value:""}
         },
         inputs:1,
         outputs:0,
@@ -28,7 +48,7 @@
 <script type="text/html" data-template-name="Show numbers">
     <div class="form-row">
         <label for="node-input-function"><i class="fa fa-tag"></i> Funtzionalitateak </label><span>&nbsp;&nbsp;</span>
-        <select name="function" id="node-input-function">
+        <select name="function" id="node-input-function" onchange="showCustomizationElements()">
           <option value="ConsoleDisplay">Balioa kontsolatik erakutsi</option>
           <option value="SaveTXT">Gorde (.txt)</option>
           <option value="SaveCSV">Gorde (.csv)</option>
@@ -37,6 +57,12 @@
         <label for="node-input-portnumber"><i class="fa fa-tag"></i> Input port number </label>
         <input name="portnumber" id="node-input-portnumber" 
         type="number" min="0" max= "65536" step="1" placeholder="Ataka zenbakia"/>
+        <br><br>
+        <div id="contenedor-file-name" style="display: none;">
+            <label for="node-input-filename"><i class="fa fa-tag"></i> Sartu fitxategiaren izena </label>
+            <input name="fileName" id="node-input-filename" type="text"
+                   placeholder="Fitxategiaren izena">
+        </div>
 </script>
 
 <script type="text/html" data-help-name="Show numbers">
