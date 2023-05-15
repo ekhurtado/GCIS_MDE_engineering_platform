@@ -1,6 +1,6 @@
 <!--Customization datuak erakusteko kodea-->
 <script type="text/javascript">
-    function showCustomizationElements() {
+    function showProcessingNumbersCustomization() {
         const selectElement = document.getElementById("node-input-function");
         const stepSizeContainer = document.getElementById("contenedor-step-size");
         const multiplierContainer = document.getElementById("contenedor-multiplier");
@@ -39,7 +39,7 @@
         inputLabels: "Sarrera atakaren datu formatua TNumber da",
         outputLabels: "Irteera atakaren datu formatua TNumber da",
         icon: "processing.png",
-        label: function(customProps) {
+        label: function() {
             return this.label || "ProcessingNumbers";
         },
         oneditprepare: function() {
@@ -57,14 +57,14 @@
 <script type="text/html" data-template-name="Processing numbers">
     <div class="form-row">
         <label for="node-input-function"><i class="fa fa-tag"></i> Funtzionalitateak </label><span>&nbsp;&nbsp;</span>
-        <select name="function" id="node-input-function" onchange="showCustomizationElements()">
+        <select name="function" id="node-input-function" onchange="showProcessingNumbersCustomization()">
           <option value="IncreaseValue">Balioa handitu</option>
           <option value="DecreaseValue">Balioa txikitu</option>
           <option value="MultiplyValue">Balioa biderkatu</option>
         </select>
         <br>
         <label for="node-input-portnumber"><i class="fa fa-tag"></i> Aukeratu ataka zenbakia </label>
-        <input name="portnumber" id="node-input-portnumber" 
+        <input name="portnumber" id="node-input-portnumber"
                type="number" min="0" max= "65536" step="1" placeholder="Ataka zenbakia"/>
         <br><br>
         <div id="contenedor-step-size" style="display: none;">
@@ -77,6 +77,7 @@
             <input name="multiplierInput" id="node-input-multiplier" type="number"
                    min="0" step="1" placeholder="Biderkatzailea">
         </div>
+    </div>
 </script>
 
 <script type="text/html" data-help-name="Processing numbers">

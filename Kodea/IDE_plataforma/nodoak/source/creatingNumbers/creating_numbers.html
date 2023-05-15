@@ -1,6 +1,6 @@
 <!--Customization datuak erakusteko kodea-->
 <script type="text/javascript">
-    function  showCustomizationElements() {
+    function showCreatingNumbersCustomization() {
         const selectElement = document.getElementById("node-input-function");
         const customizationContainer = document.getElementById("contenedor-customization");
 
@@ -16,12 +16,6 @@
 </script>
 
 <script type="text/javascript">
-
-    // function doInject(node, customMsg) {
-    //     node.send(customMsg);
-    //     node.error(customMsg);
-    // }
-
     RED.nodes.registerType('Creating numbers',{
         category: 'source',
         color: '#14a7e0',
@@ -52,7 +46,7 @@
 <script type="text/html" data-template-name="Creating numbers">
     <div class="form-row">
         <label for="node-input-function"><i class="fa fa-tag"></i> Funtzionalitateak </label><span>&nbsp;&nbsp;</span>
-        <select name="function" id="node-input-function" onchange="showCustomizationElements()">
+        <select name="function" id="node-input-function" onchange="showCreatingNumbersCustomization()">
           <option value="NaturalValue">Zenbaki naturalak</option>
           <option value="IntegerValue">Zenbaki osoak</option>
           <option value="FloatValue">Koma mugikorreko balioak</option>
@@ -70,6 +64,7 @@
             <input name="multiplierInput" id="node-input-firstvalue" type="number"
                    step="any" placeholder="Hasierako balioa">
         </div>
+    </div>
 </script>
 
 <script type="text/html" data-help-name="Creating numbers">

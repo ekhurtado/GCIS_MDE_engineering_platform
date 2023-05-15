@@ -51,8 +51,8 @@ def getAppModel():
         return stringAppModelObj
 
 
-def transformXMLToYAML(appModelXML):
-    appName = appModelXML.getroot().attrib.get("name")
+def transformXMLToYAML(appModelXML, appName):
+
     print("APP NAME: " + appName)
     appModelYAML = {
         'apiVersion': 'ehu.gcis.org/v1alpha1',
@@ -98,10 +98,11 @@ def main():
     print("Kaixo! Ongi etorri aplikazio-eredua Kuberneteseko Custom Resource elementuan transformatzeko kodera.")
     appModelXML = getAppModel()
     if appModelXML is not None:
-        # XML aplikazio-eredutik Custom Resource den YAML aplikazio-eredua lortuko dugu
-        appModelYaml = transformXMLToYAML(appModelXML)
-        # Aplikazio-eredua YAML formatuan edukita, fitxategian gordeko dugu
         appName = appModelXML.getroot().attrib.get("name")
+        appName = appName.replace(" ", "_")  # Kubernetes fitxategietarako egiaztapena
+        # XML aplikazio-eredutik Custom Resource den YAML aplikazio-eredua lortuko dugu
+        appModelYaml = transformXMLToYAML(appModelXML, appName)
+        # Aplikazio-eredua YAML formatuan edukita, fitxategian gordeko dugu
         f = open(appName + '_CR.yaml', 'w')
         yaml.dump(appModelYaml, f)
         print("Aplikazio-eredua sortuta. Fitxategia programa honen karpeta berdinean aurki dezakezu:")

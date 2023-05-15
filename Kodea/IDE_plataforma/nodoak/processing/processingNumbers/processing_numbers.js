@@ -1,10 +1,8 @@
-const xml2js = require('xml2js');
-const builder = new xml2js.Builder();
 const fs = require('fs');
 
 
 // Aplikazio-eredua osatzeko elementu erabilgarrien liburutegia inportatu
-const {FunctionInfo, createNewMicroservice} = require('../appModel_utils');
+const {FunctionInfo, createNewMicroservice, addMicroServiceToModel} = require('../appModel_utils');
 
 // Osagaiaren aldagaiak
 const componentName = "ProcessingNumbers";
@@ -62,30 +60,12 @@ module.exports = function(RED) {
                 // --------------------
                 const newMicroservice = createNewMicroservice(componentName, codePath, selectedFunctionInfo, node.selectedPortNumber);
                 // Osagai honen pertsonalizazioa gehitzen diogu (osagai honen bereizgarria dena)
-                newMicroservice.$.customization = `{${selectedFunctionInfo.customizationName}: ${selectedCustomizationValue}}`;
+                newMicroservice.$.customization = `{'${selectedFunctionInfo.customizationName}': ${selectedCustomizationValue}}`;
 
 
                 // Aurreko osagaiak bidalitako aplikazio-eredua lortzen dugu
                 // --------------------
-                let appModelXML;    // XML aplikazio-eredu eguneratua gordetzeko objektua
-                xml2js.parseString(msg, function (err, result) {
-                    // Fog aplikazio-ereduaren mikrozerbitzuen zerrendan, berria sartu
-                    let microserviceList = result.Application.Microservice;
-                    microserviceList.push(newMicroservice);
-
-                    // Fog aplikazio-ereduaren kanalen zerrenda eguneratu eta berria sartu
-                    let channelList = result.Application.channel;
-                    let lastChannel = channelList.pop();
-                    lastChannel.$.to = newMicroservice.inPort.$.name;
-                    channelList.push(lastChannel, { // azkenengo eta kanal berria sartzen ditugu
-                        $: {
-                            from: newMicroservice.outPort.$.name
-                        }
-                    });
-
-                    // XML fitxategia sortu
-                    appModelXML = builder.buildObject(result);
-                });
+                let appModelXML = addMicroServiceToModel(msg, newMicroservice, false);
 
                 // XML aplikazio-eredua hurrengo nodoari bidali
                 node.send(appModelXML);

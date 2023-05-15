@@ -54,8 +54,8 @@ module.exports = function(RED) {
             const Microservice = createFirstMicroservice(componentName, codePath, selectedFunctionInfo);
             // Osagai honen pertsonalizazioa gehitzen diogu (osagai honen bereizgarria dena)
             Microservice.$.customization = `{` +
-                `${selectedFunctionInfo.customizationName.split(',')[0]}: '${node.valuetype}', ` +
-                `${selectedFunctionInfo.customizationName.split(',')[1]}: ${node.firstvalue}`+
+                `'${selectedFunctionInfo.customizationName.split(',')[0]}': '${node.valuetype}', ` +
+                `'${selectedFunctionInfo.customizationName.split(',')[1]}': ${node.firstvalue}`+
                 `}`;
 
             const channel = {

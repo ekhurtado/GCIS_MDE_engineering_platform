@@ -3,7 +3,7 @@ const builder = new xml2js.Builder();
 const fs = require('fs');
 
 // Aplikazio-eredua osatzeko elementu erabilgarrien liburutegia inportatu
-const {FunctionInfo, createLastMicroservice} = require('../appModel_utils');
+const {FunctionInfo, createLastMicroservice, addMicroServiceToModel} = require('../appModel_utils');
 
 // Osagaiaren aldagaiak
 const componentName = "ShowNumbers";
@@ -55,26 +55,27 @@ module.exports = function(RED) {
                 const newMicroservice = createLastMicroservice(componentName, codePath, selectedFunctionInfo, node.selectedPortNumber);
                 // Osagai honen pertsonalizazioa gehitzen diogu (osagai honen bereizgarria dena)
                 if (selectedCustomizationValue !== "")
-                    newMicroservice.$.customization = `{${selectedFunctionInfo.customizationName}: '${selectedCustomizationValue}'}`;
+                    newMicroservice.$.customization = `{'${selectedFunctionInfo.customizationName}': '${selectedCustomizationValue}'}`;
 
 
                 // Aurreko osagaiak bidalitako aplikazio-eredua lortzen dugu
                 // --------------------
-                let appModelXML;    // XML aplikazio-eredu eguneratua gordetzeko objektua
-                xml2js.parseString(msg, function (err, result) {
-                    // Fog aplikazio-ereduaren mikrozerbitzuen zerrendan, berria sartu
-                    let microserviceList = result.Application.Microservice;
-                    microserviceList.push(newMicroservice);
-
-                    // Fog aplikazio-ereduaren kanalen zerrenda eguneratu eta berria sartu
-                    let channelList = result.Application.channel;
-                    let lastChannel = channelList.pop();
-                    lastChannel.$.to = newMicroservice.inPort.$.name;
-                    channelList.push(lastChannel);
-
-                    // XML fitxategia sortu
-                    appModelXML = builder.buildObject(result);
-                });
+                // let appModelXML;    // XML aplikazio-eredu eguneratua gordetzeko objektua
+                // xml2js.parseString(msg, function (err, result) {
+                //     // Fog aplikazio-ereduaren mikrozerbitzuen zerrendan, berria sartu
+                //     let microserviceList = result.Application.Microservice;
+                //     microserviceList.push(newMicroservice);
+                //
+                //     // Fog aplikazio-ereduaren kanalen zerrenda eguneratu eta berria sartu
+                //     let channelList = result.Application.channel;
+                //     let lastChannel = channelList.pop();
+                //     lastChannel.$.to = newMicroservice.inPort.$.name;
+                //     channelList.push(lastChannel);
+                //
+                //     // XML fitxategia sortu
+                //     appModelXML = builder.buildObject(result);
+                // });
+                let appModelXML = addMicroServiceToModel(msg, newMicroservice, true);
 
                 // XML aplikazio-eredua hurrengo nodoari bidali
                 node.warn(appModelXML);

@@ -1,3 +1,6 @@
+const xml2js = require('xml2js');
+const builder = new xml2js.Builder();
+
 // FITXATEGI HONEK APLIKAZIO-EREDUA SORTZEKO OBJEKTU ETA FUNTZIO ERABILGARRIAK BILTZEN DITU
 
 
@@ -77,4 +80,30 @@ function createLastMicroservice(componentName, codePath, selectedFunctionInfo, s
     }
 }
 
-module.exports = { FunctionInfo, createFirstMicroservice, createNewMicroservice, createLastMicroservice } // Export class
+function addMicroServiceToModel(stringModel, newMicroservice, lastComponent) {
+    let appModelXML;    // XML aplikazio-eredu eguneratua gordetzeko objektua
+    xml2js.parseString(stringModel, function (err, result) {
+        // Fog aplikazio-ereduaren mikrozerbitzuen zerrendan, berria sartu
+        let microserviceList = result.Application.Microservice;
+        microserviceList.push(newMicroservice);
+
+        // Fog aplikazio-ereduaren kanalen zerrenda eguneratu eta berria sartu
+        let channelList = result.Application.channel;
+        let lastChannel = channelList.pop();
+        lastChannel.$.to = newMicroservice.inPort.$.name;
+        channelList.push(lastChannel);
+        if (lastComponent === false) {  // bakarrik gehituko da azkenengo osagaia ez bada
+            channelList.push({ // azkenengo eta kanal berria sartzen ditugu
+                $: {
+                    from: newMicroservice.outPort.$.name
+                }
+            });
+        }
+
+        // XML fitxategia sortu
+        appModelXML = builder.buildObject(result);
+    });
+    return appModelXML;
+}
+
+module.exports = { FunctionInfo, createFirstMicroservice, createNewMicroservice, createLastMicroservice, addMicroServiceToModel } // Export class
