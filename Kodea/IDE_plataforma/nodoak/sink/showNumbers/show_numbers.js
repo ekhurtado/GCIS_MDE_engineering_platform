@@ -58,23 +58,8 @@ module.exports = function(RED) {
                     newMicroservice.$.customization = `{'${selectedFunctionInfo.customizationName}': '${selectedCustomizationValue}'}`;
 
 
-                // Aurreko osagaiak bidalitako aplikazio-eredua lortzen dugu
+                // Aurreko osagaiak bidalitako aplikazio-ereduari osagaiaren informazioa gehitzen diogu
                 // --------------------
-                // let appModelXML;    // XML aplikazio-eredu eguneratua gordetzeko objektua
-                // xml2js.parseString(msg, function (err, result) {
-                //     // Fog aplikazio-ereduaren mikrozerbitzuen zerrendan, berria sartu
-                //     let microserviceList = result.Application.Microservice;
-                //     microserviceList.push(newMicroservice);
-                //
-                //     // Fog aplikazio-ereduaren kanalen zerrenda eguneratu eta berria sartu
-                //     let channelList = result.Application.channel;
-                //     let lastChannel = channelList.pop();
-                //     lastChannel.$.to = newMicroservice.inPort.$.name;
-                //     channelList.push(lastChannel);
-                //
-                //     // XML fitxategia sortu
-                //     appModelXML = builder.buildObject(result);
-                // });
                 let appModelXML = addMicroServiceToModel(msg, newMicroservice, true);
 
                 // XML aplikazio-eredua hurrengo nodoari bidali

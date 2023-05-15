@@ -65,7 +65,7 @@ module.exports = function(RED) {
 
                 // Aurreko osagaiak bidalitako aplikazio-eredua lortzen dugu
                 // --------------------
-                let appModelXML = addMicroServiceToModel(msg, newMicroservice, false);
+                let appModelXML = addMicroServiceToModel(msg, newMicroservice,      false);
 
                 // XML aplikazio-eredua hurrengo nodoari bidali
                 node.send(appModelXML);
