@@ -30,7 +30,7 @@ with PySaxonProcessor(license=False) as proc:
 
     xsltproc = proc.new_xslt30_processor()
     document = proc.parse_xml(xml_text=contenido)
-    executable = xsltproc.compile_stylesheet(stylesheet_file="../txantiloiak/webView.xslt")
-    # executable = xsltproc.compile_stylesheet(stylesheet_file="../txantiloiak/functionalPart.xslt")
+    # executable = xsltproc.compile_stylesheet(stylesheet_file="../txantiloiak/webView.xslt")
+    executable = xsltproc.compile_stylesheet(stylesheet_file="../txantiloiak/customNode/functionalPart.xslt")
     output = executable.transform_to_string(xdm_node=document)
     print(output)
