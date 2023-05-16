@@ -6,7 +6,7 @@ const {FunctionInfo, createNewMicroservice, addMicroServiceToModel} = require('.
 
 // Osagaiaren aldagaiak
 const componentName = "ProcessingNumbers";
-const codePath = "gcr.io/gcis/processing-numbers:latest";
+const codeName = "gcr.io/gcis/processing-numbers:latest";
 
 module.exports = function(RED) {
     function ProcessingNumbers(config) {
@@ -58,14 +58,14 @@ module.exports = function(RED) {
 
                 // Mikrozerbitzu berriaren informazioa eraikitzen dugu
                 // --------------------
-                const newMicroservice = createNewMicroservice(componentName, codePath, selectedFunctionInfo, node.selectedPortNumber);
+                const newMicroservice = createNewMicroservice(componentName, codeName, selectedFunctionInfo, node.selectedPortNumber);
                 // Osagai honen pertsonalizazioa gehitzen diogu (osagai honen bereizgarria dena)
                 newMicroservice.$.customization = `{'${selectedFunctionInfo.customizationName}': ${selectedCustomizationValue}}`;
 
 
                 // Aurreko osagaiak bidalitako aplikazio-eredua lortzen dugu
                 // --------------------
-                let appModelXML = addMicroServiceToModel(msg, newMicroservice,      false);
+                let appModelXML = addMicroServiceToModel(msg, newMicroservice, false);
 
                 // XML aplikazio-eredua hurrengo nodoari bidali
                 node.send(appModelXML);

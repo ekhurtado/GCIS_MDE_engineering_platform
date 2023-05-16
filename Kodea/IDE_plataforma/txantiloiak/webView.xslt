@@ -7,19 +7,21 @@
   <xsl:template match="Component">
 	<xsl:if test="count(functionality/@customization) > 0">
 		<script type="text/javascript">
-			function show<xsl:value-of select="@name"/>Customization() {
-				const selectElement = document.getElementById("node-input-function");
-				const customizationContainer = document.getElementById("contenedor-customization");
+	function show<xsl:value-of select="@name"/>Customization() {
+		const selectElement = document.getElementById("node-input-function");
+		const customizationContainer = document.getElementById("contenedor-customization");
 
-				switch (selectElement.value) {
-					case "":
-						customizationContainer.style.display = "none";
-						break;
-					default:
-						customizationContainer.style.display = "block";
-						break;
-				}
-			}
+		// Kode honen bitartez customization datuak lortzeko elementuak erakutsi edo izkatatu ditzakezu
+		// Nahi izanez gero, kode hau modifika dezakezu, garatutako osagaiaren arabera
+		switch (selectElement.value) {
+			case "":
+				customizationContainer.style.display = "none";
+				break;
+			default:
+				customizationContainer.style.display = "block";
+				break;
+		}
+	}
 </script>
 </xsl:if>
 <xsl:text>&#xA;</xsl:text>
@@ -31,14 +33,15 @@
 		<xsl:if test="@category = 'sink'">color: '#08bd08',</xsl:if>
 		defaults: {
 			function:{value: ""},
-			<xsl:for-each select="functionality">
-			<xsl:for-each select="str:split(@customization, ',')">
-				<xsl:value-of select="."/>: {value: ""},
-			</xsl:for-each>
+			<xsl:if test="count(//inputs) > 0">portnumber: {value: -1},<xsl:text>&#xA;&#x9;&#x9;&#x9;</xsl:text></xsl:if>
+			<xsl:for-each select="distinct-values(functionality/@customization)">
+				<xsl:for-each select="tokenize(., ',')">
+					<xsl:value-of select="."/>: {value: ""},
+				</xsl:for-each>
 			</xsl:for-each>
 		},
-		<xsl:if test="count(functionality/inputs) = 0">inputs:0,&#xA;&#x9;&#x9;&#x9;</xsl:if>
-		<xsl:if test="count(functionality/inputs) > 0">inputs:1,&#xA;&#x9;&#x9;&#x9;</xsl:if>
+		<xsl:if test="count(functionality/inputs) = 0">inputs:0,&#xA;&#x9;&#x9;</xsl:if>
+		<xsl:if test="count(functionality/inputs) > 0">inputs:1,&#xA;&#x9;&#x9;</xsl:if>
 		<xsl:if test="count(functionality/outputs) = 0">outputs:0,&#xA;&#x9;&#x9;&#x9;</xsl:if>
 		<xsl:if test="count(functionality/outputs) > 0">outputs:1,&#xA;&#x9;&#x9;&#x9;</xsl:if>
 		icon: '<xsl:value-of select="@category"/>.png',
@@ -80,11 +83,11 @@
 	</select><xsl:text>&#xA;&#x9;&#x9;&#x9;</xsl:text>
 	<xsl:if test="count(functionality/@customization) > 0">
 		<div id="contenedor-customization" style="display: none;"><xsl:text>&#xA;&#x9;&#x9;&#x9;&#x9;</xsl:text>
-			<xsl:for-each select="functionality">
+			<xsl:for-each select="distinct-values(functionality/@customization)">
 				<label>
-					<xsl:attribute name="for">node-input<xsl:value-of select="@customization"/></xsl:attribute>
+					<xsl:attribute name="for">node-input-<xsl:value-of select="."/></xsl:attribute>
 					<i class="fa fa-tag"></i>
-					<xsl:value-of select="@customization"/>
+					<xsl:value-of select="."/>
 				</label><xsl:text>&#xA;&#x9;&#x9;&#x9;&#x9;</xsl:text>
 				<xsl:comment>Sar ezazu hemen customization balioa lortzeko elementu egokia, bere mota kontuan edukiz (select, input...)</xsl:comment>
 				<xsl:text>&#xA;&#x9;&#x9;&#x9;&#x9;</xsl:text>

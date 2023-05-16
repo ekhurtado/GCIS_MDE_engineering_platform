@@ -7,7 +7,7 @@ const {FunctionInfo, createLastMicroservice, addMicroServiceToModel} = require('
 
 // Osagaiaren aldagaiak
 const componentName = "ShowNumbers";
-const codePath = "gcr.io/gcis/show-numbers:latest";
+const codeName = "gcr.io/gcis/show-numbers:latest";
 
 module.exports = function(RED) {
     function ShowNumbers(config) {
@@ -52,7 +52,7 @@ module.exports = function(RED) {
 
                 // Mikrozerbitzu berriaren informazioa eraikitzen dugu
                 // --------------------
-                const newMicroservice = createLastMicroservice(componentName, codePath, selectedFunctionInfo, node.selectedPortNumber);
+                const newMicroservice = createLastMicroservice(componentName, codeName, selectedFunctionInfo, node.selectedPortNumber);
                 // Osagai honen pertsonalizazioa gehitzen diogu (osagai honen bereizgarria dena)
                 if (selectedCustomizationValue !== "")
                     newMicroservice.$.customization = `{'${selectedFunctionInfo.customizationName}': '${selectedCustomizationValue}'}`;
