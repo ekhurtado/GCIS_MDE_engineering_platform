@@ -1,15 +1,11 @@
-import json
-import os
+# Kode honek XML osagai-eredua edukita, Node-RED tresnarako prest dagoen nodo pertsonalizatua lortzeko beharrezko fitxategiak sortzen ditu
+import os, shutil
 
-# XML fitxategia irakurtzeko liburutegia
-import xml.etree.ElementTree as ET
+from saxonche import *
 
 # Fitxategiak aukeratzeko liburutegia
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
-
-# YAML fitxategiekin lan egiteko liburutegia
-import yaml
 
 
 def getAppModel():
@@ -30,9 +26,13 @@ def getAppModel():
         window.after_idle(window.attributes, '-topmost', False)
         Tk().withdraw()
         archivo_xml = askopenfilename(filetypes=[("Archivos XML", "*.xml")], title="Aukeratu fitxategia")
-        return ET.parse(archivo_xml)
+        with open(archivo_xml,
+                  "r") as archivo:
+            # Lee el contenido del archivo y almacénalo en una cadena
+            content = archivo.read()
+        return content
     else:
-        print("Aplikazio-eredua kopia eta hemen itsas ezazu (amaitu Enter sakatuz lerro huts batean):")
+        print("Osagai-eredua kopia eta hemen itsas ezazu (amaitu Enter sakatuz lerro huts batean):")
         stringAppModel = ''
         while True:
 
@@ -42,77 +42,65 @@ def getAppModel():
             else:
                 stringAppModel += line + '\n'
         print(stringAppModel)
-        try:
-            stringAppModelObj = ET.fromstring(stringAppModel)
-        except ET.ParseError as e:
-            print("Sartutako XMLa ez da zuzena.")
-            print(e)
-            return None
-        return stringAppModelObj
+        return stringAppModel
 
 
-def transformXMLToYAML(appModelXML, appName):
+def getCompName(originXML):
+    with PySaxonProcessor(license=False) as proc:
+        xp = proc.new_xpath_processor()
+        node = proc.parse_xml(xml_text=originXML)
+        xp.set_context(xdm_item=node)
+        result = xp.evaluate_single('/Component/@name')
+        return str.lower(result.string_value)
 
-    print("APP NAME: " + appName)
-    appModelYAML = {
-        'apiVersion': 'ehu.gcis.org/v1alpha1',
-        'kind': 'Application',
-        'metadata': {
-            'name': appName
-        },
-        'spec': {
-            'components': [],
-            'channels': []
-        }
-    }
 
-    for microsvc in appModelXML.iter("Microservice"):
-        # Osagaiaren informazio lortuko dugu
-        componentInfo = {}
-        for key, value in microsvc.attrib.items():
-            if value.__contains__("'"):
-                value = value.replace("'", '"')
-            componentInfo[key] = value
+def getCategory(originXML):
+    with PySaxonProcessor(license=False) as proc:
+        xp = proc.new_xpath_processor()
+        node = proc.parse_xml(xml_text=originXML)
+        xp.set_context(xdm_item=node)
+        result = xp.evaluate_single('/Component/@category')
+        return result.string_value
 
-        # Sarrera edo/eta irteera portuen informazioa osagaian sartuko dugu
-        for port in microsvc:
-            componentInfo[port.tag] = {}
-            for key, value in port.attrib.items():
-                componentInfo[port.tag][key] = value
+def getXSLT_transformation(originXML, stylesheetXSLT):
+    with PySaxonProcessor(license=False) as proc:
+        xsltproc = proc.new_xslt30_processor()
+        document = proc.parse_xml(xml_text=originXML)
+        # executable = xsltproc.compile_stylesheet(stylesheet_file="../txantiloiak/webView.xslt")
+        # executable = xsltproc.compile_stylesheet(stylesheet_file="../txantiloiak/customNode/functionalPart.xslt")
+        executable = xsltproc.compile_stylesheet(stylesheet_file=stylesheetXSLT)
+        output = executable.transform_to_string(xdm_node=document)
+        return output
 
-        # Osagaiaren informazioa aplikazioan sartzen dugu
-        appModelYAML['spec']['components'].append(componentInfo)
-
-    for channel in appModelXML.iter("channel"):
-        # Kanalaren informazio lortuko dugu
-        channelInfo = {}
-        for key, value in channel.attrib.items():
-            channelInfo[key] = value
-        # Kanalaren informazioa aplikazioan sartzen dugu
-        appModelYAML['spec']['channels'].append(channelInfo)
-
-    return appModelYAML
+def createFile(content, fileName):
+    f = open(fileName, 'w')
+    f.write(content)
+    f.close()
 
 
 def main():
-    print("Kaixo! Ongi etorri aplikazio-eredua Kuberneteseko Custom Resource elementuan transformatzeko kodera.")
     appModelXML = getAppModel()
-    if appModelXML is not None:
-        appName = appModelXML.getroot().attrib.get("name")
-        appName = appName.replace(" ", "_")  # Kubernetes fitxategietarako egiaztapena
-        # XML aplikazio-eredutik Custom Resource den YAML aplikazio-eredua lortuko dugu
-        appModelYaml = transformXMLToYAML(appModelXML, appName)
-        # Aplikazio-eredua YAML formatuan edukita, fitxategian gordeko dugu
-        f = open(appName + '_CR.yaml', 'w')
-        yaml.dump(appModelYaml, f)
-        print("Aplikazio-eredua sortuta. Fitxategia programa honen karpeta berdinean aurki dezakezu:")
-        print("\t" + os.path.realpath(f.name))
-        f.close()
+
+    print("Osagai-eredua sartu duzunez, NodeRED nodo bat lortzeko beharrezko fitxategiak lortuko dira. Fitxategi "
+          "horiek gordetzeko karpeta bat sortuko da.")
+    compName = getCompName(compModelXML)
+    if not os.path.exists("./" + compName):
+        os.makedirs("./" + compName)
+
+    print("Lehenik eta behin, web-ikuspegia lortuko da.")
+    webViewContent = getXSLT_transformation(compModelXML, './webView.xslt')
+    createFile(webViewContent, compName + '/' + compName + '.html')
+
+    print("Ondoren, funztionalitaterako fitxategia lortuko da.")
+    functionalityContent = getXSLT_transformation(compModelXML, './functionalPart.xslt')
+    createFile(functionalityContent, compName + '/' + compName + '.js')
+
+    print("Azkenik, konfigurazio fitxategia lortuko da.")
+    configFileContent = getConfigurationFile(compName)
+    createFile(configFileContent, compName + '/package.json')
+
+    # Azkenik, ikonoa karpetara kopiatuko dugu
+    copyRelatedIcon(compModelXML, compName)
 
 
-string = '{"type": "random"}'
-# decoded_string = bytes(string, "utf-8").decode("unicode_escape")
-# string = string.replace("''", '"')
-print(string)
-aa = json.loads(string)
 main()
