@@ -84,13 +84,15 @@
 	<xsl:if test="count(functionality/@customization) > 0">
 		<div id="contenedor-customization" style="display: none;"><xsl:text>&#xA;&#x9;&#x9;&#x9;&#x9;</xsl:text>
 			<xsl:for-each select="distinct-values(functionality/@customization)">
-				<label>
-					<xsl:attribute name="for">node-input-<xsl:value-of select="."/></xsl:attribute>
-					<i class="fa fa-tag"></i>
-					<xsl:value-of select="."/>
-				</label><xsl:text>&#xA;&#x9;&#x9;&#x9;&#x9;</xsl:text>
-				<xsl:comment>Sar ezazu hemen customization balioa lortzeko elementu egokia, bere mota kontuan edukiz (select, input...)</xsl:comment>
-				<xsl:text>&#xA;&#x9;&#x9;&#x9;&#x9;</xsl:text>
+				<xsl:for-each select="tokenize(., ',')">
+					<label>
+						<xsl:attribute name="for">node-input-<xsl:value-of select="."/></xsl:attribute>
+						<i class="fa fa-tag"></i>
+						<xsl:value-of select="."/>
+					</label><xsl:text>&#xA;&#x9;&#x9;&#x9;&#x9;</xsl:text>
+					<xsl:comment>Sar ezazu hemen customization balioa lortzeko elementu egokia, bere mota kontuan edukiz (select, input...)</xsl:comment>
+					<xsl:text>&#xA;&#x9;&#x9;&#x9;&#x9;</xsl:text>
+				</xsl:for-each>
 			</xsl:for-each>
 		</div><xsl:text>&#xA;&#x9;</xsl:text>
 	</xsl:if>

@@ -17,6 +17,8 @@ module.exports = function(RED) {
 	  	// --------------------
         this.function = config.function;
 		this.selectedstep = config.step;
+		this.selectedhola = config.hola;
+		this.selectedstep = config.step;
 		this.selectedPortNumber = config.portnumber;
 		var node = this;
 
@@ -26,7 +28,7 @@ module.exports = function(RED) {
 		 // --------------------
 		 const allFunctionsInfo = [
 
-	  		IncreaseValueInfo = new FunctionInfo("IncreaseValue", "HTTP", "HTTP", "TNumber", "TNumber", "step");
+	  		IncreaseValueInfo = new FunctionInfo("IncreaseValue", "HTTP", "HTTP", "TNumber", "TNumber", "step,hola");
 			DecreaseValueInfo = new FunctionInfo("DecreaseValue", "HTTP", "HTTP", "TNumber", "TNumber", "step");
 			MultiplyValueInfo = new FunctionInfo("MultiplyValue", "HTTP", "HTTP", "TNumber", "TNumber", "step");
 			
