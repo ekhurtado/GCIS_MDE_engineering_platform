@@ -1,9 +1,7 @@
-const xml2js = require('xml2js');
-const builder = new xml2js.Builder();
-const fs = require('fs');
+
 
 // Aplikazio-eredua osatzeko elementu erabilgarrien liburutegia inportatu
-const {FunctionInfo, createLastMicroservice, addMicroServiceToModel} = require('../appModel_utils');
+const {FunctionInfo, createLastMicroservice, addMicroServiceToModel, checkApplicationMetaModel} = require('../appModel_utils.js');
 
 // Osagaiaren aldagaiak
 const componentName = "ShowNumbers";
@@ -62,7 +60,12 @@ module.exports = function(RED) {
                 // --------------------
                 let appModelXML = addMicroServiceToModel(msg, newMicroservice, true);
 
+                // Azkenengo osagaia denez, aplikazio-eredua zuzena dela konprobatuko du
+                let result = checkApplicationMetaModel(appModelXML);
+                node.error(result);
+
                 // XML aplikazio-eredua hurrengo nodoari bidali
+
                 node.warn(appModelXML);
             }
 

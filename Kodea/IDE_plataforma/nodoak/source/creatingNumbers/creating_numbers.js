@@ -22,6 +22,8 @@ module.exports = function(RED) {
         var RED2 = require.main.require('node-red');
         var miflow = RED2.nodes.getFlow(this.z);    // this.z -> nodoa dagoen fluxuaren IDa
         var appName = miflow.label;
+        if (appName.includes(" "))
+            appName = appName.replace(" ", "_");
 
         if (node.function === "") {
             node.error(`Ez da funtzionalitaterik aukeratu nodo batean. Jakiteko zein den, klikatu errore mezu honetan.`);
@@ -51,27 +53,27 @@ module.exports = function(RED) {
 
             // Mikrozerbitzu berriaren informazioa eraikitzen dugu
             // --------------------
-            const Microservice = createFirstMicroservice(componentName, codeName, selectedFunctionInfo);
+            const microservice = createFirstMicroservice(componentName, codeName, selectedFunctionInfo);
             // Osagai honen pertsonalizazioa gehitzen diogu (osagai honen bereizgarria dena)
-            Microservice.$.customization = `{` +
+            microservice.$.customization = `{` +
                 `'${selectedFunctionInfo.customizationName.split(',')[0]}': '${node.valuetype}', ` +
                 `'${selectedFunctionInfo.customizationName.split(',')[1]}': ${node.firstvalue}`+
                 `}`;
 
             const channel = {
                 $: {
-                    from: Microservice.outPort.$.name
+                    from: microservice.outPort.$.name
                 }
             }
 
             // Lehenengo osagaia izanik, aplikazio-eredua eraikiko dugu
             // --------------------
             let appModelXML = {
-                Application: {
+                application: {
                     $: {
                         name: appName, // recogerlo del nombre del flow
                     },
-                    Microservice,
+                    microservice,
                     channel
                 }
             }

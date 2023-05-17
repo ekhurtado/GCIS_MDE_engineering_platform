@@ -1,7 +1,15 @@
+// FITXATEGI HONEK APLIKAZIO-EREDUA SORTZEKO OBJEKTU ETA FUNTZIO ERABILGARRIAK BILTZEN DITU
+// ---------------------
+
+// Fitxategiak irakurtzeko liburutegia
+const fs = require('fs');
+
+// XML fitxategiekin lan egiteko liburutegiak
 const xml2js = require('xml2js');
 const builder = new xml2js.Builder();
 
-// FITXATEGI HONEK APLIKAZIO-EREDUA SORTZEKO OBJEKTU ETA FUNTZIO ERABILGARRIAK BILTZEN DITU
+// XSD fitxategiekin lan egiteko liburutegia
+const validatorXSD = require('xsd-schema-validator');
 
 
 // Funtzionalitateen informazio gordetzeko klasea
@@ -84,11 +92,11 @@ function addMicroServiceToModel(stringModel, newMicroservice, lastComponent) {
     let appModelXML;    // XML aplikazio-eredu eguneratua gordetzeko objektua
     xml2js.parseString(stringModel, function (err, result) {
         // Fog aplikazio-ereduaren mikrozerbitzuen zerrendan, berria sartu
-        let microserviceList = result.Application.Microservice;
+        let microserviceList = result.application.microservice;
         microserviceList.push(newMicroservice);
 
         // Fog aplikazio-ereduaren kanalen zerrenda eguneratu eta berria sartu
-        let channelList = result.Application.channel;
+        let channelList = result.application.channel;
         let lastChannel = channelList.pop();
         lastChannel.$.to = newMicroservice.inPort.$.name;
         channelList.push(lastChannel);
@@ -106,4 +114,37 @@ function addMicroServiceToModel(stringModel, newMicroservice, lastComponent) {
     return appModelXML;
 }
 
-module.exports = { FunctionInfo, createFirstMicroservice, createNewMicroservice, createLastMicroservice, addMicroServiceToModel } // Export class
+function checkApplicationMetaModel(appModelXML) {
+
+
+    // Read de XSD Schema
+    const xsdPath = '/data/node_modules/Application.xsd'
+    let xsdContent = fs.readFile(xsdPath, 'utf8', (err, xsdContent) => {
+        if (err) {
+            console.error('Error reading XSD file:', err);
+            return;
+        } else
+            return xsdContent;
+    });
+
+    // return xsdContent;
+    // const path = require('path');
+    // return path.resolve(__filename);
+    //
+    // // Validate XML against XSD
+    let resultado;
+    validatorXSD.validateXML(appModelXML, './Application.xsd', function (err, result) {
+        console.error(result);
+        //     if (result.valid) {
+        //         console.log('XML is valid against XSD.');
+        //     } else {
+        //         console.log('XML is not valid against XSD.');
+        //         console.log('Validation errors:', result.errors);
+        //     }
+            resultado = result;
+        });
+    return resultado;
+}
+
+module.exports = { FunctionInfo, createFirstMicroservice, createNewMicroservice,
+    createLastMicroservice, addMicroServiceToModel, checkApplicationMetaModel } // Export class
