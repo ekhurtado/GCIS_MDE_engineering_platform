@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2020 (http://www.altova.com) by  (University of the Basque Country) -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:vc="http://www.w3.org/2007/XMLSchema-versioning" elementFormDefault="qualified" attributeFormDefault="unqualified" vc:minVersion="1.1">
+	<xs:complexType name="Port">
+		<xs:attribute name="name" type="xs:string" use="required"/>
+		<xs:attribute name="dataType" type="xs:NMTOKEN" use="required"/>
+		<xs:attribute name="protocol" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:element name="functionality">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element name="inputs" type="Port" minOccurs="0" maxOccurs="1"/>
+				<xs:element name="outputs" type="Port" minOccurs="0" maxOccurs="1"/>
+			</xs:sequence>
+			<xs:attribute name="id" type="xs:string" use="required"/>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="description" type="xs:string" use="optional"/>
+			<xs:attribute name="customization" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Component">
+		<xs:complexType>
+			<xs:sequence>
+				<xs:element ref="functionality" minOccurs="1" maxOccurs="unbounded"/>
+			</xs:sequence>
+			<xs:attribute name="name" type="xs:string" use="required"/>
+			<xs:attribute name="category" type="xs:NMTOKEN" use="required"/>
+			<xs:attribute name="codePath" type="xs:string" use="required"/>
+			<xs:attribute name="codeName" type="xs:string" use="required"/>
+			<xs:attribute name="description" type="xs:string" use="optional"/>
+		</xs:complexType>
+	</xs:element>
+</xs:schema>

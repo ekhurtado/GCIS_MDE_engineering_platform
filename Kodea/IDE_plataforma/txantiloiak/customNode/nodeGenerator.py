@@ -1,11 +1,21 @@
 # Kode honek XML osagai-eredua edukita, Node-RED tresnarako prest dagoen nodo pertsonalizatua lortzeko beharrezko fitxategiak sortzen ditu
-import os, shutil
-
-from saxonche import *
+import os
+import shutil
+from io import BytesIO
 
 # Fitxategiak aukeratzeko liburutegia
 from tkinter import Tk
 from tkinter.filedialog import askopenfilename
+
+# XML, XSLT eta XSD fitxategiekin lan egiteko liburutegiak
+from saxonche import *
+from lxml import etree
+
+'''
+---------------------------------------------
+Component Model-ekin erlazionatutako metodoak
+---------------------------------------------
+'''
 
 
 def getCompModel():
@@ -45,6 +55,28 @@ def getCompModel():
         return stringAppModel
 
 
+'''
+---------------------------------------------
+Saxonche liburutegiarekin erlazionatutako metodoak
+---------------------------------------------
+'''
+
+
+def checkComponentMetaModel(componentXML):
+    result = False
+    while not result:
+        xmlschema_doc = etree.parse("../../../meta_ereduak/Component.xsd")
+        xmlschema = etree.XMLSchema(xmlschema_doc)
+
+        some_file_or_file_like_object = BytesIO(componentXML.encode('utf-8'))
+        xml_doc = etree.parse(some_file_or_file_like_object)
+        result = xmlschema.validate(xml_doc)
+        if not result:
+            print("Sartutako XML fitxategia ez da zuzena, sar ezazu berriro mesedez.")
+            componentXML = getCompModel()
+    return componentXML
+
+
 def getCompName(originXML):
     with PySaxonProcessor(license=False) as proc:
         xp = proc.new_xpath_processor()
@@ -63,12 +95,6 @@ def getCategory(originXML):
         return result.string_value
 
 
-def copyRelatedIcon(compModelXML, compName):
-    category = getCategory(compModelXML)
-    if not os.path.exists("./" + compName + '/icons'):
-        os.makedirs("./" + compName + '/icons')
-    shutil.copy2('./icons/' + category + '.png', './' + compName + '/icons/' + category + '.png')
-
 def getXSLT_transformation(originXML, stylesheetXSLT):
     with PySaxonProcessor(license=False) as proc:
         xsltproc = proc.new_xslt30_processor()
@@ -78,6 +104,20 @@ def getXSLT_transformation(originXML, stylesheetXSLT):
         executable = xsltproc.compile_stylesheet(stylesheet_file=stylesheetXSLT)
         output = executable.transform_to_string(xdm_node=document)
         return output
+
+
+'''
+---------------------------------------------
+Bestelako metodoak
+---------------------------------------------
+'''
+
+
+def copyRelatedIcon(compModelXML, compName):
+    category = getCategory(compModelXML)
+    if not os.path.exists("./" + compName + '/icons'):
+        os.makedirs("./" + compName + '/icons')
+    shutil.copy2('./icons/' + category + '.png', './' + compName + '/icons/' + category + '.png')
 
 
 def getConfigurationFile(compName):
@@ -95,8 +135,10 @@ def createFile(content, fileName):
 
 def main():
     compModelXML = getCompModel()
+    print("Prozesua hasi aurretik, sartutako osagai-eredua zuzena baden konprobatuko da.")
+    compModelXML = checkComponentMetaModel(compModelXML)
 
-    print("Osagai-eredua sartu duzunez, NodeRED nodo bat lortzeko beharrezko fitxategiak lortuko dira. Fitxategi "
+    print("Osagai-eredua zuzena denez, NodeRED nodo bat lortzeko beharrezko fitxategiak lortuko dira. Fitxategi "
           "horiek gordetzeko karpeta bat sortuko da.")
     compName = getCompName(compModelXML)
     if not os.path.exists("./" + compName):
@@ -116,6 +158,5 @@ def main():
 
     # Azkenik, ikonoa karpetara kopiatuko dugu
     copyRelatedIcon(compModelXML, compName)
-
 
 main()
