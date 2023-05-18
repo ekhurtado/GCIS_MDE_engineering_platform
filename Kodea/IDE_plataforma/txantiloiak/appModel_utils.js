@@ -9,7 +9,7 @@ const xml2js = require('xml2js');
 const builder = new xml2js.Builder();
 
 // XSD fitxategiekin lan egiteko liburutegia
-const validatorXSD = require('xsd-schema-validator');
+const xsd = require('libxmljs2-xsd');
 
 
 // Funtzionalitateen informazio gordetzeko klasea
@@ -116,34 +116,14 @@ function addMicroServiceToModel(stringModel, newMicroservice, lastComponent) {
 
 function checkApplicationMetaModel(appModelXML) {
 
-
-    // Read de XSD Schema
-    const xsdPath = '/data/node_modules/Application.xsd'
-    let xsdContent = fs.readFile(xsdPath, 'utf8', (err, xsdContent) => {
-        if (err) {
-            console.error('Error reading XSD file:', err);
-            return;
-        } else
-            return xsdContent;
-    });
-
-    // return xsdContent;
-    // const path = require('path');
-    // return path.resolve(__filename);
-    //
-    // // Validate XML against XSD
-    let resultado;
-    validatorXSD.validateXML(appModelXML, './Application.xsd', function (err, result) {
-        console.error(result);
-        //     if (result.valid) {
-        //         console.log('XML is valid against XSD.');
-        //     } else {
-        //         console.log('XML is not valid against XSD.');
-        //         console.log('Validation errors:', result.errors);
-        //     }
-            resultado = result;
-        });
-    return resultado;
+    const xsdPath = '/xmlSchemas/Application.xsd'
+    // XSD Schema fitxategia zehazten dugu
+    const schema = xsd.parseFile(xsdPath);
+    // Ondoren, XML aplikazio-eredua meta-ereduarekin bat datorrela konprobatzen dugu
+    const validationErrors = schema.validate(appModelXML);
+        // throws in case of technical error, returns a list of validation errors,
+        //   or null if the document is valid
+    return validationErrors;
 }
 
 module.exports = { FunctionInfo, createFirstMicroservice, createNewMicroservice,

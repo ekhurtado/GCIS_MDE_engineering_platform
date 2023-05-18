@@ -1,5 +1,4 @@
 
-
 // Aplikazio-eredua osatzeko elementu erabilgarrien liburutegia inportatu
 const {FunctionInfo, createLastMicroservice, addMicroServiceToModel, checkApplicationMetaModel} = require('../appModel_utils.js');
 
@@ -17,7 +16,6 @@ module.exports = function(RED) {
         var node = this;
         
         node.on('input', function(msg) {
-
 
             if (node.function === "") {
                 node.error(`Ez da funtzionalitaterik aukeratu nodo batean. Jakiteko zein den, klikatu errore mezu honetan.`);
@@ -62,11 +60,12 @@ module.exports = function(RED) {
 
                 // Azkenengo osagaia denez, aplikazio-eredua zuzena dela konprobatuko du
                 let result = checkApplicationMetaModel(appModelXML);
-                node.error(result);
+                if (!result || result.length === 0) {
+                    // XML aplikazio-eredua zuzena da, erabiltzaileari emaitza erakustiko diogu
+                    node.warn(appModelXML);
+                } else
+                    node.error(`Sortutako aplikazio-eredua ez dator bat meta-ereduarekin. Arrazoia: ${result}`);
 
-                // XML aplikazio-eredua hurrengo nodoari bidali
-
-                node.warn(appModelXML);
             }
 
 

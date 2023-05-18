@@ -9,7 +9,7 @@
 const fs = require('fs');
 
 // Aplikazio-eredua osatzeko elementu erabilgarrien liburutegia inportatu
-const {FunctionInfo<xsl:if test="count(//outputs) = 0">, createFirstMicroservice</xsl:if><xsl:if test="count(//inputs) > 0 and count(//outputs) > 0">, createNewMicroservice</xsl:if><xsl:if test="count(//inputs) > 0">, addMicroServiceToModel</xsl:if>} = require('../appModel_utils');
+const {FunctionInfo<xsl:if test="count(//outputs) = 0">, createFirstMicroservice</xsl:if><xsl:if test="count(//inputs) > 0 and count(//outputs) > 0">, createNewMicroservice</xsl:if><xsl:if test="count(//inputs) > 0">, addMicroServiceToModel</xsl:if><xsl:if test="count(//outputs) = 0">, checkApplicationMetaModel</xsl:if>} = require('../appModel_utils');
 
 // Osagaiaren aldagaiak
 const componentName = "<xsl:value-of select="@name"/>";
@@ -90,12 +90,15 @@ module.exports = function(RED) {
 		// XML fitxategia sortu
 		let appModelXML = builder.buildObject(appModel);
 	  	</xsl:if>
-
 	  	<xsl:if test="count(//outputs) = 0">
-		// XML aplikazio-eredua NodeRED kontsolatik erakutsi
-		node.warn(appModelXML);
+		// Azkenengo osagaia denez, aplikazio-eredua zuzena dela konprobatuko du
+		let result = checkApplicationMetaModel(appModelXML);
+		if (!result || result.length === 0) {
+			// XML aplikazio-eredua zuzena da, erabiltzaileari emaitza erakustiko diogu
+			node.warn(appModelXML);
+		} else
+			node.error(`Sortutako aplikazio-eredua ez dator bat meta-ereduarekin. Arrazoia: ${result}`);
 	  	</xsl:if>
-
 	  	<xsl:if test="count(//outputs) != 0">
 		// XML aplikazio-eredua hurrengo nodoari bidali
 		node.send(appModelXML);

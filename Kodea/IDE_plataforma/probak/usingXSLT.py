@@ -25,15 +25,16 @@ from saxonche import *
 
 with PySaxonProcessor(license=False) as proc:
 
+    with open("C:\\Users\\\839073\\Downloads\\ejemplo_componente.xml", "r") as archivo:
     # with open("C:\\Users\\ekait\\OneDrive - UPV EHU\\Documentos\\INCAR\\TFM\\Recursos\\ejemplo_componente.xml", "r") as archivo:
-    with open("C:\\Users\\ekait\\OneDrive - UPV EHU\\Documentos\\INCAR\\TFM\\Recursos\\ejemplo_app.xml", "r") as archivo:
+    # with open("C:\\Users\\ekait\\OneDrive - UPV EHU\\Documentos\\INCAR\\TFM\\Recursos\\ejemplo_app.xml", "r") as archivo:
         # Lee el contenido del archivo y almacénalo en una cadena
         contenido = archivo.read()
 
     xsltproc = proc.new_xslt30_processor()
     document = proc.parse_xml(xml_text=contenido)
     # executable = xsltproc.compile_stylesheet(stylesheet_file="../txantiloiak/webView.xslt")
-    # executable = xsltproc.compile_stylesheet(stylesheet_file="../txantiloiak/customNode/functionalPart.xslt")
-    executable = xsltproc.compile_stylesheet(stylesheet_file="../../Software_plataforma/appModel2CR/transformer.xslt")
+    executable = xsltproc.compile_stylesheet(stylesheet_file="../txantiloiak/customNode/functionalPart.xslt")
+    # executable = xsltproc.compile_stylesheet(stylesheet_file="../../Software_plataforma/appModel2CR/transformer.xslt")
     output = executable.transform_to_string(xdm_node=document)
     print(output)
