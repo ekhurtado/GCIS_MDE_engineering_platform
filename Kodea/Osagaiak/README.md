@@ -1,0 +1,1 @@
+Karpeta honek kontzeptu-probarako garatu diren osagaien kodea eta beraien exekuzioa ahalbidetzeko beharrezko fitxategiak gordetzen ditu.

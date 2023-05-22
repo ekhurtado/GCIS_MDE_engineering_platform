@@ -1,0 +1,7 @@
+FROM python:3.10-alpine
+
+RUN pip install requests
+
+COPY zenbakienProzesamendua.py /
+
+CMD ["python3", "-u", "zenbakienProzesamendua.py"]
