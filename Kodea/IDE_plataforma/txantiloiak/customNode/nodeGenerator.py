@@ -159,4 +159,5 @@ def main():
     # Azkenik, ikonoa karpetara kopiatuko dugu
     copyRelatedIcon(compModelXML, compName)
 
+
 main()

@@ -19,6 +19,14 @@ def CRD_app():
     return CRD_applicacion
 
 
+def CRD_comp():
+    path = os.path.abspath(os.path.dirname(__file__))
+    rel_path = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), "CRD", "component_definition.yaml")
+    with open(rel_path, 'r') as stream:
+        CRD_component = yaml.safe_load(stream)
+    return CRD_component
+
+
 # ------------------------------------
 # Gertaerekin erlazionatutako metodoak
 # ------------------------------------
@@ -70,3 +78,26 @@ def customResourceEventObject(action, CR_type, CR_object, message, reason):
             'component': CR_name
         }
     }
+
+
+# ------------------------------------
+# Osagaiekin erlazionatutako metodoak
+# ------------------------------------
+def component_object(componentInfo, appName):
+    component_resource = {
+        'apiVersion': 'ehu.gcis.org/v1alpha1',
+        'kind': 'Component',
+        'metadata': {
+            'name': componentInfo['name'] + '-' + appName,
+            'labels': {
+                'applicationName': appName,
+                'shortName': componentInfo['name']
+            }
+        },
+        'spec': {}
+    }
+
+    for infoKey, infoValue in componentInfo.items():
+        component_resource['spec'][infoKey] = infoValue
+
+    return component_resource
