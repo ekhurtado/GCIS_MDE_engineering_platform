@@ -1,5 +1,6 @@
 # Fitxategi hau kontroladoreek konpartitzen dituzten metodoak eta objektuak jasotzeko balio du
 import datetime
+import json
 import os
 import string
 from random import random
@@ -101,3 +102,65 @@ def component_object(componentInfo, appName):
         component_resource['spec'][infoKey] = infoValue
 
     return component_resource
+
+
+def deploymentObject(component, controllerName, appName, replicas, componentName, **kwargs):
+    deployObject = {
+        'apiVersion': 'apps/v1',
+        'kind': 'Deployment',
+        'metadata': {
+            'name': component['metadata']['name'],
+            'labels': {
+                'resource.controller': controllerName,
+                'component.name': componentName,
+                'applicationName': appName
+            }
+        },
+        'spec': {
+            'replicas': 1,
+            'selector': {
+                'matchLabels': {
+                    'component.name': componentName
+                }
+            },
+            'template': {
+                'metadata': {
+                    'labels': {
+                        'component.name': componentName
+                    }
+                },
+                'spec': {
+                    'containers': [{
+                        'imagePullPolicy': 'Always',
+                        'name': componentName,
+                        'image': component['spec']['image'],
+                        'env': [{'name': 'SELECTED_SERVICE',
+                                 'value': component['spec']['service']}]
+                    }],
+                    'nodeSelector': {
+                        'node-type': 'multipass'
+                    },
+                }
+            }
+        }
+    }
+
+    # Osagaiaren izena ezin dute 63 karaktere baino gehiago eduki
+    if len(componentName) > 63:
+        deployObject['spec']['template']['spec']['containers'][0]['name'] = componentName[0:63]
+
+    if "customization" in component['spec']:
+        envVarList = []
+        customJSON = json.loads(component['spec']['customization'])
+        for customAttr, customValue in customJSON.items():
+            envVarList.append({'name': customAttr, 'value': customValue})
+        deployObject['spec']['template']['spec']['containers'][0]['env'] = \
+            deployObject['spec']['template']['spec']['containers'][0]['env'] + envVarList
+
+    if "inPort" in component['spec']:
+        deployObject['spec']['template']['spec']['containers'][0]['env'] = \
+            deployObject['spec']['template']['spec']['containers'][0]['env'] + {
+                'name': 'INPORT_NUMBER', 'value': component['spec']['inPort']['number']
+            }
+
+    return deployObject

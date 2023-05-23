@@ -91,9 +91,30 @@ def watcher(custom_client):
                 pass
 
 
-def deploy_component(object, custom_client):
-    # TODO
-    pass
+def deploy_component(compObject, custom_client):
+
+    # Hasteko, osagaiaren egoera atala eguneratzen da
+    status_object = {'status': {'situation': 'Deploying'}}
+    custom_client.patch_namespaced_custom_object_status(group, version, namespace, plural,
+                                                        compObject['metadata']['name'], status_object)
+
+    # Bestalde, egoera horren berri emateko gertaera sortzen da
+    eventAPI = client.CoreV1Api()
+    eventObject = utils.customResourceEventObject(action='deploying', CR_type="Component",
+                                                  CR_object=compObject,
+                                                  message='Osagaiaren hedapena hasita.',
+                                                  reason='Deploying')
+    eventAPI.create_namespaced_event("default", eventObject)
+
+    #TODO konprobatu ea compObject labels informazioa badu, edo objektu osoa lortu behar baden APIarekin
+    myAppName = compObject['metadata']['labels']['applicationName'] # dagokion aplikazioaren izena jasoko dugu
+    shortName = compObject['metadata']['labels']['shortName']   # osagaiaren jatorrizko izena lortzen da
+
+    # Hedapen fitxategia lortzen da
+    deployment_yaml = utils.deploymentObject(compObject, "component-controller", myAppName, shortName)
+
+    # TODO kanalak ikertu behar dira aztertzeko ea osagaiarentzako zerbitzua sortu behar baden
+
 
 
 def delete_component(compObject):  # TODO konprobatu funtzionatzen duela

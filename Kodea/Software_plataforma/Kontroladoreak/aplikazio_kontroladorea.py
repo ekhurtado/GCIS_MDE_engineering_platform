@@ -169,8 +169,7 @@ def check_modifications(appObject, custom_client):
 
 def create_component(custom_client, compObject, appObject):  # TODO konprobatu funtzionatzen duela
     # Osagaiaren objetua eraikitzen da
-    component_body = utils.component_object(componenteInfo=compObject,
-                                            appName=appObject['metadata']['name'])
+    component_body = utils.component_object(componentInfo=compObject, appName=appObject['metadata']['name'])
     # Osagai berria sortzen da
     custom_client.create_namespaced_custom_object(group, componentVersion, namespace, componentPlural, component_body)
 
