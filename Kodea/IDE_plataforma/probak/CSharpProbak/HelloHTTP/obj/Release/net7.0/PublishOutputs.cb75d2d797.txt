@@ -1,0 +1,5 @@
+C:\Users\ekait\OneDrive - UPV EHU\Documentos\INCAR\TFM\Codigo\EkaitzHurtado-MAL\Kodea\IDE_plataforma\probak\CSharpProbak\HelloHTTP\out\DotNet.Docker.exe
+C:\Users\ekait\OneDrive - UPV EHU\Documentos\INCAR\TFM\Codigo\EkaitzHurtado-MAL\Kodea\IDE_plataforma\probak\CSharpProbak\HelloHTTP\out\DotNet.Docker.dll
+C:\Users\ekait\OneDrive - UPV EHU\Documentos\INCAR\TFM\Codigo\EkaitzHurtado-MAL\Kodea\IDE_plataforma\probak\CSharpProbak\HelloHTTP\out\DotNet.Docker.deps.json
+C:\Users\ekait\OneDrive - UPV EHU\Documentos\INCAR\TFM\Codigo\EkaitzHurtado-MAL\Kodea\IDE_plataforma\probak\CSharpProbak\HelloHTTP\out\DotNet.Docker.runtimeconfig.json
+C:\Users\ekait\OneDrive - UPV EHU\Documentos\INCAR\TFM\Codigo\EkaitzHurtado-MAL\Kodea\IDE_plataforma\probak\CSharpProbak\HelloHTTP\out\DotNet.Docker.pdb
