@@ -1,0 +1,7 @@
+FROM mcr.microsoft.com/dotnet/runtime:5.0-alpine3.13-amd64
+
+COPY HelloWorld /HelloWorld
+
+WORKDIR /HelloWorld
+
+CMD ["dotnet", "out/NetCore.Docker.dll"]
