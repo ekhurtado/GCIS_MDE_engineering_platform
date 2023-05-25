@@ -1,11 +1,9 @@
 import os, requests
-
 from flask import Flask, request
 
-function = os.environ.get('function')
-inPortNumber = os.environ.get('inPortNumber')
-custom_step = os.environ.get('customization_urratsa')
-custom_multiplier = os.environ.get('customization_biderkatzailea')
+function = os.environ.get('FUNCTION')
+inPortNumber = os.environ.get('INPORTNUMBER')
+customization = os.environ.get('CUSTOMIZATION')
 
 app = Flask(__name__)
 
@@ -38,3 +36,7 @@ def decreaseValue():
 
 def multiplyValue():
     pass
+
+
+if __name__ == '__main__':
+    app.run()

@@ -86,19 +86,97 @@ def watcher(custom_client):
                 # Lógica para llevar el recurso al estado deseado.
                 deploy_application(object, custom_client)
             case "DELETED":
-                delete_application(object)
+                delete_application(object, custom_client)
+            case "MODIFIED":
+                check_modifications(object, custom_client)
             case _:  # default case
                 pass
 
 
-def deploy_application(object, custom_client):
-    # TODO
-    pass
+def deploy_application(appObject, custom_client):
+    # Hasi aurretik, aplikazioaren egoera eguneratzeko gertaera sortzen dugu
+    eventObject = utils.customResourceEventObject(action='Deploy', CR_type="Application",
+                                                  CR_object=appObject,
+                                                  message='Aplikazioaren hedapen hasita.',
+                                                  reason='Deploying')
+    eventAPI = client.CoreV1Api()
+    eventAPI.create_namespaced_event("default", eventObject)
+
+    # Ondoren, aplikazioaren objektuaren egoera atala sortzen dugu, adieraziz oraindik es dela osagairik sortu.
+    num_components = len(appObject['spec']['components'])
+    status_object = {'status': {'components': [0] * num_components, 'ready': "0/" + str(num_components)}}
+    for i in range(int(num_components)):
+        status_object['status']['components'][i] = {'name': appObject['spec']['components'][i]['name'],
+                                                    'status': "Creating"}
+    custom_client.patch_namespaced_custom_object_status(group, version, namespace, plural,
+                                                        appObject['metadata']['name'], status_object)
+
+    # Orain, osagai bakoitza sortuko dugu
+    for comp in appObject['spec']['components']:
+        create_component(custom_client, comp, appObject)
 
 
-def delete_application(object):
-    # TODO
-    pass
+def delete_application(appObject, custom_client):  # TODO konprobatu funtzionatzen duela
+    # Aplikazioaren osagai guztiak ezabatuko dira
+    for comp in appObject['spec']['components']:
+        custom_client.delete_namespaced_custom_object(group, componentVersion, namespace, componentPlural,
+                                                      comp['name'] + '-' + appObject['metadata']['name'])
+
+
+def check_modifications(appObject, custom_client):
+    eventAPI = client.CoreV1Api()  # Gertaerekin lan egiteko APIa lortzen dugu
+
+    # Lehenik, aztertuko da nor izan den aplikazio objektua aldatu duena
+    lastManager = appObject['metadata']['managedFields'][len(appObject['metadata']['managedFields']) - 1]['manager']
+    if "component" in lastManager:
+        # Bakarrik aplikazioaren barruko osagaiak alda dezakete aplikazioaren objektua, zehazki egoera atala
+        # Aldaketaren arduradunatik osagaiaren izena lortzen dugu
+        componentName = lastManager.replace('component-', '')
+        componentName = componentName.replace('-' + appObject['metadata']['name'], '')
+
+        # Egoera atala aldatu denez, abiarazitako osagaiak aztertuko dira
+        runningCount = 0
+        for i in range(len(appObject['status']['components'])):
+            if appObject['status']['components'][i]['status'] == "Running":
+                runningCount += 1
+
+                if appObject['status']['components'][i]['name'] == componentName:
+                    # Mezua bidali duen osagaia abiarazita badago, gertaera horren berri emango dugu
+                    eventObject = utils.customResourceEventObject(action='Created', CR_type="Application",
+                                                                  CR_object=appObject,
+                                                                  message=componentName + ' osagaia zuzen abiarazita.',
+                                                                  reason='Deployed')
+                    eventAPI.create_namespaced_event("default", eventObject)
+
+        # Abiarazitako osagai guztiak aztertuta, baten bat abiarazita badago, egoera atala eguneratuko da
+        if runningCount != 0:
+            appObject['status']['ready'] = str(runningCount) + "/" + appObject['status']['ready'].split("/")[1]
+
+            if runningCount == len(appObject['status']['components']):
+                # Osagai guztiak abiarazita badaude, gertaera horren berri emango dugu
+                eventObject = utils.customResourceEventObject(action='Deployed', CR_type="Application",
+                                                              CR_object=appObject,
+                                                              message='Osagai guztiak zuzen abiarazita.',
+                                                              reason='Running')
+                eventAPI.create_namespaced_event("default", eventObject)
+
+        # Bete diren aldaketekin, aplikazioaren egoera atala eguneratzen da
+        custom_client.patch_namespaced_custom_object_status(group, version, namespace, plural,
+                                                            appObject['metadata']['name'],
+                                                            {'status': appObject['status']},
+                                                            field_manager=appObject['metadata']['name'])
+
+
+def create_component(custom_client, compObject, appObject):  # TODO konprobatu funtzionatzen duela
+    # Osagaiaren objetua eraikitzen da
+    component_body = utils.component_object(componentInfo=compObject, appName=appObject['metadata']['name'])
+    # Osagai berria sortzen da
+    custom_client.create_namespaced_custom_object(group, componentVersion, namespace, componentPlural, component_body)
+
+    # Behin osagaiaren sorkuntza eskaera betez, bere objektuaren egoera atala eguneratuko da, aurkeztuz sortzen ari dela
+    status_object = {'status': {'situation': 'Creating'}}
+    custom_client.patch_namespaced_custom_object_status(group, componentVersion, namespace, componentPlural,
+                                                        component_body['metadata']['name'], status_object)
 
 
 if __name__ == '__main__':
