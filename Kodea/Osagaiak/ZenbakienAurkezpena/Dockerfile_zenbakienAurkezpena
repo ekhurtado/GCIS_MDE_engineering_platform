@@ -1,0 +1,6 @@
+FROM openjdk:11-jdk
+FROM adoptopenjdk:11-jre-hotspot
+
+COPY zenbakienAurkezpena.jar /
+
+CMD ["java", "-jar", "zenbakienAurkezpena.jar"]
