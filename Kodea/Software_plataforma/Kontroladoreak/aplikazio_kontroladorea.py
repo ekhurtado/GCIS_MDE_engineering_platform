@@ -113,6 +113,13 @@ def deploy_application(appObject, custom_client):
 
     # Orain, osagai bakoitza sortuko dugu
     for comp in appObject['spec']['components']:
+
+        # Lehenik eta behin, beste osagaiek aztertzen ari garen osagaiarekin komunikatu behar badira, Kubernetesen
+        # zerbitzu deituriko bat sortu beharra dago, osagaia eskuragarri egiteko
+        if 'inPort' in comp:
+            create_service(custom_client, comp, appObject)
+
+        # Orain, osagaia bera sortu daiteke
         create_component(custom_client, comp, appObject)
 
 
@@ -168,6 +175,9 @@ def check_modifications(appObject, custom_client):
 
 
 def create_component(custom_client, compObject, appObject):  # TODO konprobatu funtzionatzen duela
+
+    # Osagaiari beharrezko informazio gehitu diogu (adibidez, hurrengo osagaiarekin komunikatzeko datuak)
+    compObject = addFlowInfo(compObject, appObject)
     # Osagaiaren objetua eraikitzen da
     component_body = utils.component_object(componentInfo=compObject, appName=appObject['metadata']['name'])
     # Osagai berria sortzen da
@@ -177,6 +187,45 @@ def create_component(custom_client, compObject, appObject):  # TODO konprobatu f
     status_object = {'status': {'situation': 'Creating'}}
     custom_client.patch_namespaced_custom_object_status(group, componentVersion, namespace, componentPlural,
                                                         component_body['metadata']['name'], status_object)
+
+
+def create_service(compObject, appObject):
+    # Zerbitzuaren objektua sortzen dugu
+    serviceObject = utils.service_object(componentInfo=compObject, appName=appObject['metadata']['name'])
+    # Kuberneteseko APIarekin, zerbitzua sisteman hedatzen dugu
+    coreAPI = client.CoreV1Api()
+    coreAPI.create_namespaced_service(namespace, serviceObject)
+
+
+def addFlowInfo(compObject, appObject):
+    # Metodo honi esker, hurrengo osagaiari buruzko informazio gehituko diogu oraingo osagaiari
+    if "outPort" in compObject:  # bakarrik irteera badu osotu beharko dugu osagaiaren informazioa
+        currentCompOutPort = compObject['outPort']['name']
+        nextCompInPort = getChannelPort(appObject, currentCompOutPort, 'from')
+        nextCompObject = getCompObjectByPortName(appObject, nextCompInPort, 'inPort')
+
+        # Datu guztiak edukita, osagaiari informazio berria gehi dezakegu
+        compObject['output'] = nextCompObject['name'] + '-' + appObject['name']  # Kubernetesen osagaien izena beraiena
+        # gehi aplikazioarena da, bakarra izateko
+        compObject['output_port'] = nextCompObject['inPort']['number']
+
+    return compObject
+
+
+def getCompObjectByPortName(appObject, portName, portType):
+    for comp in appObject['components']:
+        if comp[portType]['name'] == portName:
+            return comp
+    return None
+
+
+def getChannelPort(appObject, portName, portType):
+    for channel in appObject['channels']:
+        if portType == "from" and channel['from'] == portName:
+            return channel['to']
+        if portType == "to" and channel['to'] == portName:
+            return channel['from']
+    return None
 
 
 if __name__ == '__main__':

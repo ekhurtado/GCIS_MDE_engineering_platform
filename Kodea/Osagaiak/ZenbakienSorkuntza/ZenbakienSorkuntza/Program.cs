@@ -3,15 +3,17 @@
 public class ZenbakienSorkuntza
 {
 
-    string function = Environment.GetEnvironmentVariable("SERVICE");
-    string customization = Environment.GetEnvironmentVariable("CUSTOMIZATION");
-    string output = Environment.GetEnvironmentVariable("OUTPUT");
-    string output_port = Environment.GetEnvironmentVariable("OUTPUT_PORT");
+    static string function = Environment.GetEnvironmentVariable("SERVICE");
+    static string customization = Environment.GetEnvironmentVariable("CUSTOMIZATION");
+    static string output = Environment.GetEnvironmentVariable("OUTPUT");
+    static string output_port = Environment.GetEnvironmentVariable("OUTPUT_PORT");
     static string url = "http://"+output+":" + output_port; // Replace with the desired URL
 
     public static async Task Main(string[] args)
     {
         Console.WriteLine("Kaixo! Ongi etorri ZenbakienSorkuntza aplikaziora");
+
+        Thread.Sleep(3000); // 3 segundo itxarongo ditugu beste osagaiek zuzen abiarazteko
 
         // Send a GET request
 //        await Utils.SendGetRequest(url);

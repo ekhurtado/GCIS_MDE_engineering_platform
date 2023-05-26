@@ -101,10 +101,31 @@ def component_object(componentInfo, appName):
     for infoKey, infoValue in componentInfo.items():
         component_resource['spec'][infoKey] = infoValue
 
+    if 'output' in componentInfo:
+        component_resource['metadata']['labels']['output'] = componentInfo['output']
+        component_resource['metadata']['labels']['output_port'] = componentInfo['output_port']
+
     return component_resource
 
 
-def deploymentObject(component, controllerName, appName, replicas, componentName, **kwargs):
+def service_object(componentInfo, appName):
+    return {
+        'apiVersion': 'v1',
+        'kind': 'Service',
+        'metadata': {
+            'name': componentInfo['name'] + '-' + appName
+        },
+        'spec': {
+            'ports': [{
+                'name': componentInfo['inPort']['name'],
+                'port': componentInfo['inPort']['number'],
+                'targetPort': componentInfo['inPort']['number']
+            }]
+        }
+    }
+
+
+def deploymentObject(component, controllerName, appName, componentName, **kwargs):
     deployObject = {
         'apiVersion': 'apps/v1',
         'kind': 'Deployment',
@@ -140,6 +161,7 @@ def deploymentObject(component, controllerName, appName, replicas, componentName
                     'nodeSelector': {
                         'node-type': 'multipass'
                     },
+                    'restartPolicy': 'Always',
                 }
             }
         }
@@ -158,9 +180,18 @@ def deploymentObject(component, controllerName, appName, replicas, componentName
             deployObject['spec']['template']['spec']['containers'][0]['env'] + envVarList
 
     if "inPort" in component['spec']:
+        deployObject['spec']['template']['spec']['containers'][0]['ports'] = [{
+            'containerPort': component['spec']['inPort']['number']
+        }]
         deployObject['spec']['template']['spec']['containers'][0]['env'] = \
             deployObject['spec']['template']['spec']['containers'][0]['env'] + {
                 'name': 'INPORT_NUMBER', 'value': component['spec']['inPort']['number']
             }
+    if "outPort" in component['spec']:
+        deployObject['spec']['template']['spec']['containers'][0]['env'] = \
+            deployObject['spec']['template']['spec']['containers'][0]['env'] + [
+                {'name': 'OUTPUT', 'value': component['labels']['output']},
+                {'name': 'OUTPUT_PORT', 'value': component['labels']['output_port']},
+            ]
 
     return deployObject

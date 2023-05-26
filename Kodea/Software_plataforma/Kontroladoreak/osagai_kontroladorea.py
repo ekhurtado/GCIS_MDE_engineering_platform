@@ -16,6 +16,7 @@ version = "v1alpha1"
 namespace = "default"
 plural = "components"
 
+
 # # Osagai mailaren informazioa
 # componentVersion = "v1alpha1"
 # componentPlural = "components"
@@ -92,7 +93,6 @@ def watcher(custom_client):
 
 
 def deploy_component(compObject, custom_client):
-
     # Hasteko, osagaiaren egoera atala eguneratzen da
     status_object = {'status': {'situation': 'Deploying'}}
     custom_client.patch_namespaced_custom_object_status(group, version, namespace, plural,
@@ -106,15 +106,29 @@ def deploy_component(compObject, custom_client):
                                                   reason='Deploying')
     eventAPI.create_namespaced_event("default", eventObject)
 
-    #TODO konprobatu ea compObject labels informazioa badu, edo objektu osoa lortu behar baden APIarekin
-    myAppName = compObject['metadata']['labels']['applicationName'] # dagokion aplikazioaren izena jasoko dugu
-    shortName = compObject['metadata']['labels']['shortName']   # osagaiaren jatorrizko izena lortzen da
+    # TODO konprobatu ea compObject labels informazioa badu, edo objektu osoa lortu behar baden APIarekin
+    myAppName = compObject['metadata']['labels']['applicationName']  # dagokion aplikazioaren izena jasoko dugu
+    shortName = compObject['metadata']['labels']['shortName']  # osagaiaren jatorrizko izena lortzen da
 
     # Hedapen fitxategia lortzen da
     deployment_yaml = utils.deploymentObject(compObject, "component-controller", myAppName, shortName)
 
-    # TODO kanalak ikertu behar dira aztertzeko ea osagaiarentzako zerbitzua sortu behar baden
+    # Kuberneteseko APIarekin, osagaia sisteman hedatzen dugu
+    appsAPI = client.AppsV1Api()
+    appsAPI.create_namespaced_deployment(namespace, deployment_yaml)
 
+    # Busco el status del deployment.
+    status_deployment = appsAPI.read_namespaced_deployment_status(deployment_yaml['metadata']['name'], namespace)
+    # TODO FALTA DA KONPROBATZEA EA HEDATU DEN (running egoera)
+
+    # Creamos el evento notificando que se ha desplegado el componente
+    eventObject = utils.customResourceEventObject(action='deployed', CR_type="Component",
+                                                  CR_object=compObject,
+                                                  message='Osagaia zuzen hedatu da.',
+                                                  reason='Running')
+    eventAPI.create_namespaced_event("default", eventObject)
+
+    # TODO FALTA DA OSAGAIAREN STATUS-A ALDATZEA ETA BERE APLIKAZIOARENA BAITA ERE
 
 
 def delete_component(compObject):  # TODO konprobatu funtzionatzen duela
