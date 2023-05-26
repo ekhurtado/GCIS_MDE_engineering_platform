@@ -3,9 +3,11 @@
 public class ZenbakienSorkuntza
 {
 
-//    string function = Environment.GetEnvironmentVariable("SERVICE");
-//    string customization = Environment.GetEnvironmentVariable("CUSTOMIZATION");
-    static string url = "http://localhost:7000"; // Replace with the desired URL
+    string function = Environment.GetEnvironmentVariable("SERVICE");
+    string customization = Environment.GetEnvironmentVariable("CUSTOMIZATION");
+    string output = Environment.GetEnvironmentVariable("OUTPUT");
+    string output_port = Environment.GetEnvironmentVariable("OUTPUT_PORT");
+    static string url = "http://"+output+":" + output_port; // Replace with the desired URL
 
     public static async Task Main(string[] args)
     {
@@ -19,7 +21,7 @@ public class ZenbakienSorkuntza
 //        await Utils.SendPostRequest(url, requestBody);
 
         // TODO EZABATU (INGURUNE-ALDAGAI BEZALA HARTU BEHAR DIRA)
-        string function = "FloatValue";
+//        string function = "FloatValue";
 
         Console.WriteLine(function);
 

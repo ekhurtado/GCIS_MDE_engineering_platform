@@ -4,13 +4,13 @@ from threading import Thread
 
 from flask import Flask, request
 
-function = os.environ.get('FUNCTION')
+function = os.environ.get('SERVICE')
 inPortNumber = os.environ.get('INPORT_NUMBER')
 customization = os.environ.get('CUSTOMIZATION')
 # step = json.loads(customization)['urratsa']
 
 # TODO ezabatu
-inPortNumber = 7000
+# inPortNumber = 7000
 
 app = Flask(__name__)
 
@@ -39,7 +39,7 @@ def main():
     print(messageData)
 
     # TODO ezabatu
-    function = "BalioaHanditu"
+    # function = "BalioaHanditu"
 
     thread_func = None  # Exekuzio-hari berria erabiltzen dugu aurreko osagaiari "OK" mezua lehen baino lehen bidaltzeko
     match function:
@@ -149,4 +149,4 @@ def sendData(type, value):
 
 
 if __name__ == '__main__':
-    app.run(port=inPortNumber)
+    app.run(host="0.0.0.0", port=inPortNumber)
