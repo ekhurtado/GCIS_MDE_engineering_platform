@@ -24,9 +24,14 @@ import java.io.IOException;
 
 public class zenbakienAurkezpena {
 
-    String function = System.getenv("SERVICE");
-    String inPortNumber = System.getenv("INPORT_NUMBER");
-    String customization = System.getenv("CUSTOMIZATION");
+//     String function = System.getenv("SERVICE");
+//     String inPortNumber = System.getenv("INPORT_NUMBER");
+//     String customization = System.getenv("CUSTOMIZATION");
+
+    // TODO Ezabatu
+    static String function = "consoleDisplay";
+    static int inPortNumber = Integer.parseInt("7000");
+    static String customization = "{\"filename\": \"datu_fitxategia\"}";
 
     public static void main(String[] args) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(inPortNumber), 0);
@@ -65,13 +70,13 @@ public class zenbakienAurkezpena {
         // Mezu lortuta, aukeratutako funtzionalitatea exekutatuko da
         switch (function) {
             case "consoleDisplay":
-                consoleDisplay();
+                consoleDisplay(body);
                 break;
             case "saveTXT":
-                saveTXT();
+                saveTXT(body);
                 break;
-            case "consoleDisplay":
-                saveCSV();
+            case "saveCSV":
+                saveCSV(body);
                 break;
             default:
                 System.out.println("Ez da funtzionalitaterik aukeratu.");
@@ -79,20 +84,21 @@ public class zenbakienAurkezpena {
         }
     }
 
-    public static void consoleDisplay(messageData) {
+    public static void consoleDisplay(String messageData) {
     // Lehenengo, HTTP mezutik informazio lortuko dugu
         JsonReader jsonReader = Json.createReader(new StringReader(messageData));
         JsonObject jsonObject = jsonReader.readObject();
-        string type = jsonObject.getString("type");
+        String type = jsonObject.getString("type");
         switch (type) {
-            case "natural" || "integer":
+            case "natural":
+            case "integer":
                 int value = jsonObject.getInt("value");
                 System.out.println("Lortutako balioa" + value + " da.");
                 break;
             case "float":
 //                 double  value = jsonObject.getJsonNumber("value").doubleValue();
-                float  value = jsonObject.getJsonNumber("value").floatValue();
-                System.out.println("Lortutako balioa" + value + " da.");
+                float floatValue = jsonObject.getJsonNumber("value").floatValue();
+                System.out.println("Lortutako balioa" + floatValue + " da.");
                 break;
             default:
                 System.out.println("Lortutako balioaren mota ez da zuzena.");
@@ -100,34 +106,35 @@ public class zenbakienAurkezpena {
         }
     }
 
-    public static void saveTXT(messageData) {
+    public static void saveTXT(String messageData) {
         // Lehenengo, HTTP mezutik informazio lortuko dugu
         JsonReader jsonReader = Json.createReader(new StringReader(messageData));
         JsonObject jsonObject = jsonReader.readObject();
-        string type = jsonObject.getString("type");
+        String type = jsonObject.getString("type");
 
         // Ondoren, fitxategiaren izena lortuko dugu
         JsonReader jsonReader = Json.createReader(new StringReader(customization));
         JsonObject jsonObject = jsonReader.readObject();
-        string fileName = jsonObject.getString("filename");
+        String fileName = jsonObject.getString("filename");
         if (!fileName.contains(".txt")) {
-            fileName = fileName + '.txt'
+            fileName = fileName + ".txt";
         }
 
         // Create a FileWriter instance
-        FileWriter fileWriter = new FileWriter(filePath);
+        FileWriter fileWriter = new FileWriter(fileName);
         // Create a BufferedWriter instance for efficient writing
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
         switch (type) {
-            case "natural" || "integer":
+            case "natural":
+            case "integer":
                 int value = jsonObject.getInt("value");
                 bufferedWriter.write("Lortutako balioa" + value + " da.\n");
                 break;
             case "float":
 //                 double  value = jsonObject.getJsonNumber("value").doubleValue();
-                float  value = jsonObject.getJsonNumber("value").floatValue();
-                bufferedWriter.write("Lortutako balioa" + value + " da.\n");
+                float floatValue = jsonObject.getJsonNumber("value").floatValue();
+                bufferedWriter.write("Lortutako balioa" + floatValue + " da.\n");
                 break;
             default:
                 System.out.println("Lortutako balioaren mota ez da zuzena.");
@@ -139,34 +146,35 @@ public class zenbakienAurkezpena {
 
     }
 
-    public static void saveCSV(messageData) {
+    public static void saveCSV(String messageData) {
         // Lehenengo, HTTP mezutik informazio lortuko dugu
         JsonReader jsonReader = Json.createReader(new StringReader(messageData));
         JsonObject jsonObject = jsonReader.readObject();
-        string type = jsonObject.getString("type");
+        String type = jsonObject.getString("type");
 
         // Ondoren, fitxategiaren izena lortuko dugu
         JsonReader jsonReader = Json.createReader(new StringReader(customization));
         JsonObject jsonObject = jsonReader.readObject();
-        string fileName = jsonObject.getString("filename");
+        String fileName = jsonObject.getString("filename");
         if (!fileName.contains(".csv")) {
-            fileName = fileName + '.csv'
+            fileName = fileName + ".csv";
         }
 
         // Create a FileWriter instance
-        FileWriter fileWriter = new FileWriter(filePath);
+        FileWriter fileWriter = new FileWriter(fileName);
         // Create a BufferedWriter instance for efficient writing
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
 
         switch (type) {
-            case "natural" || "integer":
+            case "natural":
+            case "integer":
                 int value = jsonObject.getInt("value");
                 bufferedWriter.write(type + "," + value + "\n");
                 break;
             case "float":
 //                 double  value = jsonObject.getJsonNumber("value").doubleValue();
-                float  value = jsonObject.getJsonNumber("value").floatValue();
-                bufferedWriter.write(type + "," + value + "\n");
+                float floatValue = jsonObject.getJsonNumber("value").floatValue();
+                bufferedWriter.write(type + "," + floatValue + "\n");
                 break;
             default:
                 System.out.println("Lortutako balioaren mota ez da zuzena.");
