@@ -1,11 +1,11 @@
 FROM openjdk:11-jdk
 #FROM adoptopenjdk:11-jre-hotspot
 
-COPY zenbakienAurkezpena.jar /
+COPY ZenbakienAurkezpena.jar /
 COPY ZenbakienAurkezpena_lib /ZenbakienAurkezpena_lib
 #COPY zenbakienAurkezpena.java /
 
 RUN #javac zenbakienAurkezpena.java
 
-CMD ["java", "-jar", "zenbakienAurkezpena.jar"]
+CMD ["java", "-jar", "ZenbakienAurkezpena.jar"]
 #CMD ["java", "zenbakienAurkezpena"]
