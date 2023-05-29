@@ -16,6 +16,8 @@ version = "v1alpha1"
 namespace = "default"
 plural = "components"
 
+applicationPlural = "applications"
+
 
 # # Osagai mailaren informazioa
 # componentVersion = "v1alpha1"
@@ -24,7 +26,7 @@ plural = "components"
 
 def controller():
     # Lehenik eta behin, klusterraren konfigurazio fitxategia
-    config.load_kube_config(os.path.join("../clusterConfiguration/k3s.yaml"))
+    config.load_kube_config(os.path.join("../klusterKonfigurazioa/k3s.yaml"))
 
     # Kontroladorea Docker edukiontzi baten barruan, eta klusterrean hedatu badago, kode hau erabili
     # if 'KUBERNETES_PORT' in os.environ:
@@ -46,7 +48,7 @@ def controller():
         controller()
     except Exception as e:
         if "Reason: Conflict" in str(e):
-            print("Osagaientzako CRDa jada existitzen da, begirale metodo pasatzen...")
+            print("Osagaientzako CRDa jada existitzen da, begirale metodora pasatzen...")
         elif "No such file or directory" in str(e):
             print("Ezin izan da osagaiaren definizioaren fitxategia aurkitu.")
             sys.exit()  # Kasu honetan, programa bukatzen da, fitxategi egokia sar ezazu, eta birrabiarazi
@@ -64,9 +66,9 @@ def watcher(custom_client):
         object = event['object']
         eventType = event['type']
 
-        creationTime = parser.isoparseobjeto(['metadata']['creationTimestamp'])
+        creationTime = parser.isoparse(object['metadata']['creationTimestamp'])
         if creationTime < startedTime:
-            print("Gerteara zaharkitua da")
+            print("Gertaera zaharkitua da")
             continue
 
         # Gertaeraren objektua edukita, bere motaren arabera beharrezko jarduerak exekutatuko dira
@@ -117,11 +119,15 @@ def deploy_component(compObject, custom_client):
     appsAPI = client.AppsV1Api()
     appsAPI.create_namespaced_deployment(namespace, deployment_yaml)
 
-    # Busco el status del deployment.
-    status_deployment = appsAPI.read_namespaced_deployment_status(deployment_yaml['metadata']['name'], namespace)
-    # TODO FALTA DA KONPROBATZEA EA HEDATU DEN (running egoera)
+    # Deployment objektuaren egoera aztertuko dugu
+    deploymentObject = appsAPI.read_namespaced_deployment_status(deployment_yaml['metadata']['name'], namespace)
+    # Ondo hedatu den arte itxaroten dugu
+    # availableReplicas = deploymentObject.status.available_replicas
+    # while availableReplicas is None:
+    #     status_deployment = appsAPI.read_namespaced_deployment_status(deployment_yaml['metadata']['name'], namespace)
+    #     availableReplicas = status_deployment.status.available_replicas
 
-    # Creamos el evento notificando que se ha desplegado el componente
+    # Osagaia zuzen hedatu dela komunikatzen dugu
     eventObject = utils.customResourceEventObject(action='deployed', CR_type="Component",
                                                   CR_object=compObject,
                                                   message='Osagaia zuzen hedatu da.',
@@ -129,6 +135,23 @@ def deploy_component(compObject, custom_client):
     eventAPI.create_namespaced_event("default", eventObject)
 
     # TODO FALTA DA OSAGAIAREN STATUS-A ALDATZEA ETA BERE APLIKAZIOARENA BAITA ERE
+    # Actualizamos el status del componente
+    status_object = {'status': {'replicas': 1, 'situation': 'Running'}}
+    custom_client.patch_namespaced_custom_object_status(group, version, namespace, plural,
+                                                        compObject['metadata']['name'], status_object)
+
+    # Por último, se va a leer y actualizar el status de la aplicacion
+    relatedApp = custom_client.get_namespaced_custom_object_status(group, version, namespace,
+                                                                      applicationPlural, myAppName)
+    field_manager = 'component-' + shortName + '-' + relatedApp['metadata']['name']
+    for i in range(len(relatedApp['status']['components'])):
+        if relatedApp['status']['components'][i]['name'] == compObject['spec']['name']:
+            relatedApp['status']['components'][i]['status'] = "Running"
+            custom_client.patch_namespaced_custom_object_status(group, version, namespace,
+                                                                applicationPlural, myAppName,
+                                                                {'status': relatedApp['status']},
+                                                                field_manager=field_manager)
+            break
 
 
 def delete_component(compObject):  # TODO konprobatu funtzionatzen duela

@@ -3,7 +3,7 @@ import datetime
 import json
 import os
 import string
-from random import random
+import random
 
 import pytz
 import yaml
@@ -118,8 +118,8 @@ def service_object(componentInfo, appName):
         'spec': {
             'ports': [{
                 'name': componentInfo['inPort']['name'],
-                'port': componentInfo['inPort']['number'],
-                'targetPort': componentInfo['inPort']['number']
+                'port': int(componentInfo['inPort']['number']),
+                'targetPort': int(componentInfo['inPort']['number'])
             }]
         }
     }
@@ -175,7 +175,9 @@ def deploymentObject(component, controllerName, appName, componentName, **kwargs
         envVarList = []
         customJSON = json.loads(component['spec']['customization'])
         for customAttr, customValue in customJSON.items():
-            envVarList.append({'name': customAttr, 'value': customValue})
+            # if type(customValue) is int:
+            #     customValue = "'" + str(customValue) + "'"
+            envVarList.append({'name': 'CUSTOM_' + customAttr, 'value': str(customValue)})
         deployObject['spec']['template']['spec']['containers'][0]['env'] = \
             deployObject['spec']['template']['spec']['containers'][0]['env'] + envVarList
 
@@ -184,14 +186,14 @@ def deploymentObject(component, controllerName, appName, componentName, **kwargs
             'containerPort': component['spec']['inPort']['number']
         }]
         deployObject['spec']['template']['spec']['containers'][0]['env'] = \
-            deployObject['spec']['template']['spec']['containers'][0]['env'] + {
+            deployObject['spec']['template']['spec']['containers'][0]['env'] + [{
                 'name': 'INPORT_NUMBER', 'value': component['spec']['inPort']['number']
-            }
+            }]
     if "outPort" in component['spec']:
         deployObject['spec']['template']['spec']['containers'][0]['env'] = \
             deployObject['spec']['template']['spec']['containers'][0]['env'] + [
-                {'name': 'OUTPUT', 'value': component['labels']['output']},
-                {'name': 'OUTPUT_PORT', 'value': component['labels']['output_port']},
+                {'name': 'OUTPUT', 'value': component['metadata']['labels']['output']},
+                {'name': 'OUTPUT_PORT', 'value': component['metadata']['labels']['output_port']},
             ]
 
     return deployObject

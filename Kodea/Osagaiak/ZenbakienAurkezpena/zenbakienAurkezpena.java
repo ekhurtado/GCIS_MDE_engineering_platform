@@ -2,12 +2,13 @@ import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
-import sun.misc.IOUtils;
+//import sun.misc.IOUtils;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.io.StringReader;
 import java.net.InetSocketAddress;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
@@ -20,9 +21,8 @@ import javax.json.JsonReader;
 
 import java.io.BufferedWriter;
 import java.io.FileWriter;
-import java.io.IOException;
 
-public class zenbakienAurkezpena {
+public class ZenbakienAurkezpena {
 
 //     String function = System.getenv("SERVICE");
 //     String inPortNumber = System.getenv("INPORT_NUMBER");
@@ -33,11 +33,14 @@ public class zenbakienAurkezpena {
     static int inPortNumber = Integer.parseInt("7000");
     static String customization = "{\"filename\": \"datu_fitxategia\"}";
 
+    JsonReader jsonReader = null;
+    JsonObject jsonObject = null;
+
     public static void main(String[] args) throws IOException {
         HttpServer server = HttpServer.create(new InetSocketAddress(inPortNumber), 0);
         HttpContext context = server.createContext("/");
-        context.setHandler(BasicHttpServerExample::handleRequest);
-        System.out.println("Starting HTTP server...");
+        context.setHandler(ZenbakienAurkezpena::handleRequest);
+        System.out.println("Starting HTTP server in port " + inPortNumber + "...");
         server.start();
     }
 
@@ -67,6 +70,7 @@ public class zenbakienAurkezpena {
         os.write(response.getBytes());
         os.close();
 
+
         // Mezu lortuta, aukeratutako funtzionalitatea exekutatuko da
         switch (function) {
             case "consoleDisplay":
@@ -85,10 +89,12 @@ public class zenbakienAurkezpena {
     }
 
     public static void consoleDisplay(String messageData) {
-    // Lehenengo, HTTP mezutik informazio lortuko dugu
+    	// Lehenengo, HTTP mezutik informazio lortuko dugu
+    	System.out.println(messageData);
         JsonReader jsonReader = Json.createReader(new StringReader(messageData));
         JsonObject jsonObject = jsonReader.readObject();
         String type = jsonObject.getString("type");
+        System.out.println(type);
         switch (type) {
             case "natural":
             case "integer":
@@ -97,7 +103,7 @@ public class zenbakienAurkezpena {
                 break;
             case "float":
 //                 double  value = jsonObject.getJsonNumber("value").doubleValue();
-                float floatValue = jsonObject.getJsonNumber("value").floatValue();
+                float floatValue = (float) jsonObject.getJsonNumber("value").doubleValue();
                 System.out.println("Lortutako balioa" + floatValue + " da.");
                 break;
             default:
@@ -106,15 +112,15 @@ public class zenbakienAurkezpena {
         }
     }
 
-    public static void saveTXT(String messageData) {
+    public static void saveTXT(String messageData) throws IOException {
         // Lehenengo, HTTP mezutik informazio lortuko dugu
         JsonReader jsonReader = Json.createReader(new StringReader(messageData));
         JsonObject jsonObject = jsonReader.readObject();
         String type = jsonObject.getString("type");
 
         // Ondoren, fitxategiaren izena lortuko dugu
-        JsonReader jsonReader = Json.createReader(new StringReader(customization));
-        JsonObject jsonObject = jsonReader.readObject();
+        jsonReader = Json.createReader(new StringReader(customization));
+        jsonObject = jsonReader.readObject();
         String fileName = jsonObject.getString("filename");
         if (!fileName.contains(".txt")) {
             fileName = fileName + ".txt";
@@ -133,7 +139,7 @@ public class zenbakienAurkezpena {
                 break;
             case "float":
 //                 double  value = jsonObject.getJsonNumber("value").doubleValue();
-                float floatValue = jsonObject.getJsonNumber("value").floatValue();
+                float floatValue = (float) jsonObject.getJsonNumber("value").doubleValue();
                 bufferedWriter.write("Lortutako balioa" + floatValue + " da.\n");
                 break;
             default:
@@ -146,15 +152,15 @@ public class zenbakienAurkezpena {
 
     }
 
-    public static void saveCSV(String messageData) {
+    public static void saveCSV(String messageData) throws IOException {
         // Lehenengo, HTTP mezutik informazio lortuko dugu
         JsonReader jsonReader = Json.createReader(new StringReader(messageData));
         JsonObject jsonObject = jsonReader.readObject();
         String type = jsonObject.getString("type");
 
         // Ondoren, fitxategiaren izena lortuko dugu
-        JsonReader jsonReader = Json.createReader(new StringReader(customization));
-        JsonObject jsonObject = jsonReader.readObject();
+        jsonReader = Json.createReader(new StringReader(customization));
+        jsonObject = jsonReader.readObject();
         String fileName = jsonObject.getString("filename");
         if (!fileName.contains(".csv")) {
             fileName = fileName + ".csv";
@@ -173,7 +179,7 @@ public class zenbakienAurkezpena {
                 break;
             case "float":
 //                 double  value = jsonObject.getJsonNumber("value").doubleValue();
-                float floatValue = jsonObject.getJsonNumber("value").floatValue();
+                float floatValue = (float) jsonObject.getJsonNumber("value").doubleValue();
                 bufferedWriter.write(type + "," + floatValue + "\n");
                 break;
             default:

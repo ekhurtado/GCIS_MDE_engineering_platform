@@ -23,7 +23,7 @@ componentPlural = "components"
 
 def controller():
     # Lehenik eta behin, klusterraren konfigurazio fitxategia
-    config.load_kube_config(os.path.join("../clusterConfiguration/k3s.yaml"))
+    config.load_kube_config(os.path.join("../klusterKonfigurazioa/k3s.yaml"))
 
     # Kontroladorea Docker edukiontzi baten barruan, eta klusterrean hedatu badago, kode hau erabili
     # if 'KUBERNETES_PORT' in os.environ:
@@ -45,7 +45,7 @@ def controller():
         controller()
     except Exception as e:
         if "Reason: Conflict" in str(e):
-            print("Aplikazioentzako CRDa jada existitzen da, begirale metodo pasatzen...")
+            print("Aplikazioentzako CRDa jada existitzen da, begirale metodora pasatzen...")
         elif "No such file or directory" in str(e):
             print("Ezin izan da aplikazioaren definizioaren fitxategia aurkitu.")
             sys.exit()  # Kasu honetan, programa bukatzen da, fitxategi egokia sar ezazu, eta birrabiarazi
@@ -63,14 +63,14 @@ def watcher(custom_client):
         object = event['object']
         eventType = event['type']
 
-        creationTime = parser.isoparseobjeto(['metadata']['creationTimestamp'])
+        creationTime = parser.isoparse(object['metadata']['creationTimestamp'])
         if creationTime < startedTime:
-            print("Gerteara zaharkitua da")
+            print("Gertaera zaharkitua da")
             continue
 
         # Gertaeraren objektua edukita, bere motaren arabera beharrezko jarduerak exekutatuko dira
-        print("Gertaera berria: ", "Gertaera ordua: ",
-              datetime.datetime.now(), "Gertaera mota: ", eventType, "Objektuaren izena: ", object['metadata']['name'])
+        print("Gertaera berria: ", "ordua: ",
+              datetime.datetime.now(), ", mota: ", eventType, ", objektuaren izena: ", object['metadata']['name'])
 
         match eventType:
             case "ADDED":
@@ -117,13 +117,15 @@ def deploy_application(appObject, custom_client):
         # Lehenik eta behin, beste osagaiek aztertzen ari garen osagaiarekin komunikatu behar badira, Kubernetesen
         # zerbitzu deituriko bat sortu beharra dago, osagaia eskuragarri egiteko
         if 'inPort' in comp:
-            create_service(custom_client, comp, appObject)
+            create_service(comp, appObject)
 
         # Orain, osagaia bera sortu daiteke
         create_component(custom_client, comp, appObject)
 
 
 def delete_application(appObject, custom_client):  # TODO konprobatu funtzionatzen duela
+
+    # TODO zerbitzuak ere ezabatu behar dira
     # Aplikazioaren osagai guztiak ezabatuko dira
     for comp in appObject['spec']['components']:
         custom_client.delete_namespaced_custom_object(group, componentVersion, namespace, componentPlural,
@@ -205,7 +207,7 @@ def addFlowInfo(compObject, appObject):
         nextCompObject = getCompObjectByPortName(appObject, nextCompInPort, 'inPort')
 
         # Datu guztiak edukita, osagaiari informazio berria gehi dezakegu
-        compObject['output'] = nextCompObject['name'] + '-' + appObject['name']  # Kubernetesen osagaien izena beraiena
+        compObject['output'] = nextCompObject['name'] + '-' + appObject['metadata']['name']  # Kubernetesen osagaien izena beraiena
         # gehi aplikazioarena da, bakarra izateko
         compObject['output_port'] = nextCompObject['inPort']['number']
 
@@ -213,14 +215,15 @@ def addFlowInfo(compObject, appObject):
 
 
 def getCompObjectByPortName(appObject, portName, portType):
-    for comp in appObject['components']:
-        if comp[portType]['name'] == portName:
-            return comp
+    for comp in appObject['spec']['components']:
+        if portType in comp:
+            if comp[portType]['name'] == portName:
+                return comp
     return None
 
 
 def getChannelPort(appObject, portName, portType):
-    for channel in appObject['channels']:
+    for channel in appObject['spec']['channels']:
         if portType == "from" and channel['from'] == portName:
             return channel['to']
         if portType == "to" and channel['to'] == portName:

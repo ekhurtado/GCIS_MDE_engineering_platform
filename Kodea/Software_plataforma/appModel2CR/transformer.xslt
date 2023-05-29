@@ -9,30 +9,30 @@
 <xsl:param name="doubleQuote">"</xsl:param>apiVersion: ehu.gcis.org/v1alpha1
 kind: Application
 metadata:
-  name: <xsl:value-of select="@name"/>
+  name: <xsl:value-of select="replace(lower-case(@name), '_', '-')"/>
 spec:
   components: <xsl:for-each select="microservice">
-    - name: <xsl:value-of select="@name"/>
+    - name: <xsl:value-of select="lower-case(@name)"/>
       service: <xsl:value-of select="@service"/>
       image: <xsl:value-of select="@image"/>
     <xsl:if test="count(@customization) > 0">
       customization: '<xsl:value-of select="replace(@customization, $singleQuote, $doubleQuote)"/>'</xsl:if>
     <xsl:if test="count(inPort) > 0">
       inPort:
-        name: <xsl:value-of select="inPort/@name"/>
+        name: <xsl:value-of select="lower-case(inPort/@name)"/>
         dataType: <xsl:value-of select="inPort/@dataType"/>
         protocol: <xsl:value-of select="inPort/@protocol"/>
         number: '<xsl:value-of select="inPort/@number"/>'</xsl:if>
     <xsl:if test="count(outPort) > 0">
       outPort:
-        name: <xsl:value-of select="outPort/@name"/>
+        name: <xsl:value-of select="lower-case(outPort/@name)"/>
         dataType: <xsl:value-of select="outPort/@dataType"/>
         protocol: <xsl:value-of select="outPort/@protocol"/>
 	</xsl:if>
   </xsl:for-each>
   channels: <xsl:for-each select="channel">
-    - from: <xsl:value-of select="@from"/>
-      to: <xsl:value-of select="@to"/>
+    - from: <xsl:value-of select="lower-case(@from)"/>
+      to: <xsl:value-of select="lower-case(@to)"/>
   </xsl:for-each>
   </xsl:template>
 </xsl:stylesheet>
