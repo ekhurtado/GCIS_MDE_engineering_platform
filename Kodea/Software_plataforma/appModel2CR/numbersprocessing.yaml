@@ -1,40 +1,40 @@
 apiVersion: ehu.gcis.org/v1alpha1
 kind: Application
 metadata:
-  name: NumbersProcessing
+  name: numbersprocessing
 spec:
   components: 
-    - name: CreatingNumbers
+    - name: creatingnumbers
       service: NaturalValue
       image: gcr.io/gcis/processing-numbers:latest
       customization: '{"type": "random"}'
       outPort:
-        name: CreatingNumbersOPort
+        name: creatingnumbersoport
         dataType: TNumber
         protocol: HTTP
-    - name: ProcessingNumbers
+    - name: processingnumbers
       service: IncreaseValue
       image: gcr.io/gcis/processing-numbers:latest
       customization: '{"step": 2}'
       inPort:
-        name: ProcessingNumbersIPort
+        name: processingnumbersiport
         dataType: TNumber
         protocol: HTTP
         number: '6000'
       outPort:
-        name: ProcessingNumbersOPort
+        name: processingnumbersoport
         dataType: TNumber
         protocol: HTTP
-    - name: ShowNumbers
+    - name: shownumbers
       service: ConsoleDisplay
       image: gcr.io/gcis/processing-numbers:latest
       inPort:
-        name: ShowNumbersIPort
+        name: shownumbersiport
         dataType: TNumber
         protocol: HTTP
         number: '7000'
   channels: 
-    - from: CreatingNumbersOPort
-      to: ProcessingNumbersIPort
-    - from: ProcessingNumbersOPort
-      to: ShowNumbersIPort
+    - from: creatingnumbersoport
+      to: processingnumbersiport
+    - from: processingnumbersoport
+      to: shownumbersiport
