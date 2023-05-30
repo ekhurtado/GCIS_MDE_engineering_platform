@@ -23,16 +23,16 @@ import org.json.simple.parser.ParseException;
 
 public class ZenbakienAurkezpena {
 
-//     String function = System.getenv("SERVICE");
-//     String inPortNumber = System.getenv("INPORT_NUMBER");
+     static String function = System.getenv("SERVICE");
+     static int inPortNumber = Integer.parseInt(System.getenv("INPORT_NUMBER"));
 //     String customization = System.getenv("CUSTOMIZATION");
-//	String fileName = System.getenv("CUSTOM_FILENAME");
+	static String fileName = System.getenv("CUSTOM_FILENAME");
 
     // TODO Ezabatu
-    static String function = "saveTXT";
-    static int inPortNumber = Integer.parseInt("7000");
-//    static String customization = "{\"filename\": \"datu_fitxategia\"}";
-    static String fileName = "datuak.txt";
+//    static String function = "saveTXT";
+//    static int inPortNumber = Integer.parseInt("7000");
+////    static String customization = "{\"filename\": \"datu_fitxategia\"}";
+//    static String fileName = "datuak.txt";
 
     static JSONParser jsonParser = null;
     static JSONObject jsonObject = null;
@@ -40,7 +40,7 @@ public class ZenbakienAurkezpena {
     static int id = 0;
 
     public static void main(String[] args) throws IOException {
-        HttpServer server = HttpServer.create(new InetSocketAddress(inPortNumber), 0);
+        HttpServer server = HttpServer.create(new InetSocketAddress("0.0.0.0", inPortNumber), 0);
         HttpContext context = server.createContext("/");
         context.setHandler(ZenbakienAurkezpena::handleRequest);
 //        System.out.println("Starting HTTP server in port " + inPortNumber + "...");
@@ -68,7 +68,6 @@ public class ZenbakienAurkezpena {
         // Aurreko osagaiari mezua ondo lortu dela esaten diogu
         String response = "OK";
         exchange.sendResponseHeaders(200, response.getBytes().length);	//response code and length
-
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());
         os.close();
@@ -115,7 +114,6 @@ public class ZenbakienAurkezpena {
                 System.out.println("	-> Lortutako balioa: " + value);
                 break;
             case "float":
-//                 double  value = jsonObject.getJsonNumber("value").doubleValue();
                 Double floatValue = (Double) jsonObject.get("value");
                 System.out.println("	-> Lortutako balioa: " + floatValue);
                 break;
@@ -204,7 +202,6 @@ public class ZenbakienAurkezpena {
                 bufferedWriter.write(id + "," + type + "," + value + ",\"" + dtf.format(LocalDateTime.now()) + "\"\n");
                 break;
             case "float":
-//                 double  value = jsonObject.getJsonNumber("value").doubleValue();
             	Double floatValue = (Double) jsonObject.get("value");
                 bufferedWriter.write(id + "," + type + "," + floatValue + ",\"" + dtf.format(LocalDateTime.now()) + "\"\n");
                 break;

@@ -5,7 +5,6 @@ import time
 import pytz
 import urllib3
 from dateutil import parser
-
 from kubernetes import client, config, watch
 
 import utils
@@ -37,7 +36,7 @@ def controller():
     # Ondoren, aplikazioaren CRD sortuta ez badago kontrobatuko da
     try:
         client_extension.create_custom_resource_definition(utils.CRD_app())
-        time.sleep(2)  # 2 segundo itxaroten dugu ondo sortu dela ziurtatzeko
+        time.sleep(2)  # 2 segundo itxaroten da ondo sortu dela ziurtatzeko
         print("Aplikazioentzako CRDa sortu da.")
     except urllib3.exceptions.MaxRetryError as e:
         print("KONEXIO ERROREA!")
@@ -50,12 +49,12 @@ def controller():
             print("Ezin izan da aplikazioaren definizioaren fitxategia aurkitu.")
             sys.exit()  # Kasu honetan, programa bukatzen da, fitxategi egokia sar ezazu, eta birrabiarazi
 
-    # CRDa sisteman egonda, aplikazioen begiralera pasatuko gara
+    # CRDa sisteman egonda, aplikazioen begiralera pasatuko da
     watcher(custom_client)
 
 
 def watcher(custom_client):
-    watcher = watch.Watch()  # Begiralea aktibatzen dugu
+    watcher = watch.Watch()  # Begiralea aktibatzen da
     startedTime = pytz.utc.localize(datetime.datetime.utcnow())  # Kontroladorearen hasiera data lortzen da
 
     for event in watcher.stream(custom_client.list_namespaced_custom_object, group, version, namespace, plural):
@@ -73,9 +72,8 @@ def watcher(custom_client):
               datetime.datetime.now(), ", mota: ", eventType, ", objektuaren izena: ", object['metadata']['name'])
 
         match eventType:
-            case "ADDED":
-                # Aplikazio berria da
-                # Aplikazioarekin erlazionatutako gertaera sortzen dugu, abisatuz aplikazio berria sortu dela
+            case "ADDED":  # Aplikazio berria
+                # Aplikazioarekin erlazionatutako gertaera sortzen da, abisatuz aplikazio berria sortu dela
                 eventObject = utils.customResourceEventObject(action='Created', CR_type="Application",
                                                               CR_object=object,
                                                               message='Aplikazio berria zuzen sortu da.',
@@ -83,18 +81,18 @@ def watcher(custom_client):
                 eventAPI = client.CoreV1Api()
                 eventAPI.create_namespaced_event("default", eventObject)
 
-                # Lógica para llevar el recurso al estado deseado.
+                # Aplikazioa abiarazten da
                 deploy_application(object, custom_client)
-            case "DELETED":
+            case "DELETED":  # Aplikazioa ezabatuta
                 delete_application(object, custom_client)
-            case "MODIFIED":
+            case "MODIFIED":  # Aplikazioa aldatuta
                 check_modifications(object, custom_client)
             case _:  # default case
                 pass
 
 
 def deploy_application(appObject, custom_client):
-    # Hasi aurretik, aplikazioaren egoera eguneratzeko gertaera sortzen dugu
+    # Hasi aurretik, aplikazioaren egoera eguneratzeko gertaera sortzen da
     eventObject = utils.customResourceEventObject(action='Deploy', CR_type="Application",
                                                   CR_object=appObject,
                                                   message='Aplikazioaren hedapen hasita.',
@@ -102,7 +100,7 @@ def deploy_application(appObject, custom_client):
     eventAPI = client.CoreV1Api()
     eventAPI.create_namespaced_event("default", eventObject)
 
-    # Ondoren, aplikazioaren objektuaren egoera atala sortzen dugu, adieraziz oraindik es dela osagairik sortu.
+    # Ondoren, aplikazioaren objektuaren egoera atala sortzen da, adieraziz oraindik ez dela osagairik sortu.
     num_components = len(appObject['spec']['components'])
     status_object = {'status': {'components': [0] * num_components, 'ready': "0/" + str(num_components)}}
     for i in range(int(num_components)):
@@ -111,10 +109,9 @@ def deploy_application(appObject, custom_client):
     custom_client.patch_namespaced_custom_object_status(group, version, namespace, plural,
                                                         appObject['metadata']['name'], status_object)
 
-    # Orain, osagai bakoitza sortuko dugu
+    # Orain, osagai bakoitza sortuko da
     for comp in appObject['spec']['components']:
-
-        # Lehenik eta behin, beste osagaiek aztertzen ari garen osagaiarekin komunikatu behar badira, Kubernetesen
+        # Lehenik eta behin, beste osagaiek aztertzen ari den osagaiarekin komunikatu behar badira, Kubernetesen
         # zerbitzu deituriko bat sortu beharra dago, osagaia eskuragarri egiteko
         if 'inPort' in comp:
             create_service(comp, appObject)
@@ -123,9 +120,7 @@ def deploy_application(appObject, custom_client):
         create_component(custom_client, comp, appObject)
 
 
-def delete_application(appObject, custom_client):  # TODO konprobatu funtzionatzen duela
-
-    # TODO zerbitzuak ere ezabatu behar dira
+def delete_application(appObject, custom_client):
     # Aplikazioaren osagai guztiak ezabatuko dira
     for comp in appObject['spec']['components']:
         custom_client.delete_namespaced_custom_object(group, componentVersion, namespace, componentPlural,
@@ -133,13 +128,13 @@ def delete_application(appObject, custom_client):  # TODO konprobatu funtzionatz
 
 
 def check_modifications(appObject, custom_client):
-    eventAPI = client.CoreV1Api()  # Gertaerekin lan egiteko APIa lortzen dugu
+    eventAPI = client.CoreV1Api()  # Gertaerekin lan egiteko APIa lortzen da
 
     # Lehenik, aztertuko da nor izan den aplikazio objektua aldatu duena
     lastManager = appObject['metadata']['managedFields'][len(appObject['metadata']['managedFields']) - 1]['manager']
     if "component" in lastManager:
         # Bakarrik aplikazioaren barruko osagaiak alda dezakete aplikazioaren objektua, zehazki egoera atala
-        # Aldaketaren arduradunatik osagaiaren izena lortzen dugu
+        # Aldaketaren arduradunatik osagaiaren izena lortzen da
         componentName = lastManager.replace('component-', '')
         componentName = componentName.replace('-' + appObject['metadata']['name'], '')
 
@@ -150,7 +145,7 @@ def check_modifications(appObject, custom_client):
                 runningCount += 1
 
                 if appObject['status']['components'][i]['name'] == componentName:
-                    # Mezua bidali duen osagaia abiarazita badago, gertaera horren berri emango dugu
+                    # Mezua bidali duen osagaia abiarazita badago, gertaera horren berri emango da
                     eventObject = utils.customResourceEventObject(action='Created', CR_type="Application",
                                                                   CR_object=appObject,
                                                                   message=componentName + ' osagaia zuzen abiarazita.',
@@ -176,9 +171,8 @@ def check_modifications(appObject, custom_client):
                                                             field_manager=appObject['metadata']['name'])
 
 
-def create_component(custom_client, compObject, appObject):  # TODO konprobatu funtzionatzen duela
-
-    # Osagaiari beharrezko informazio gehitu diogu (adibidez, hurrengo osagaiarekin komunikatzeko datuak)
+def create_component(custom_client, compObject, appObject):
+    # Osagaiari beharrezko informazioa gehitu zaio (adibidez, hurrengo osagaiarekin komunikatzeko datuak)
     compObject = addFlowInfo(compObject, appObject)
     # Osagaiaren objetua eraikitzen da
     component_body = utils.component_object(componentInfo=compObject, appName=appObject['metadata']['name'])
@@ -200,15 +194,16 @@ def create_service(compObject, appObject):
 
 
 def addFlowInfo(compObject, appObject):
-    # Metodo honi esker, hurrengo osagaiari buruzko informazio gehituko diogu oraingo osagaiari
-    if "outPort" in compObject:  # bakarrik irteera badu osotu beharko dugu osagaiaren informazioa
+    # Metodo honi esker, hurrengo osagaiari buruzko informazio oraingo osagaiari gehituko zaio
+    if "outPort" in compObject:  # bakarrik irteera badu osotu beharko da osagaiaren informazioa
         currentCompOutPort = compObject['outPort']['name']
         nextCompInPort = getChannelPort(appObject, currentCompOutPort, 'from')
         nextCompObject = getCompObjectByPortName(appObject, nextCompInPort, 'inPort')
 
-        # Datu guztiak edukita, osagaiari informazio berria gehi dezakegu
-        compObject['output'] = nextCompObject['name'] + '-' + appObject['metadata']['name']  # Kubernetesen osagaien izena beraiena
-        # gehi aplikazioarena da, bakarra izateko
+        # Datu guztiak edukita, osagaiari informazio berria gehi daiteke
+        compObject['output'] = nextCompObject['name'] + '-' + \
+                               appObject['metadata']['name']  # Kubernetesen osagaien izena beraiena
+                                                              # gehi aplikazioarena da, bakarra izateko
         compObject['output_port'] = nextCompObject['inPort']['number']
 
     return compObject

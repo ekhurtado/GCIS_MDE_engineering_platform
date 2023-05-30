@@ -5,7 +5,6 @@ import time
 import pytz
 import urllib3
 from dateutil import parser
-
 from kubernetes import client, config, watch
 
 import utils
@@ -19,11 +18,6 @@ plural = "components"
 applicationPlural = "applications"
 
 
-# # Osagai mailaren informazioa
-# componentVersion = "v1alpha1"
-# componentPlural = "components"
-
-
 def controller():
     # Lehenik eta behin, klusterraren konfigurazio fitxategia
     config.load_kube_config(os.path.join("../klusterKonfigurazioa/k3s.yaml"))
@@ -34,13 +28,13 @@ def controller():
     # else:
     #     config.load_kube_config()
 
-    custom_client = client.CustomObjectsApi()  # Custom objektuetarako APIa lortzen dugu
-    client_extension = client.ApiextensionsV1Api()  # CRDekin lan egiteko APIa lortzen dugu
+    custom_client = client.CustomObjectsApi()  # Custom objektuetarako APIa lortzen da
+    client_extension = client.ApiextensionsV1Api()  # CRDekin lan egiteko APIa lortzen da
 
     # Ondoren, osagaiaren CRD sortuta ez badago kontrobatuko da
     try:
         client_extension.create_custom_resource_definition(utils.CRD_comp())
-        time.sleep(2)  # 2 segundo itxaroten dugu ondo sortu dela ziurtatzeko
+        time.sleep(2)  # 2 segundo itxaroten da ondo sortu dela ziurtatzeko
         print("Osagaientzako CRDa sortu da.")
     except urllib3.exceptions.MaxRetryError as e:
         print("KONEXIO ERROREA!")
@@ -53,12 +47,12 @@ def controller():
             print("Ezin izan da osagaiaren definizioaren fitxategia aurkitu.")
             sys.exit()  # Kasu honetan, programa bukatzen da, fitxategi egokia sar ezazu, eta birrabiarazi
 
-    # CRDa sisteman egonda, osagaien begiralera pasatuko gara
+    # CRDa sisteman egonda, osagaien begiralera pasatuko da
     watcher(custom_client)
 
 
 def watcher(custom_client):
-    watcher = watch.Watch()  # Begiralea aktibatzen dugu
+    watcher = watch.Watch()  # Begiralea aktibatzen da
     startedTime = pytz.utc.localize(datetime.datetime.utcnow())  # Kontroladorearen hasiera data lortzen da
 
     for event in watcher.stream(custom_client.list_namespaced_custom_object, group, version, namespace, plural):
@@ -76,9 +70,8 @@ def watcher(custom_client):
               datetime.datetime.now(), "Gertaera mota: ", eventType, "Objektuaren izena: ", object['metadata']['name'])
 
         match eventType:
-            case "ADDED":
-                # Osagai berria da
-                # Osagaiarekin erlazionatutako gertaera sortzen dugu, abisatuz osagai berria sortu dela
+            case "ADDED":  # Osagai berria
+                # Osagaiarekin erlazionatutako gertaera sortzen da, abisatuz osagai berria sortu dela
                 eventObject = utils.customResourceEventObject(action='Created', CR_type="Component",
                                                               CR_object=object,
                                                               message='Osagai berria zuzen sortu da.',
@@ -86,9 +79,9 @@ def watcher(custom_client):
                 eventAPI = client.CoreV1Api()
                 eventAPI.create_namespaced_event("default", eventObject)
 
-                # Lógica para llevar el recurso al estado deseado.
+                # Osagaia abiarazten da
                 deploy_component(object, custom_client)
-            case "DELETED":
+            case "DELETED":  # Osagaia ezabatuta
                 delete_component(object)
             case _:  # default case
                 pass
@@ -108,41 +101,40 @@ def deploy_component(compObject, custom_client):
                                                   reason='Deploying')
     eventAPI.create_namespaced_event("default", eventObject)
 
-    # TODO konprobatu ea compObject labels informazioa badu, edo objektu osoa lortu behar baden APIarekin
     myAppName = compObject['metadata']['labels']['applicationName']  # dagokion aplikazioaren izena jasoko dugu
     shortName = compObject['metadata']['labels']['shortName']  # osagaiaren jatorrizko izena lortzen da
 
     # Hedapen fitxategia lortzen da
     deployment_yaml = utils.deploymentObject(compObject, "component-controller", myAppName, shortName)
 
-    # Kuberneteseko APIarekin, osagaia sisteman hedatzen dugu
+    # Kuberneteseko APIarekin, osagaia sisteman hedatzen da
     appsAPI = client.AppsV1Api()
     appsAPI.create_namespaced_deployment(namespace, deployment_yaml)
 
-    # Deployment objektuaren egoera aztertuko dugu
+    # Deployment objektuaren egoera aztertuko da
     deploymentObject = appsAPI.read_namespaced_deployment_status(deployment_yaml['metadata']['name'], namespace)
-    # Ondo hedatu den arte itxaroten dugu
-    # availableReplicas = deploymentObject.status.available_replicas
-    # while availableReplicas is None:
-    #     status_deployment = appsAPI.read_namespaced_deployment_status(deployment_yaml['metadata']['name'], namespace)
-    #     availableReplicas = status_deployment.status.available_replicas
+    # Ondo hedatu den arte itxaroten da
+    availableReplicas = deploymentObject.status.available_replicas
+    while availableReplicas is None:
+        status_deployment = appsAPI.read_namespaced_deployment_status(deployment_yaml['metadata']['name'], namespace)
+        availableReplicas = status_deployment.status.available_replicas
 
-    # Osagaia zuzen hedatu dela komunikatzen dugu
+    # Osagaia zuzen hedatu dela komunikatzen da
     eventObject = utils.customResourceEventObject(action='deployed', CR_type="Component",
                                                   CR_object=compObject,
                                                   message='Osagaia zuzen hedatu da.',
                                                   reason='Running')
     eventAPI.create_namespaced_event("default", eventObject)
 
-    # TODO FALTA DA OSAGAIAREN STATUS-A ALDATZEA ETA BERE APLIKAZIOARENA BAITA ERE
-    # Actualizamos el status del componente
+    # Osagaiaren egoera eguneratzen da, abiarazita dagoela komunikatuz
     status_object = {'status': {'replicas': 1, 'situation': 'Running'}}
     custom_client.patch_namespaced_custom_object_status(group, version, namespace, plural,
                                                         compObject['metadata']['name'], status_object)
 
-    # Por último, se va a leer y actualizar el status de la aplicacion
+    # Azkenik, erlazionatutako aplikazioaren egoera aldatzen da. Horretarako, aplikazioaren objektua lortzen da,
+    # osagaiaren informazioa bilatzen da eta informazio berria sartzen da (abiarazita dagoela)
     relatedApp = custom_client.get_namespaced_custom_object_status(group, version, namespace,
-                                                                      applicationPlural, myAppName)
+                                                                   applicationPlural, myAppName)
     field_manager = 'component-' + shortName + '-' + relatedApp['metadata']['name']
     for i in range(len(relatedApp['status']['components'])):
         if relatedApp['status']['components'][i]['name'] == compObject['spec']['name']:
@@ -154,10 +146,15 @@ def deploy_component(compObject, custom_client):
             break
 
 
-def delete_component(compObject):  # TODO konprobatu funtzionatzen duela
+def delete_component(compObject):
     # Osagaiaren objektua ezabatu denez, berarekin erlazionatutako Deployment-a ere ezabatuko da
     client_deploys = client.AppsV1Api()
     client_deploys.delete_namespaced_deployment(compObject['metadata']['name'], namespace)
+
+    # Gainera, zerbitzuren bat erlazionaturik badu, ere ezabatu beharko da
+    if "inPort" in compObject['spec']:
+        coreAPI = client.CoreV1Api()
+        coreAPI.delete_namespaced_service(compObject['metadata']['name'], namespace)
 
 
 if __name__ == '__main__':

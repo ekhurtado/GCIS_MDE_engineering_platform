@@ -177,13 +177,13 @@ def deploymentObject(component, controllerName, appName, componentName, **kwargs
         for customAttr, customValue in customJSON.items():
             # if type(customValue) is int:
             #     customValue = "'" + str(customValue) + "'"
-            envVarList.append({'name': 'CUSTOM_' + customAttr, 'value': str(customValue)})
+            envVarList.append({'name': customAttr, 'value': str(customValue)})
         deployObject['spec']['template']['spec']['containers'][0]['env'] = \
             deployObject['spec']['template']['spec']['containers'][0]['env'] + envVarList
 
     if "inPort" in component['spec']:
         deployObject['spec']['template']['spec']['containers'][0]['ports'] = [{
-            'containerPort': component['spec']['inPort']['number']
+            'containerPort': int(component['spec']['inPort']['number'])
         }]
         deployObject['spec']['template']['spec']['containers'][0]['env'] = \
             deployObject['spec']['template']['spec']['containers'][0]['env'] + [{

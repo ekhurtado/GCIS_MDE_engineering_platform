@@ -6,7 +6,8 @@ from flask import Flask, request
 
 function = os.environ.get('SERVICE')
 inPortNumber = os.environ.get('INPORT_NUMBER')
-customization = os.environ.get('CUSTOMIZATION')
+# customization = os.environ.get('CUSTOMIZATION')
+step = os.environ.get('CUSTOM_STEP')
 # step = json.loads(customization)['urratsa']
 
 # TODO ezabatu
@@ -95,9 +96,6 @@ def decreaseValue(messageData):
     type = jsonData['type']
     value = jsonData['value']
 
-    # TODO ezabatu
-    step = 2
-
     # Funtzionalitatearen eragiketa betetzen dugu
     value -= step
 
@@ -118,9 +116,6 @@ def multiplyValue(messageData):
     jsonData = json.loads(messageData)
     type = jsonData['type']
     value = jsonData['value']
-
-    # TODO ezabatu
-    step = 2
 
     # Funtzionalitatearen eragiketa betetzen dugu
     value = value * step
@@ -143,6 +138,7 @@ def sendData(type, value):
     headers = {'Content-Type': 'text/plain'}
     try:
         r = requests.post(url, headers=headers, data='{"type": "' + type + '", "value": ' + value + '}')
+        print(r.text)
     except (requests.exceptions.RequestException, requests.exceptions.ConnectionError) as e:
         print("ERROREA!!! Ezin izan da mezua bidali")
         print(e)

@@ -53,7 +53,7 @@ spec:
                   type: string
       additionalPrinterColumns:
         - jsonPath: .spec.name
-          name: Name
+          name: CompName
           description: Name of the component
           type: string
           priority: 0
@@ -70,6 +70,10 @@ spec:
           name: Age
           type: date
           priority: 0
+        - jsonPath: .spec.image
+          name: Image
+          type: string
+          priority: 1
       subresources:
         status: {}
 
