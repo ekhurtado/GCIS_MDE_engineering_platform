@@ -47,30 +47,8 @@ public static class Utils
         }
     }
 
-    public static (string, int) getCustomizationValues(string customization)
+    public static int getNaturalValue(string type, int previousValue)
     {
-        JsonElement root = JsonDocument.Parse(customization).RootElement;
-        string type = root.GetProperty("type").GetString();
-        int firstValue = root.GetProperty("firstvalue").GetInt32();
-        return (type,firstValue);
-    }
-
-    public static (string, float) getCustomizationValuesF(string customization)
-    {
-
-        JsonElement root = JsonDocument.Parse(customization).RootElement;
-        string type = root.GetProperty("type").GetString();
-        float firstValue = root.GetProperty("firstvalue").GetSingle();
-        return (type,firstValue);
-    }
-
-
-
-    public static int getNaturalValue(string customization, int previousValue)
-    {
-        (string type, int firstValue) = getCustomizationValues(customization);
-        Console.WriteLine(type);
-        Console.WriteLine(firstValue);
 
         switch (type)
         {
@@ -79,7 +57,7 @@ public static class Utils
                 return random.Next(1, 1001);    // ausazko zenbakia 1 eta 1000 artean
             case "increasingValue":
                 if (previousValue < 1) { previousValue = 1; }
-                return firstValue + 1;
+                return previousValue + 1;
             case "decreasingValue":
                 int createdValue = previousValue - 1;
                 if (createdValue < 1) { createdValue = 1; }
@@ -90,11 +68,8 @@ public static class Utils
         }
     }
 
-    public static int getIntegerValue(string customization, int previousValue)
+    public static int getIntegerValue(string type, int previousValue)
     {
-        (string type, int firstValue) = getCustomizationValues(customization);
-        Console.WriteLine(type);
-        Console.WriteLine(firstValue);
 
         switch (type)
         {
@@ -102,7 +77,7 @@ public static class Utils
                 Random random = new Random();
                 return random.Next(-1000, 1001);    // ausazko zenbakia -1000 eta 1000 artean
             case "increasingValue":
-                return firstValue + 1;
+                return previousValue + 1;
             case "decreasingValue":
                 return previousValue - 1;
             default:
@@ -111,11 +86,8 @@ public static class Utils
         }
     }
 
-    public static float getFloatValue(string customization, float previousValue)
+    public static float getFloatValue(string type, float previousValue)
     {
-        (string type, float firstValue) = getCustomizationValuesF(customization);
-        Console.WriteLine(type);
-        Console.WriteLine(firstValue);
 
         switch (type)
         {
@@ -125,7 +97,7 @@ public static class Utils
                 float maxValue = 1000.0f;
                 return (float)(random.NextDouble() * (maxValue - minValue) + minValue);    // ausazko zenbakia -1000.0 eta 1000.0 artean
             case "increasingValue":
-                return firstValue + 1.0f;
+                return previousValue + 1.0f;
             case "decreasingValue":
                 return previousValue - 1.0f;
             default:

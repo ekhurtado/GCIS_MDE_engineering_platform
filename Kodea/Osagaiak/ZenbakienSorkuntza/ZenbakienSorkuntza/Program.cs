@@ -4,7 +4,9 @@ public class ZenbakienSorkuntza
 {
 
     static string function = Environment.GetEnvironmentVariable("SERVICE");
-    static string customization = Environment.GetEnvironmentVariable("CUSTOMIZATION");
+//    static string customization = Environment.GetEnvironmentVariable("CUSTOMIZATION");
+    static string type = Environment.GetEnvironmentVariable("CUSTOM_TYPE");
+    static string firstValue = Environment.GetEnvironmentVariable("CUSTOM_FIRSTVALUE");
     static string output = Environment.GetEnvironmentVariable("OUTPUT");
     static string output_port = Environment.GetEnvironmentVariable("OUTPUT_PORT");
     static string url = "http://"+output+":" + output_port; // Replace with the desired URL
@@ -48,19 +50,20 @@ public class ZenbakienSorkuntza
     {
         Console.WriteLine("NaturalValue funtzioa aukeratuta");
         // TODO EZABATU (INGURUNE-ALDAGAI BEZALA HARTU BEHAR DIRA)
-        string customization = @"{""type"": ""decreasingValue"", ""firstvalue"": 3}";
+//        string customization = @"{""type"": ""decreasingValue"", ""firstvalue"": 3}";
 
         // Lehenengo aldian hasierako zenbakia bidaliko da
-        (string type, int firstValue) = Utils.getCustomizationValues(customization);
-        string requestBody = @"{""type"": ""natural"",""value"": " +firstValue+ "}";
+//        (string type, int firstValue) = Utils.getCustomizationValues(customization);
+        int intFirstValue = int.Parse(firstValue);
+        string requestBody = @"{""type"": ""natural"",""value"": " +intFirstValue+ "}";
         await Utils.SendPostRequest(url, requestBody);  // Send a POST request
         Console.WriteLine(requestBody);
         Thread.Sleep(5000); // Pause for 5 seconds
 
-        int createdValue = firstValue;
+        int createdValue = intFirstValue;
         while (true)
         {
-            createdValue = Utils.getNaturalValue(customization, createdValue);
+            createdValue = Utils.getNaturalValue(type, createdValue);
             Console.WriteLine("Created value: " + createdValue);
 
             // Sortutako zenbakia bidaltzen dugu
@@ -78,19 +81,20 @@ public class ZenbakienSorkuntza
         Console.WriteLine("IntegerValue funtzioa aukeratuta");
 
         // TODO EZABATU (INGURUNE-ALDAGAI BEZALA HARTU BEHAR DIRA)
-        string customization = @"{""type"": ""decreasingValue"", ""firstvalue"": 3}";
+//        string customization = @"{""type"": ""decreasingValue"", ""firstvalue"": 3}";
 
         // Lehenengo aldian hasierako zenbakia bidaliko da
-        (string type, int firstValue) = Utils.getCustomizationValues(customization);
-        string requestBody = @"{""type"": ""integer"",""value"": " +firstValue+ "}";
+//        (string type, int firstValue) = Utils.getCustomizationValues(customization);
+        int intFirstValue = int.Parse(firstValue);
+        string requestBody = @"{""type"": ""integer"",""value"": " +intFirstValue+ "}";
         await Utils.SendPostRequest(url, requestBody);  // Send a POST request
         Console.WriteLine(requestBody);
         Thread.Sleep(5000); // Pause for 5 seconds
 
-        int createdValue = firstValue;
+        int createdValue = intFirstValue;
         while (true)
         {
-            createdValue = Utils.getIntegerValue(customization, createdValue);
+            createdValue = Utils.getIntegerValue(type, createdValue);
             Console.WriteLine("Created value: " + createdValue);
 
             // Sortutako zenbakia bidaltzen dugu
@@ -107,20 +111,21 @@ public class ZenbakienSorkuntza
         Console.WriteLine("FloatValue funtzioa aukeratuta");
 
         // TODO EZABATU (INGURUNE-ALDAGAI BEZALA HARTU BEHAR DIRA)
-        string customization = @"{""type"": ""random"", ""firstvalue"": 2.5}";
+//        string customization = @"{""type"": ""random"", ""firstvalue"": 2.5}";
 
         // Lehenengo aldian hasierako zenbakia bidaliko da
-        (string type, float firstValue) = Utils.getCustomizationValuesF(customization);
-        string valueString = firstValue.ToString().Replace(',', '.');   // C# lengoaian float-ak komarekin erabiltzen dira
+//        (string type, float firstValue) = Utils.getCustomizationValuesF(customization);
+        float floatFirstValue = float.Parse(firstValue);
+        string valueString = floatFirstValue.ToString().Replace(',', '.');   // C# lengoaian float-ak komarekin erabiltzen dira
         string requestBody = @"{""type"": ""float"",""value"": " +valueString+ "}";
         await Utils.SendPostRequest(url, requestBody);  // Send a POST request
         Console.WriteLine(requestBody);
         Thread.Sleep(5000); // Pause for 5 seconds
 
-        float createdValue = firstValue;
+        float createdValue = floatFirstValue;
         while (true)
         {
-            createdValue = Utils.getFloatValue(customization, createdValue);
+            createdValue = Utils.getFloatValue(type, createdValue);
             Console.WriteLine("Created value: " + createdValue);
 
             // Sortutako zenbakia bidaltzen dugu
