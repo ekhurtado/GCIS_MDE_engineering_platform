@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 
 public class ZenbakienSorkuntza
 {
@@ -9,6 +10,12 @@ public class ZenbakienSorkuntza
     static string firstValue = Environment.GetEnvironmentVariable("CUSTOM_FIRSTVALUE");
     static string output = Environment.GetEnvironmentVariable("OUTPUT");
     static string output_port = Environment.GetEnvironmentVariable("OUTPUT_PORT");
+
+//    static string function = "FloatValue";
+//    static string type = "decreasingValue";
+//    static string firstValue = "3.5";
+//    static string output = "localhost";
+//    static string output_port = "7000";
     static string url = "http://"+output+":" + output_port; // Replace with the desired URL
 
     public static async Task Main(string[] args)
@@ -115,7 +122,7 @@ public class ZenbakienSorkuntza
 
         // Lehenengo aldian hasierako zenbakia bidaliko da
 //        (string type, float firstValue) = Utils.getCustomizationValuesF(customization);
-        float floatFirstValue = float.Parse(firstValue);
+        float floatFirstValue = float.Parse(firstValue, CultureInfo.InvariantCulture.NumberFormat);
         string valueString = floatFirstValue.ToString().Replace(',', '.');   // C# lengoaian float-ak komarekin erabiltzen dira
         string requestBody = @"{""type"": ""float"",""value"": " +valueString+ "}";
         await Utils.SendPostRequest(url, requestBody);  // Send a POST request
