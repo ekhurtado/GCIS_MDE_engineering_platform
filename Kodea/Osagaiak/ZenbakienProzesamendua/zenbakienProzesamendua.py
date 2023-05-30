@@ -11,6 +11,8 @@ step = os.environ.get('CUSTOM_STEP')
 # step = json.loads(customization)['urratsa']
 
 # TODO ezabatu
+# function = 'BalioaHanditu'
+# step = 2
 # inPortNumber = 7000
 
 app = Flask(__name__)
@@ -137,7 +139,7 @@ def sendData(type, value):
     url = 'http://localhost:8500'
     headers = {'Content-Type': 'text/plain'}
     try:
-        r = requests.post(url, headers=headers, data='{"type": "' + type + '", "value": ' + value + '}')
+        r = requests.post(url, headers=headers, data='{"type": "' + type + '", "value": ' + str(value) + '}')
         print(r.text)
     except (requests.exceptions.RequestException, requests.exceptions.ConnectionError) as e:
         print("ERROREA!!! Ezin izan da mezua bidali")
