@@ -113,14 +113,21 @@ def service_object(componentInfo, appName):
         'apiVersion': 'v1',
         'kind': 'Service',
         'metadata': {
-            'name': componentInfo['name'] + '-' + appName
+            'name': componentInfo['name'] + '-' + appName,
+            'labels': {
+                'resource.name': componentInfo['name'] + '-' + appName
+            }
         },
         'spec': {
             'ports': [{
-                'name': componentInfo['inPort']['name'],
+                'name': componentInfo['inPort']['number'],
+                # 'name': componentInfo['inPort']['name'],
                 'port': int(componentInfo['inPort']['number']),
                 'targetPort': int(componentInfo['inPort']['number'])
-            }]
+            }],
+            'selector': {
+                'resource.name': componentInfo['name'] + '-' + appName
+            }
         }
     }
 
@@ -133,6 +140,7 @@ def deploymentObject(component, controllerName, appName, componentName, **kwargs
             'name': component['metadata']['name'],
             'labels': {
                 'resource.controller': controllerName,
+                'resource.name': component['metadata']['name'],
                 'component.name': componentName,
                 'applicationName': appName
             }
@@ -141,21 +149,22 @@ def deploymentObject(component, controllerName, appName, componentName, **kwargs
             'replicas': 1,
             'selector': {
                 'matchLabels': {
-                    'component.name': componentName
+                    'resource.name': component['metadata']['name']
                 }
             },
             'template': {
                 'metadata': {
                     'labels': {
-                        'component.name': componentName
+                        'resource.name': component['metadata']['name']
                     }
                 },
                 'spec': {
                     'containers': [{
                         'imagePullPolicy': 'Always',
-                        'name': componentName,
+                        'name': component['metadata']['name'],
+                        # 'name': componentName,
                         'image': component['spec']['image'],
-                        'env': [{'name': 'SELECTED_SERVICE',
+                        'env': [{'name': 'SERVICE',
                                  'value': component['spec']['service']}]
                     }],
                     'nodeSelector': {

@@ -6,16 +6,16 @@ spec:
   components: 
     - name: creating-numbers
       service: NaturalValue
-      image: gcr.io/gcis/creating-numbers:latest
-      customization: '{"type": "Random", "firstvalue": 16}'
+      image: ekhurtado/gcis:zenbakien-sorkuntza
+      customization: '{"CUSTOM_TYPE": "random", "CUSTOM_FIRSTVALUE": 16}'
       outPort:
         name: naturalvalue-oport
         dataType: TNumber
         protocol: HTTP
     - name: processing-numbers
-      service: IncreaseValue
-      image: gcr.io/gcis/processing-numbers:latest
-      customization: '{"step": 2}'
+      service: BalioaHanditu
+      image: ekhurtado/gcis:zenbakien-prozesamendua
+      customization: '{"CUSTOM_STEP": 2}'
       inPort:
         name: increasevalue-iport
         dataType: TNumber
@@ -26,8 +26,8 @@ spec:
         dataType: TNumber
         protocol: HTTP
     - name: show-numbers
-      service: ConsoleDisplay
-      image: gcr.io/gcis/show-numbers:latest
+      service: consoleDisplay
+      image: ekhurtado/gcis:zenbakien-aurkezpena
       inPort:
         name: consoledisplay-iport
         dataType: TNumber

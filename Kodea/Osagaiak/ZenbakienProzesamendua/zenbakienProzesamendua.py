@@ -9,6 +9,8 @@ inPortNumber = os.environ.get('INPORT_NUMBER')
 # customization = os.environ.get('CUSTOMIZATION')
 step = os.environ.get('CUSTOM_STEP')
 # step = json.loads(customization)['urratsa']
+output = os.environ.get('OUTPUT')
+output_port = os.environ.get('OUTPUT_PORT')
 
 # TODO ezabatu
 # function = 'BalioaHanditu'
@@ -60,7 +62,7 @@ def main():
     # Aukeratu den funtzionalitatea exekuzio-hari berri batean abiarazten dugu
     thread_func.start()
     # Aurreko osagaiari erantzuten diogu dena ondo joan dela esanez
-    return "OK"
+    return "OK\n"
 
 
 '''
@@ -136,7 +138,7 @@ def multiplyValue(messageData):
 
 def sendData(type, value):
 
-    url = 'http://localhost:8500'
+    url = 'http://'+output+':'+output_port
     headers = {'Content-Type': 'text/plain'}
     try:
         r = requests.post(url, headers=headers, data='{"type": "' + type + '", "value": ' + str(value) + '}')

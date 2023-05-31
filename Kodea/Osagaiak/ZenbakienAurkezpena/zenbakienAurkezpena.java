@@ -66,7 +66,7 @@ public class ZenbakienAurkezpena {
 //        System.out.println("Request body: " + body);
 
         // Aurreko osagaiari mezua ondo lortu dela esaten diogu
-        String response = "OK";
+        String response = "OK\n";
         exchange.sendResponseHeaders(200, response.getBytes().length);	//response code and length
         OutputStream os = exchange.getResponseBody();
         os.write(response.getBytes());

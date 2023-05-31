@@ -22,13 +22,13 @@ componentPlural = "components"
 
 def controller():
     # Lehenik eta behin, klusterraren konfigurazio fitxategia
-    config.load_kube_config(os.path.join("../klusterKonfigurazioa/k3s.yaml"))
+    # config.load_kube_config(os.path.join("../klusterKonfigurazioa/k3s.yaml"))
 
     # Kontroladorea Docker edukiontzi baten barruan, eta klusterrean hedatu badago, kode hau erabili
-    # if 'KUBERNETES_PORT' in os.environ:
-    #     config.load_incluster_config()
-    # else:
-    #     config.load_kube_config()
+    if 'KUBERNETES_PORT' in os.environ:
+        config.load_incluster_config()
+    else:
+        config.load_kube_config()
 
     custom_client = client.CustomObjectsApi()  # Custom objektuetarako APIa lortzen dugu
     client_extension = client.ApiextensionsV1Api()  # CRDekin lan egiteko APIa lortzen dugu

@@ -22,7 +22,7 @@ public class ZenbakienSorkuntza
     {
         Console.WriteLine("Kaixo! Ongi etorri ZenbakienSorkuntza aplikaziora");
 
-        Thread.Sleep(3000); // 3 segundo itxarongo ditugu beste osagaiek zuzen abiarazteko
+        Thread.Sleep(5000); // 5 segundo itxarongo ditugu beste osagaiek zuzen abiarazteko
 
         // Send a GET request
 //        await Utils.SendGetRequest(url);
@@ -75,7 +75,12 @@ public class ZenbakienSorkuntza
 
             // Sortutako zenbakia bidaltzen dugu
             requestBody = @"{""type"": ""natural"",""value"": " +createdValue+ "}";
-            await Utils.SendPostRequest(url, requestBody);  // Send a POST request
+            try {
+                await Utils.SendPostRequest(url, requestBody);  // Send a POST request
+            } catch(Exception e) {
+                // perhaps log exception?
+                Console.Write("Konexio errorea!");
+            }
 
             // Pause for 5 seconds
             Thread.Sleep(5000);
@@ -106,7 +111,12 @@ public class ZenbakienSorkuntza
 
             // Sortutako zenbakia bidaltzen dugu
             requestBody = @"{""type"": ""integer"",""value"": " +createdValue+ "}";
-            await Utils.SendPostRequest(url, requestBody);  // Send a POST request
+            try {
+                await Utils.SendPostRequest(url, requestBody);  // Send a POST request
+            } catch(Exception e) {
+                // perhaps log exception?
+                Console.Write("Konexio errorea!");
+            }
 
             // Pause for 5 seconds
             Thread.Sleep(5000);
@@ -138,7 +148,12 @@ public class ZenbakienSorkuntza
             // Sortutako zenbakia bidaltzen dugu
             valueString = createdValue.ToString("0.00").Replace(',', '.');
             requestBody = @"{""type"": ""float"",""value"": " +valueString+ "}";
-            await Utils.SendPostRequest(url, requestBody);  // Send a POST request
+            try {
+                await Utils.SendPostRequest(url, requestBody);  // Send a POST request
+            } catch(Exception e) {
+                // perhaps log exception?
+                Console.Write("Konexio errorea!");
+            }
 
             // Pause for 5 seconds
             Thread.Sleep(5000);
