@@ -7,11 +7,11 @@ const fs = require('fs');
 const {FunctionInfo, createFirstMicroservice} = require('../appModel_utils');
 
 // Osagaiaren aldagaiak
-const componentName = "CreatingNumbers";
+const componentName = "ZenbakienSorkuntza";
 const codeName = "gcr.io/gcis/creating-numbers:latest";
 
 module.exports = function(RED) {
-    function CreatingNumbers(config) {
+    function ZenbakienSorkuntza(config) {
         RED.nodes.createNode(this,config);
         
         this.function = config.function;
@@ -32,9 +32,9 @@ module.exports = function(RED) {
             // Funtzionalitate guztien informazioa betetzen dugu
             // --------------------
             const allFunctionsInfo= [
-                naturalValueInfo = new FunctionInfo("NaturalValue", null, "HTTP", null, "TNumber", "type,firstvalue"),
-                integerValue = new FunctionInfo("IntegerValue", null, "HTTP", null, "TNumber", "type,firstvalue"),
-                floatValue = new FunctionInfo("FloatValue", null, "HTTP", null, "TNumber", "type,firstvalue")
+                naturalValueInfo = new FunctionInfo("BalioNaturalak", null, "HTTP", null, "TNumber", "mota,hasierakobalioa"),
+                integerValue = new FunctionInfo("BalioOsoak", null, "HTTP", null, "TNumber", "mota,hasierakobalioa"),
+                floatValue = new FunctionInfo("BalioDezimalak", null, "HTTP", null, "TNumber", "mota,hasierakobalioa")
             ]
 
             // Hautatutako funtzionalitatearen informazioa lortzen dugu
@@ -86,5 +86,5 @@ module.exports = function(RED) {
         }
     }
 
-    RED.nodes.registerType("Creating numbers",CreatingNumbers);
+    RED.nodes.registerType("zenbakienSorkuntza",ZenbakienSorkuntza);
 }

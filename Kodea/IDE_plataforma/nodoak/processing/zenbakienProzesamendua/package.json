@@ -1,5 +1,5 @@
 {
-  "name": "show_numbers",
+  "name": "zenbakien_prozesamendua",
   "version": "1.3.2",
   "description": "Component for processing numbers (executing functions to work with them).",
   "homepage": "http://nodered.org",
@@ -8,7 +8,7 @@
     "type": "git",
     "url": "git+https://github.com/node-red/node-red-docker.git"
   },
-  "main": "show_numbers.js",
+  "main": "zenbakien_prozesamendua.js",
   "scripts": {
     "start": "node $NODE_OPTIONS node_modules/node-red/red.js $FLOWS",
     "debug": "node --inspect=0.0.0.0:9229 $NODE_OPTIONS node_modules/node-red/red.js $FLOWS",
@@ -32,7 +32,7 @@
   "author": "ekaitz",
   "node-red" : {
         "nodes": {
-            "show_numbers": "show_numbers.js"
+            "zenbakien_prozesamendua": "zenbakien_prozesamendua.js"
         }
     }
 }

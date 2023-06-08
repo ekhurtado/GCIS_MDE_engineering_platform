@@ -3,11 +3,11 @@
 const {FunctionInfo, createLastMicroservice, addMicroServiceToModel, checkApplicationMetaModel} = require('../appModel_utils.js');
 
 // Osagaiaren aldagaiak
-const componentName = "ShowNumbers";
-const codeName = "gcr.io/gcis/show-numbers:latest";
+const componentName = "ZenbakienAurkezpena";
+const codeName = "ekhurtado/gcis:zenbakien-aurkezpena";
 
 module.exports = function(RED) {
-    function ShowNumbers(config) {
+    function ZenbakienAurkezpena(config) {
         RED.nodes.createNode(this,config);
         
         this.function = config.function;
@@ -24,9 +24,9 @@ module.exports = function(RED) {
                 // Funtzionalitate guztien informazioa betetzen dugu
                 // --------------------
                 const allFunctionsInfo= [
-                    consoleDisplay = new FunctionInfo("ConsoleDisplay", "HTTP", null, "TNumber", null, null),
-                    saveTXT = new FunctionInfo("SaveTXT", "HTTP", null, "TNumber", null, "filename"),
-                    saveCSV = new FunctionInfo("SaveCSV", "HTTP", null, "TNumber", null, "filename"),
+                    consoleDisplay = new FunctionInfo("PantailaAurkezpen", "HTTP", null, "TNumber", null, null),
+                    saveTXT = new FunctionInfo("GordeTXT", "HTTP", null, "TNumber", null, "fitxategiizen"),
+                    saveCSV = new FunctionInfo("GordeCSV", "HTTP", null, "TNumber", null, "fitxategiizen"),
                 ]
 
                 // Hautatutako funtzionalitatearen informazioa lortzen dugu
@@ -36,7 +36,7 @@ module.exports = function(RED) {
                 for (const funcObj in allFunctionsInfo) {
                     if (node.function === allFunctionsInfo[funcObj].name) {
                         selectedFunctionInfo = allFunctionsInfo[funcObj];
-                        if (node.function === "SaveTXT" || node.function === "SaveCSV") {
+                        if (node.function === "GordeTXT" || node.function === "GordeCSV") {
                             if (node.selectedFileName === "") {
                                 node.error("Ez duzu fitxategi izenik zehaztu. Mesedez, zehaztu ezazu.");
                                 return;
@@ -72,5 +72,5 @@ module.exports = function(RED) {
         });
     }
 
-    RED.nodes.registerType("Show numbers",ShowNumbers);
+    RED.nodes.registerType("zenbakienAurkezpena",ZenbakienAurkezpena);
 }

@@ -5,11 +5,11 @@ const fs = require('fs');
 const {FunctionInfo, createNewMicroservice, addMicroServiceToModel} = require('../appModel_utils');
 
 // Osagaiaren aldagaiak
-const componentName = "ProcessingNumbers";
-const codeName = "gcr.io/gcis/processing-numbers:latest";
+const componentName = "ZenbakienProzesamendua";
+const codeName = "ekhurtado/gcis:zenbakien-prozesamendua";
 
 module.exports = function(RED) {
-    function ProcessingNumbers(config) {
+    function ZenbakienProzesamendua(config) {
         RED.nodes.createNode(this,config);
         
         this.function = config.function;
@@ -27,9 +27,9 @@ module.exports = function(RED) {
                 // Funtzionalitate guztien informazioa betetzen dugu
                 // --------------------
                 const allFunctionsInfo= [
-                    increaseValueInfo = new FunctionInfo("IncreaseValue", "HTTP", "HTTP", "TNumber", "TNumber", "step"),
-                    decreaseValueInfo = new FunctionInfo("DecreaseValue", "HTTP", "HTTP", "TNumber", "TNumber", "step"),
-                    multiplyValueInfo = new FunctionInfo("MultiplyValue", "HTTP", "HTTP", "TNumber", "TNumber", "multiplier"),
+                    increaseValueInfo = new FunctionInfo("BalioaHanditu", "HTTP", "HTTP", "TNumber", "TNumber", "urratsa"),
+                    decreaseValueInfo = new FunctionInfo("BalioaTxikitu", "HTTP", "HTTP", "TNumber", "TNumber", "urratsa"),
+                    multiplyValueInfo = new FunctionInfo("BalioaBiderkatu", "HTTP", "HTTP", "TNumber", "TNumber", "biderkatzailea"),
                 ]
 
                 // Hautatutako funtzionalitatearen informazioa lortzen dugu
@@ -39,7 +39,7 @@ module.exports = function(RED) {
                 for (const funcObj in allFunctionsInfo) {
                     if (node.function === allFunctionsInfo[funcObj].name) {
                         selectedFunctionInfo = allFunctionsInfo[funcObj];
-                        if (node.function === "IncreaseValue" || node.function === "DecreaseValue") {
+                        if (node.function === "BalioaHanditu" || node.function === "BalioaTxikitu") {
                             if (node.selectedStepSize === -1) {
                                 node.error("Ez da urrats-tamainarik aukeratu. Sar ezazu baliodun zenbaki bat, mesedez.");
                                 return;
@@ -75,5 +75,5 @@ module.exports = function(RED) {
         });
     }
 
-    RED.nodes.registerType("Processing numbers",ProcessingNumbers);
+    RED.nodes.registerType("zenbakienProzesamendua",ZenbakienProzesamendua);
 }
