@@ -22,37 +22,44 @@ def getCompModel():
     print("Osagai-eredua sartzeko hautatu ezazu hurrengo aukeretako bat:")
     print("\t\t -> 1: Osagai-eredua fitxategi moduan sartu.")
     print("\t\t -> 2: Osagai-eredua zuzenean sartu.")
+    print("\t\t -> 3: Programatik irten.")
     while True:
         selectedOption = int(input("Aukera zenbakia sar ezazu: "))
-        if 1 <= selectedOption <= 2:
+        if 1 <= selectedOption <= 3:
             break
         else:
             print("Sartutako aukera ez da zuzena, sar ezazu berriro, mesedez.")
     print(selectedOption)
-    if selectedOption == 1:
-        window = Tk()
-        window.lift()
-        window.attributes("-topmost", True)  # Leihoa pantailan erakusteko
-        window.after_idle(window.attributes, '-topmost', False)
-        Tk().withdraw()
-        archivo_xml = askopenfilename(filetypes=[("Archivos XML", "*.xml")], title="Aukeratu fitxategia")
-        with open(archivo_xml,
-                  "r") as archivo:
-            # Lee el contenido del archivo y almacénalo en una cadena
-            content = archivo.read()
-        return content
-    else:
-        print("Osagai-eredua kopia eta hemen itsas ezazu (amaitu Enter sakatuz lerro huts batean):")
-        stringAppModel = ''
-        while True:
+    match selectedOption:
+        case 1:
+            window = Tk()
+            window.lift()
+            window.attributes("-topmost", True)  # Leihoa pantailan erakusteko
+            window.after_idle(window.attributes, '-topmost', False)
+            Tk().withdraw()
+            archivo_xml = askopenfilename(filetypes=[("Archivos XML", "*.xml")], title="Aukeratu fitxategia")
+            with open(archivo_xml,
+                      "r") as archivo:
+                # Lee el contenido del archivo y almacénalo en una cadena
+                content = archivo.read()
+            return content
+        case 2:
+            print("Osagai-eredua kopia eta hemen itsas ezazu (amaitu Enter sakatuz lerro huts batean):")
+            stringAppModel = ''
+            while True:
 
-            line = input('''''')
-            if line == '':
-                break
-            else:
-                stringAppModel += line + '\n'
-        print(stringAppModel)
-        return stringAppModel
+                line = input('''''')
+                if line == '':
+                    break
+                else:
+                    stringAppModel += line + '\n'
+            print(stringAppModel)
+            return stringAppModel
+        case 3:
+            exit()
+        case _:
+            print("Aukera ez eskuragarria.")
+
 
 
 '''
@@ -82,7 +89,7 @@ def getCompName(originXML):
         xp = proc.new_xpath_processor()
         node = proc.parse_xml(xml_text=originXML)
         xp.set_context(xdm_item=node)
-        result = xp.evaluate_single('/Component/@name')
+        result = xp.evaluate_single('/component/@name')
         return str.lower(result.string_value)
 
 
@@ -91,7 +98,7 @@ def getCategory(originXML):
         xp = proc.new_xpath_processor()
         node = proc.parse_xml(xml_text=originXML)
         xp.set_context(xdm_item=node)
-        result = xp.evaluate_single('/Component/@category')
+        result = xp.evaluate_single('/component/@category')
         return result.string_value
 
 

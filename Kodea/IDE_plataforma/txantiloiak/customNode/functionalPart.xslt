@@ -4,7 +4,7 @@
 				xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fn="http://www.w3.org/2005/xpath-functions">
 				<xsl:output omit-xml-declaration="yes" indent="yes"/>
 
-  <xsl:template match="Component">
+  <xsl:template match="component">
 
 const fs = require('fs');
 
@@ -13,7 +13,7 @@ const {FunctionInfo<xsl:if test="count(//outputs) = 0">, createFirstMicroservice
 
 // Osagaiaren aldagaiak
 const componentName = "<xsl:value-of select="@name"/>";
-const codeName = "<xsl:value-of select="@codeName"/>";
+const imgBase = "<xsl:value-of select="@imgBase"/>";
 
 module.exports = function(RED) {
     function ProcessingNumbers(config) {

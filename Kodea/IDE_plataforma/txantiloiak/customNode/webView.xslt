@@ -4,7 +4,7 @@
 				xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fn="http://www.w3.org/2005/xpath-functions">
 				<xsl:output omit-xml-declaration="yes" indent="yes"/>
 
-  <xsl:template match="Component">
+  <xsl:template match="component">
 	<xsl:if test="count(functionality/@customization) > 0">
 		<script type="text/javascript">
 	function show<xsl:value-of select="@name"/>Customization() {
@@ -81,6 +81,11 @@
 		<xsl:text>&#xA;&#x9;&#x9;&#x9;</xsl:text>
 		</xsl:for-each>
 	</select><xsl:text>&#xA;&#x9;&#x9;&#x9;</xsl:text>
+	<xsl:if test="count(functionality/inputs) > 0">
+		<label for="node-input-portnumber"><i class="fa fa-tag"></i> Aukeratu ataka zenbakia </label>
+        <input name="portnumber" id="node-input-portnumber"
+               type="number" min="0" max= "65536" step="1" placeholder="Sarrera-ataka zenbakia"/>
+	</xsl:if>
 	<xsl:if test="count(functionality/@customization) > 0">
 		<div id="contenedor-customization" style="display: none;"><xsl:text>&#xA;&#x9;&#x9;&#x9;&#x9;</xsl:text>
 			<xsl:for-each select="distinct-values(functionality/@customization)">

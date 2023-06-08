@@ -2,7 +2,7 @@ const fs = require('fs');
 
 
 // Aplikazio-eredua osatzeko elementu erabilgarrien liburutegia inportatu
-const {FunctionInfo, createNewMicroservice, addMicroServiceToModel} = require('../appModel_utils');
+const {FunctionInfo, createNewMicroservice, addMicroServiceToModel} = require('../appModel_utils.js');
 
 // Osagaiaren aldagaiak
 const componentName = "ZenbakienProzesamendua";
