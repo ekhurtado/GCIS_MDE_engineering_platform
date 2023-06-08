@@ -8,7 +8,7 @@ const {FunctionInfo, createFirstMicroservice} = require('../appModel_utils.js');
 
 // Osagaiaren aldagaiak
 const componentName = "ZenbakienSorkuntza";
-const codeName = "gcr.io/gcis/creating-numbers:latest";
+const imgBase = "gcr.io/gcis/creating-numbers:latest";
 
 module.exports = function(RED) {
     function ZenbakienSorkuntza(config) {
@@ -39,6 +39,7 @@ module.exports = function(RED) {
 
             // Hautatutako funtzionalitatearen informazioa lortzen dugu
             // --------------------
+
             let selectedFunctionInfo;
             for (const funcObj in allFunctionsInfo) {
                 if (node.function === allFunctionsInfo[funcObj].name)
@@ -53,7 +54,7 @@ module.exports = function(RED) {
 
             // Mikrozerbitzu berriaren informazioa eraikitzen dugu
             // --------------------
-            const microservice = createFirstMicroservice(componentName, codeName, selectedFunctionInfo);
+            const microservice = createFirstMicroservice(componentName, imgBase, selectedFunctionInfo);
             // Osagai honen pertsonalizazioa gehitzen diogu (osagai honen bereizgarria dena)
             microservice.$.customization = `{` +
                 `'${selectedFunctionInfo.customizationName.split(',')[0]}': '${node.valuetype}', ` +

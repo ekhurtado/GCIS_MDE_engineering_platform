@@ -1,12 +1,11 @@
 const fs = require('fs');
 
-
 // Aplikazio-eredua osatzeko elementu erabilgarrien liburutegia inportatu
 const {FunctionInfo, createNewMicroservice, addMicroServiceToModel} = require('../appModel_utils.js');
 
 // Osagaiaren aldagaiak
 const componentName = "ZenbakienProzesamendua";
-const codeName = "ekhurtado/gcis:zenbakien-prozesamendua";
+const imgBase = "ekhurtado/gcis:zenbakien-prozesamendua";
 
 module.exports = function(RED) {
     function ZenbakienProzesamendua(config) {
@@ -58,7 +57,7 @@ module.exports = function(RED) {
 
                 // Mikrozerbitzu berriaren informazioa eraikitzen dugu
                 // --------------------
-                const newMicroservice = createNewMicroservice(componentName, codeName, selectedFunctionInfo, node.selectedPortNumber);
+                const newMicroservice = createNewMicroservice(componentName, imgBase, selectedFunctionInfo, node.selectedPortNumber);
                 // Osagai honen pertsonalizazioa gehitzen diogu (osagai honen bereizgarria dena)
                 newMicroservice.$.customization = `{'${selectedFunctionInfo.customizationName}': ${selectedCustomizationValue}}`;
 

@@ -5,7 +5,7 @@
         const fileNameContainer = document.getElementById("contenedor-file-name");
 
         switch (selectElement.value) {
-            case "SaveTXT" || "SaveCSV":
+            case "GordeTXT" || "GordeCSV":
                 fileNameContainer.style.display = "block";
                 break;
             default:
@@ -47,9 +47,9 @@
     <div class="form-row">
         <label for="node-input-function"><i class="fa fa-tag"></i> Funtzionalitateak </label><span>&nbsp;&nbsp;</span>
         <select name="function" id="node-input-function" onchange="showShowNumbersCustomization()">
-          <option value="ConsoleDisplay">Balioa kontsolatik erakutsi</option>
-          <option value="SaveTXT">Gorde (.txt)</option>
-          <option value="SaveCSV">Gorde (.csv)</option>
+          <option value="PantailaAurkezpen">Balioa kontsolatik erakutsi</option>
+          <option value="GordeTXT">Gorde (.txt)</option>
+          <option value="GordeCSV">Gorde (.csv)</option>
         </select>
         <br>
         <label for="node-input-portnumber"><i class="fa fa-tag"></i> Input port number </label>

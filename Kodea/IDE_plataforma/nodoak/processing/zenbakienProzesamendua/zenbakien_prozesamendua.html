@@ -10,11 +10,11 @@
                 stepSizeContainer.style.display = "none";
                 multiplierContainer.style.display = "none";
                 break;
-            case "IncreaseValue" || "DecreaseValue":
+            case "BalioaHanditu" || "BalioaTxikitu":
                 stepSizeContainer.style.display = "block";
                 multiplierContainer.style.display = "none";
                 break;
-            case "MultiplyValue":
+            case "BalioaBiderkatu":
                 stepSizeContainer.style.display = "none";
                 multiplierContainer.style.display = "block";
                 break;
@@ -26,7 +26,7 @@
 
 <script type="text/javascript">
     RED.nodes.registerType('zenbakienProzesamendua',{
-        category: 'processing',
+        category: 'prozesatze',
         color: '#f0e007',
         defaults: {
             function: {value:""},
@@ -38,7 +38,7 @@
         outputs:1,
         inputLabels: "Sarrera atakaren datu formatua TNumber da",
         outputLabels: "Irteera atakaren datu formatua TNumber da",
-        icon: "processing.png",
+        icon: "prozesatze.png",
         label: function() {
             return this.label || "ZenbakienProzesamendua";
         },
@@ -58,9 +58,9 @@
     <div class="form-row">
         <label for="node-input-function"><i class="fa fa-tag"></i> Funtzionalitateak </label><span>&nbsp;&nbsp;</span>
         <select name="function" id="node-input-function" onchange="showProcessingNumbersCustomization()">
-          <option value="IncreaseValue">Balioa handitu</option>
-          <option value="DecreaseValue">Balioa txikitu</option>
-          <option value="MultiplyValue">Balioa biderkatu</option>
+          <option value="BalioaHanditu">Balioa handitu</option>
+          <option value="BalioaTxikitu">Balioa txikitu</option>
+          <option value="BalioaBiderkatu">Balioa biderkatu</option>
         </select>
         <br>
         <label for="node-input-portnumber"><i class="fa fa-tag"></i> Aukeratu ataka zenbakia </label>

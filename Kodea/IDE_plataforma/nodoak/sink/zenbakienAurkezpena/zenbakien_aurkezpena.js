@@ -4,7 +4,7 @@ const {FunctionInfo, createLastMicroservice, addMicroServiceToModel, checkApplic
 
 // Osagaiaren aldagaiak
 const componentName = "ZenbakienAurkezpena";
-const codeName = "ekhurtado/gcis:zenbakien-aurkezpena";
+const imgBase = "ekhurtado/gcis:zenbakien-aurkezpena";
 
 module.exports = function(RED) {
     function ZenbakienAurkezpena(config) {
@@ -48,7 +48,7 @@ module.exports = function(RED) {
 
                 // Mikrozerbitzu berriaren informazioa eraikitzen dugu
                 // --------------------
-                const newMicroservice = createLastMicroservice(componentName, codeName, selectedFunctionInfo, node.selectedPortNumber);
+                const newMicroservice = createLastMicroservice(componentName, imgBase, selectedFunctionInfo, node.selectedPortNumber);
                 // Osagai honen pertsonalizazioa gehitzen diogu (osagai honen bereizgarria dena)
                 if (selectedCustomizationValue !== "")
                     newMicroservice.$.customization = `{'${selectedFunctionInfo.customizationName}': '${selectedCustomizationValue}'}`;
