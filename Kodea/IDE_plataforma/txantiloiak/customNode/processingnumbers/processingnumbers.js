@@ -28,9 +28,9 @@ module.exports = function(RED) {
 		 // --------------------
 		 const allFunctionsInfo = [
 
-	  		IncreaseValueInfo = new FunctionInfo("IncreaseValue", "HTTP", "HTTP", "TNumber", "TNumber", "step,hola");
-			DecreaseValueInfo = new FunctionInfo("DecreaseValue", "HTTP", "HTTP", "TNumber", "TNumber", "step");
-			MultiplyValueInfo = new FunctionInfo("MultiplyValue", "HTTP", "HTTP", "TNumber", "TNumber", "step");
+	  		IncreaseValueInfo = new FunctionInfo("IncreaseValue", "HTTP", "HTTP", "TNumber", "TNumber", "step,hola"),
+			DecreaseValueInfo = new FunctionInfo("DecreaseValue", "HTTP", "HTTP", "TNumber", "TNumber", "step"),
+			MultiplyValueInfo = new FunctionInfo("MultiplyValue", "HTTP", "HTTP", "TNumber", "TNumber", "step"),
 			
 	     ]
 
@@ -46,7 +46,7 @@ module.exports = function(RED) {
 
 	  	// Mikrozerbitzu berriaren informazioa eraikitzen dugu
 		// --------------------
-		const newMicroservice = createNewMicroservice(componentName, codeName, selectedFunctionInfo, node.selectedPortNumber);const newMicroservice = createFirstMicroservice(componentName, codeName, selectedFunctionInfo);
+		const newMicroservice = createNewMicroservice(componentName, codeName, selectedFunctionInfo, node.selectedPortNumber);//const newMicroservice = createFirstMicroservice(componentName, codeName, selectedFunctionInfo);
 		if (selectedCustomizationValue !== "")
 			newMicroservice.$.customization = `{'${selectedFunctionInfo.customizationName}': '${selectedCustomizationValue}'}`;
 		// Customization balio gehiago badaude, hemen gehi ditzakezu, aurreko bi lerroak aldatuz
