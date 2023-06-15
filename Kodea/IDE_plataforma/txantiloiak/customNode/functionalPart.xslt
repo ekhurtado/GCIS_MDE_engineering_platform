@@ -38,7 +38,7 @@ module.exports = function(RED) {
 		 const allFunctionsInfo = [
 
 	  		<xsl:for-each select="functionality">
-				<xsl:value-of select="@id"/>Info = new FunctionInfo("<xsl:value-of select="@id"/>", "<xsl:value-of select="inputs/@protocol"/>", "<xsl:value-of select="outputs/@protocol"/>", "<xsl:value-of select="inputs/@dataType"/>", "<xsl:value-of select="outputs/@dataType"/>", "<xsl:value-of select="@customization"/>");
+				<xsl:value-of select="@id"/>Info = new FunctionInfo("<xsl:value-of select="@id"/>", "<xsl:value-of select="inputs/@protocol"/>", "<xsl:value-of select="outputs/@protocol"/>", "<xsl:value-of select="inputs/@dataType"/>", "<xsl:value-of select="outputs/@dataType"/>", "<xsl:value-of select="@customization"/>"),
 			</xsl:for-each>
 	     ]
 
@@ -56,7 +56,7 @@ module.exports = function(RED) {
 		// --------------------
 		<xsl:if test="count(//outputs) = 0">const newMicroservice = createLastMicroservice(componentName, codeName, selectedFunctionInfo, node.selectedPortNumber);</xsl:if>
 		<xsl:if test="count(//inputs) > 0 and count(//outputs) > 0">const newMicroservice = createNewMicroservice(componentName, codeName, selectedFunctionInfo, node.selectedPortNumber);</xsl:if>
-		<xsl:if test="count(//inputs) > 0 and count(//outputs) > 0">const newMicroservice = createFirstMicroservice(componentName, codeName, selectedFunctionInfo);</xsl:if>
+		<xsl:if test="count(//inputs) = 0 and count(//outputs) > 0">const newMicroservice = createFirstMicroservice(componentName, codeName, selectedFunctionInfo);</xsl:if>
 		<xsl:if test="count(//functionality/@customization) > 0">
 		if (selectedCustomizationValue !== "")
 			newMicroservice.$.customization = `{'${selectedFunctionInfo.customizationName}': '${selectedCustomizationValue}'}`;

@@ -42,6 +42,7 @@ def getCompModel():
                       "r") as archivo:
                 # Lee el contenido del archivo y almacénalo en una cadena
                 content = archivo.read()
+            window.destroy()
             return content
         case 2:
             print("Osagai-eredua kopia eta hemen itsas ezazu (amaitu Enter sakatuz lerro huts batean):")
@@ -59,7 +60,6 @@ def getCompModel():
             exit()
         case _:
             print("Aukera ez eskuragarria.")
-
 
 
 '''
@@ -120,11 +120,60 @@ Bestelako metodoak
 '''
 
 
+def getIconFilePath():
+    print("Osagairako ikono propia aukeratu nahi duzu (defektuz kategoriako ikonoa esleituko zaio)?")
+    print("\t\t -> 1: Bai.")
+    print("\t\t -> 2: Ez.")
+    while True:
+        selectedOption = int(input("Aukera zenbakia sar ezazu: "))
+        if 1 <= selectedOption <= 2:
+            break
+        else:
+            print("Sartutako aukera ez da zuzena, sar ezazu berriro, mesedez.")
+    print(selectedOption)
+    match selectedOption:
+        case 1:
+            window = Tk()
+            window.lift()
+            window.attributes("-topmost", True)  # Leihoa pantailan erakusteko
+            window.after_idle(window.attributes, '-topmost', False)
+            Tk().withdraw()
+            icon_file_path = askopenfilename(filetypes=[("PNG fitxategiak", "*.png")],
+                                             title="Aukeratu ikonorako fitxategia")
+            window.destroy()
+            return icon_file_path
+        case _:
+            return None
+    # with open(icon_file_path,
+    #           "r") as archivo:
+    #     # Lee el contenido del archivo y almacénalo en una cadena
+    #     content = archivo.read()
+    # return icon_file_path
+
+
 def copyRelatedIcon(compModelXML, compName):
     category = getCategory(compModelXML)
+    iconFilePath = getIconFilePath()
+
     if not os.path.exists("./" + compName + '/icons'):
         os.makedirs("./" + compName + '/icons')
-    shutil.copy2('./icons/' + category + '.png', './' + compName + '/icons/' + category + '.png')
+    if iconFilePath is not None:
+        shutil.copy2(iconFilePath, './' + compName + '/icons/')
+        updateIconOnHTML(compName, category, iconFilePath)
+    else:
+        shutil.copy2('./icons/' + category + '.png', './' + compName + '/icons/' + category + '.png')
+
+
+def updateIconOnHTML(compName, category, iconFilePath):
+    file = open("./" + compName + "/" + compName + ".html", "r")
+    htmlContent = file.read()
+    iconDirectory, iconFileName = os.path.split(iconFilePath)
+    htmlContent = htmlContent.replace("icon: '" + category + ".png'", "icon: '" + iconFileName + "'")
+    file.close()
+
+    file = open("./" + compName + "/" + compName + ".html", "w")
+    file.write(htmlContent)
+    file.close()
 
 
 def getConfigurationFile(compName):

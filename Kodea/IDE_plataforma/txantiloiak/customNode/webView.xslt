@@ -96,6 +96,13 @@
 						<xsl:value-of select="."/>
 					</label><xsl:text>&#xA;&#x9;&#x9;&#x9;&#x9;</xsl:text>
 					<xsl:comment>Sar ezazu hemen customization balioa lortzeko elementu egokia, bere mota kontuan edukiz (select, input...)</xsl:comment>
+					<xsl:comment>Defektuz, textuak lortzeko baliabideak gehituko da</xsl:comment>
+<!--					<input name=<xsl:value-of select="."/> id="node-input-"<xsl:value-of select="."/>" type="text">-->
+					<input>
+						<xsl:attribute name="name"><xsl:value-of select="."/></xsl:attribute>
+						<xsl:attribute name="id">node-input-<xsl:value-of select="."/></xsl:attribute>
+						<xsl:attribute name="type">text</xsl:attribute>
+					</input>
 					<xsl:text>&#xA;&#x9;&#x9;&#x9;&#x9;</xsl:text>
 				</xsl:for-each>
 			</xsl:for-each>
