@@ -11,7 +11,7 @@ const componentName = "ZenbakienSorkuntza";
 const imgBase = "gcr.io/gcis/creating-numbers:latest";
 
 module.exports = function(RED) {
-    function ArgazkienSorkuntza(config) {
+    function HitzenSorkuntza(config) {
         RED.nodes.createNode(this,config);
         
         this.function = config.function;
@@ -87,5 +87,5 @@ module.exports = function(RED) {
         }
     }
 
-    RED.nodes.registerType("argazkienSorkuntza",ArgazkienSorkuntza);
+    RED.nodes.registerType("hitzenSorkuntza",HitzenSorkuntza);
 }

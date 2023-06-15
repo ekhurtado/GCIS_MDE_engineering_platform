@@ -1,0 +1,75 @@
+<!--Customization datuak erakusteko kodea-->
+<script type="text/javascript">
+    function showShowNumbersCustomization() {
+        const selectElement = document.getElementById("node-input-function");
+        const fileNameContainer = document.getElementById("contenedor-file-name");
+
+        switch (selectElement.value) {
+            case "GordeTXT" || "GordeCSV":
+                fileNameContainer.style.display = "block";
+                break;
+            default:
+                fileNameContainer.style.display = "none";
+                break;
+        }
+    }
+</script>
+
+<script type="text/javascript">
+    RED.nodes.registerType('hitzenAurkezpena',{
+        category: 'aurkezpen',
+        color: '#08bd08',
+        defaults: {
+            function: {value:""},
+            portnumber: {value: -1},
+            filename: {value:""}
+        },
+        inputs:1,
+        outputs:0,
+        inputLabels: "DataType of inPort is TStation",
+        icon: "aurkezpen.png",
+        label: function() {
+            return this.label || "ZenbakienAurkezpena";
+        },
+        oneditprepare: function() {
+            var node = this;
+            $("#node-input-function").on("change", function() {
+                node.label = $(this).val();
+            });
+        },
+        oneditsave: function () {
+            this.label = $("#node-input-function").val();
+        }
+    });
+</script>
+
+<script type="text/html" data-template-name="hitzenAurkezpena">
+    <div class="form-row">
+        <label for="node-input-function"><i class="fa fa-tag"></i> Funtzionalitateak </label><span>&nbsp;&nbsp;</span>
+        <select name="function" id="node-input-function" onchange="showShowNumbersCustomization()">
+          <option value="PantailaAurkezpen">Balioa kontsolatik erakutsi</option>
+          <option value="GordeTXT">Gorde (.txt)</option>
+          <option value="GordeCSV">Gorde (.csv)</option>
+        </select>
+        <br>
+        <label for="node-input-portnumber"><i class="fa fa-tag"></i> Input port number </label>
+        <input name="portnumber" id="node-input-portnumber" 
+               type="number" min="0" max= "65536" step="1" placeholder="Ataka zenbakia"/>
+        <br><br>
+        <div id="contenedor-file-name" style="display: none;">
+            <label for="node-input-filename"><i class="fa fa-tag"></i> Sartu fitxategiaren izena </label>
+            <input name="fileName" id="node-input-filename" type="text"
+                   placeholder="Fitxategiaren izena">
+        </div>
+    </div>
+</script>
+
+<script type="text/html" data-help-name="hitzenAurkezpena">
+    <p>This is a simple node that creates a new instance of source component to read data of eXist database.</p>
+    <p>There are some function to choose in order to create the correct instance for the application.</p>
+    <ul>
+        <li><b>Get assemply station data</b>: This function will get the data of any assembly station of the plant. The data type asociated with this function is TDBStation, so, the outPort will be that type.</li>
+        <li><b>Get transport robot data</b>: This function will get the data of any transport robot of the plant. The data type asociated with this function is TDBTransport, so, the outPort will be that type.</li>
+        <li><b>Get monitor data</b>: This function will get the data of the monitor. The data type asociated with this function is TDBMonitor.</li>
+    </ul>
+</script>
