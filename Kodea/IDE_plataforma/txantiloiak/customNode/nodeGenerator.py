@@ -121,7 +121,8 @@ Bestelako metodoak
 
 
 def getIconFilePath():
-    print("Osagairako ikono propia aukeratu nahi duzu (defektuz kategoriako ikonoa esleituko zaio)?")
+    print("Osagairako ikono propia aukeratu nahi duzu? Ezesko kasuan kategoriako ikonoa (existitzen bada)"
+          "edo defekuzko ikonoa esleituko zaio")
     print("\t\t -> 1: Bai.")
     print("\t\t -> 2: Ez.")
     while True:
@@ -161,7 +162,11 @@ def copyRelatedIcon(compModelXML, compName):
         shutil.copy2(iconFilePath, './' + compName + '/icons/')
         updateIconOnHTML(compName, category, iconFilePath)
     else:
-        shutil.copy2('./icons/' + category + '.png', './' + compName + '/icons/' + category + '.png')
+        if os.path.isfile('./icons/' + category + '.png'):
+            shutil.copy2('./icons/' + category + '.png', './' + compName + '/icons/' + category + '.png')
+        else:
+            shutil.copy2('./icons/fog_component.png', './' + compName + '/icons/fog_component.png')
+            updateIconOnHTML(compName, category, './icons/fog_component.png')
 
 
 def updateIconOnHTML(compName, category, iconFilePath):
