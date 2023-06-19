@@ -26,7 +26,7 @@ public class ZenbakienAurkezpena {
      static String function = System.getenv("SERVICE");
      static int inPortNumber = Integer.parseInt(System.getenv("INPORT_NUMBER"));
 //     String customization = System.getenv("CUSTOMIZATION");
-	static String fileName = System.getenv("CUSTOM_FILENAME");
+	static String fileName = System.getenv("CUSTOM_FITXATEGIIZEN");
 
     // TODO Ezabatu
 //    static String function = "saveTXT";
