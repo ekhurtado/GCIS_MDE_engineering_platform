@@ -1,7 +1,7 @@
 apiVersion: apiextensions.k8s.io/v1
 kind: CustomResourceDefinition
 metadata:
-  name: components.ehu.gcis.org
+  name: microservices.ehu.gcis.org
 spec:
   group: ehu.gcis.org
   versions:
@@ -53,13 +53,13 @@ spec:
                   type: string
       additionalPrinterColumns:
         - jsonPath: .spec.name
-          name: CompName
-          description: Name of the component
+          name: MicrosvcName
+          description: Name of the microservice
           type: string
           priority: 0
         - jsonPath: .spec.service
           name: Service
-          description: Service of the component
+          description: Service of the microservice
           type: string
           priority: 0
         - jsonPath: .status.situation
@@ -79,8 +79,8 @@ spec:
 
   scope: Namespaced
   names:
-    plural: components
-    singular: component
-    kind: Component
+    plural: microservices
+    singular: microservice
+    kind: Microservice
     shortNames:
-      - comp
+      - microsvc

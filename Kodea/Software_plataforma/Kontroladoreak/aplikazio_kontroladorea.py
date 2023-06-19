@@ -16,19 +16,19 @@ namespace = "default"
 plural = "applications"
 
 # Osagai mailaren informazioa
-componentVersion = "v1alpha1"
-componentPlural = "components"
+microserviceVersion = "v1alpha1"
+microservicePlural = "microservices"
 
 
 def controller():
     # Lehenik eta behin, klusterraren konfigurazio fitxategia
-    # config.load_kube_config(os.path.join("../klusterKonfigurazioa/k3s.yaml"))
+    config.load_kube_config(os.path.join("../klusterKonfigurazioa/k3s.yaml"))
 
     # Kontroladorea Docker edukiontzi baten barruan, eta klusterrean hedatu badago, kode hau erabili
-    if 'KUBERNETES_PORT' in os.environ:
-        config.load_incluster_config()
-    else:
-        config.load_kube_config()
+    # if 'KUBERNETES_PORT' in os.environ:
+    #     config.load_incluster_config()
+    # else:
+    #     config.load_kube_config()
 
     custom_client = client.CustomObjectsApi()  # Custom objektuetarako APIa lortzen dugu
     client_extension = client.ApiextensionsV1Api()  # CRDekin lan egiteko APIa lortzen dugu
@@ -101,30 +101,30 @@ def deploy_application(appObject, custom_client):
     eventAPI.create_namespaced_event("default", eventObject)
 
     # Ondoren, aplikazioaren objektuaren egoera atala sortzen da, adieraziz oraindik ez dela osagairik sortu.
-    num_components = len(appObject['spec']['components'])
-    status_object = {'status': {'components': [0] * num_components, 'ready': "0/" + str(num_components)}}
-    for i in range(int(num_components)):
-        status_object['status']['components'][i] = {'name': appObject['spec']['components'][i]['name'],
-                                                    'status': "Creating"}
+    num_microservices = len(appObject['spec']['microservices'])
+    status_object = {'status': {'microservices': [0] * num_microservices, 'ready': "0/" + str(num_microservices)}}
+    for i in range(int(num_microservices)):
+        status_object['status']['microservices'][i] = {'name': appObject['spec']['microservices'][i]['name'],
+                                                       'status': "Creating"}
     custom_client.patch_namespaced_custom_object_status(group, version, namespace, plural,
                                                         appObject['metadata']['name'], status_object)
 
     # Orain, osagai bakoitza sortuko da
-    for comp in appObject['spec']['components']:
+    for microsvc in appObject['spec']['microservices']:
         # Lehenik eta behin, beste osagaiek aztertzen ari den osagaiarekin komunikatu behar badira, Kubernetesen
         # zerbitzu deituriko bat sortu beharra dago, osagaia eskuragarri egiteko
-        if 'inPort' in comp:
-            create_service(comp, appObject)
+        if 'inPort' in microsvc:
+            create_service(microsvc, appObject)
 
         # Orain, osagaia bera sortu daiteke
-        create_component(custom_client, comp, appObject)
+        create_microservice(custom_client, microsvc, appObject)
 
 
 def delete_application(appObject, custom_client):
     # Aplikazioaren osagai guztiak ezabatuko dira
-    for comp in appObject['spec']['components']:
-        custom_client.delete_namespaced_custom_object(group, componentVersion, namespace, componentPlural,
-                                                      comp['name'] + '-' + appObject['metadata']['name'])
+    for microsvc in appObject['spec']['microservices']:
+        custom_client.delete_namespaced_custom_object(group, microserviceVersion, namespace, microservicePlural,
+                                                      microsvc['name'] + '-' + appObject['metadata']['name'])
 
 
 def check_modifications(appObject, custom_client):
@@ -132,23 +132,23 @@ def check_modifications(appObject, custom_client):
 
     # Lehenik, aztertuko da nor izan den aplikazio objektua aldatu duena
     lastManager = appObject['metadata']['managedFields'][len(appObject['metadata']['managedFields']) - 1]['manager']
-    if "component" in lastManager:
+    if "microservice" in lastManager:
         # Bakarrik aplikazioaren barruko osagaiak alda dezakete aplikazioaren objektua, zehazki egoera atala
         # Aldaketaren arduradunatik osagaiaren izena lortzen da
-        componentName = lastManager.replace('component-', '')
-        componentName = componentName.replace('-' + appObject['metadata']['name'], '')
+        microserviceName = lastManager.replace('microservice-', '')
+        microserviceName = microserviceName.replace('-' + appObject['metadata']['name'], '')
 
         # Egoera atala aldatu denez, abiarazitako osagaiak aztertuko dira
         runningCount = 0
-        for i in range(len(appObject['status']['components'])):
-            if appObject['status']['components'][i]['status'] == "Running":
+        for i in range(len(appObject['status']['microservices'])):
+            if appObject['status']['microservices'][i]['status'] == "Running":
                 runningCount += 1
 
-                if appObject['status']['components'][i]['name'] == componentName:
+                if appObject['status']['microservices'][i]['name'] == microserviceName:
                     # Mezua bidali duen osagaia abiarazita badago, gertaera horren berri emango da
                     eventObject = utils.customResourceEventObject(action='Created', CR_type="Application",
                                                                   CR_object=appObject,
-                                                                  message=componentName + ' osagaia zuzen abiarazita.',
+                                                                  message=microserviceName + ' osagaia zuzen abiarazita.',
                                                                   reason='Deployed')
                     eventAPI.create_namespaced_event("default", eventObject)
 
@@ -156,7 +156,7 @@ def check_modifications(appObject, custom_client):
         if runningCount != 0:
             appObject['status']['ready'] = str(runningCount) + "/" + appObject['status']['ready'].split("/")[1]
 
-            if runningCount == len(appObject['status']['components']):
+            if runningCount == len(appObject['status']['microservices']):
                 # Osagai guztiak abiarazita badaude, gertaera horren berri emango dugu
                 eventObject = utils.customResourceEventObject(action='Deployed', CR_type="Application",
                                                               CR_object=appObject,
@@ -171,49 +171,49 @@ def check_modifications(appObject, custom_client):
                                                             field_manager=appObject['metadata']['name'])
 
 
-def create_component(custom_client, compObject, appObject):
+def create_microservice(custom_client, microsvcObject, appObject):
     # Osagaiari beharrezko informazioa gehitu zaio (adibidez, hurrengo osagaiarekin komunikatzeko datuak)
-    compObject = addFlowInfo(compObject, appObject)
+    microsvcObject = addFlowInfo(microsvcObject, appObject)
     # Osagaiaren objetua eraikitzen da
-    component_body = utils.component_object(componentInfo=compObject, appName=appObject['metadata']['name'])
+    microservice_body = utils.microservice_object(microserviceInfo=microsvcObject, appName=appObject['metadata']['name'])
     # Osagai berria sortzen da
-    custom_client.create_namespaced_custom_object(group, componentVersion, namespace, componentPlural, component_body)
+    custom_client.create_namespaced_custom_object(group, microserviceVersion, namespace, microservicePlural, microservice_body)
 
     # Behin osagaiaren sorkuntza eskaera betez, bere objektuaren egoera atala eguneratuko da, aurkeztuz sortzen ari dela
     status_object = {'status': {'situation': 'Creating'}}
-    custom_client.patch_namespaced_custom_object_status(group, componentVersion, namespace, componentPlural,
-                                                        component_body['metadata']['name'], status_object)
+    custom_client.patch_namespaced_custom_object_status(group, microserviceVersion, namespace, microservicePlural,
+                                                        microservice_body['metadata']['name'], status_object)
 
 
-def create_service(compObject, appObject):
+def create_service(microsvcObject, appObject):
     # Zerbitzuaren objektua sortzen dugu
-    serviceObject = utils.service_object(componentInfo=compObject, appName=appObject['metadata']['name'])
+    serviceObject = utils.service_object(microserviceInfo=microsvcObject, appName=appObject['metadata']['name'])
     # Kuberneteseko APIarekin, zerbitzua sisteman hedatzen dugu
     coreAPI = client.CoreV1Api()
     coreAPI.create_namespaced_service(namespace, serviceObject)
 
 
-def addFlowInfo(compObject, appObject):
+def addFlowInfo(microsvcObject, appObject):
     # Metodo honi esker, hurrengo osagaiari buruzko informazio oraingo osagaiari gehituko zaio
-    if "outPort" in compObject:  # bakarrik irteera badu osotu beharko da osagaiaren informazioa
-        currentCompOutPort = compObject['outPort']['name']
-        nextCompInPort = getChannelPort(appObject, currentCompOutPort, 'from')
-        nextCompObject = getCompObjectByPortName(appObject, nextCompInPort, 'inPort')
+    if "outPort" in microsvcObject:  # bakarrik irteera badu osotu beharko da osagaiaren informazioa
+        currentMicrosvcOutPort = microsvcObject['outPort']['name']
+        nextMicrosvcInPort = getChannelPort(appObject, currentMicrosvcOutPort, 'from')
+        nextMicrosvcObject = getMicrosvcObjectByPortName(appObject, nextMicrosvcInPort, 'inPort')
 
         # Datu guztiak edukita, osagaiari informazio berria gehi daiteke
-        compObject['output'] = nextCompObject['name'] + '-' + \
-                               appObject['metadata']['name']  # Kubernetesen osagaien izena beraiena
-                                                              # gehi aplikazioarena da, bakarra izateko
-        compObject['output_port'] = nextCompObject['inPort']['number']
+        microsvcObject['output'] = nextMicrosvcObject['name'] + '-' + \
+                                   appObject['metadata']['name']  # Kubernetesen osagaien izena beraiena
+        # gehi aplikazioarena da, bakarra izateko
+        microsvcObject['output_port'] = nextMicrosvcObject['inPort']['number']
 
-    return compObject
+    return microsvcObject
 
 
-def getCompObjectByPortName(appObject, portName, portType):
-    for comp in appObject['spec']['components']:
-        if portType in comp:
-            if comp[portType]['name'] == portName:
-                return comp
+def getMicrosvcObjectByPortName(appObject, portName, portType):
+    for microsvc in appObject['spec']['microservices']:
+        if portType in microsvc:
+            if microsvc[portType]['name'] == portName:
+                return microsvc
     return None
 
 

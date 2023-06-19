@@ -127,7 +127,7 @@ def main():
     appName = getAppName(appModelXML)
 
     print("Ereduaren zuzentasuna konprobatuta, Custom Resource transformazioa lortuko da.")
-    customResourceContent = getXSLT_transformation(appModelXML, './transformer.xslt')
+    customResourceContent = getXSLT_transformation(appModelXML, 'cr_transformer.xslt')
     createFile(customResourceContent, './' + appName + '.yaml')
 
 

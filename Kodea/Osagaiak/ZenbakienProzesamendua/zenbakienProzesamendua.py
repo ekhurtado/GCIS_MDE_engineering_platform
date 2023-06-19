@@ -122,14 +122,13 @@ def multiplyValue(messageData):
     type = jsonData['type']
     value = jsonData['value']
 
-    # Funtzionalitatearen eragiketa betetzen dugu
-    value = value * multiplier
-
     # Sartutako urratsa mota desberdinekoa izanez, emaitza desberdina izan daiteke, beraz ziurtatuko gara
     match type:
         case "natural" | "integer":
+            value = value * multiplier  # Funtzionalitatearen eragiketa betetzen dugu
             value = int(value)
         case "float":
+            value = value * float(multiplier)   # Funtzionalitatearen eragiketa betetzen dugu
             value = float(value)
         case _:
             pass

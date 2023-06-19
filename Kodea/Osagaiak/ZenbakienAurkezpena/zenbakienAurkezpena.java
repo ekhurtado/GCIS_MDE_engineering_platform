@@ -26,6 +26,7 @@ public class ZenbakienAurkezpena {
      static String function = System.getenv("SERVICE");
      static int inPortNumber = Integer.parseInt(System.getenv("INPORT_NUMBER"));
 //     String customization = System.getenv("CUSTOMIZATION");
+//	static String fileName = System.getenv("CUSTOM_FILENAME");
 	static String fileName = System.getenv("CUSTOM_FITXATEGIIZEN");
 
     // TODO Ezabatu
@@ -75,13 +76,16 @@ public class ZenbakienAurkezpena {
 
         // Mezu lortuta, aukeratutako funtzionalitatea exekutatuko da
         switch (function) {
-            case "consoleDisplay":
+//            case "consoleDisplay":
+            case "PantailaAurkezpen":
                 consoleDisplay(body);
                 break;
-            case "saveTXT":
+//            case "saveTXT":
+            case "GordeTXT":
                 saveTXT(body);
                 break;
-            case "saveCSV":
+//            case "saveCSV":
+            case "GordeCSV":
                 saveCSV(body);
                 break;
             default:

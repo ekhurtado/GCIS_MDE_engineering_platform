@@ -14,11 +14,11 @@ spec:
           properties:
             spec:
               type: object
-              required: [ components, channels ]
+              required: [ microservices, channels ]
               properties:
                 name:
                   type: string
-                components:
+                microservices:
                   type: array
                   items:
                     type: object
@@ -67,7 +67,7 @@ spec:
             status:
               type: object
               properties:
-                components:
+                microservices:
                   type: array
                   items:
                     type: object

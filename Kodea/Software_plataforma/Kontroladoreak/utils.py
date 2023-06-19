@@ -20,12 +20,12 @@ def CRD_app():
     return CRD_applicacion
 
 
-def CRD_comp():
+def CRD_microsvc():
     path = os.path.abspath(os.path.dirname(__file__))
-    rel_path = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), "CRD", "component_definition.yaml")
+    rel_path = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), "CRD", "microservice_definition.yaml")
     with open(rel_path, 'r') as stream:
-        CRD_component = yaml.safe_load(stream)
-    return CRD_component
+        CRD_microservice = yaml.safe_load(stream)
+    return CRD_microservice
 
 
 # ------------------------------------
@@ -84,64 +84,64 @@ def customResourceEventObject(action, CR_type, CR_object, message, reason):
 # ------------------------------------
 # Osagaiekin erlazionatutako metodoak
 # ------------------------------------
-def component_object(componentInfo, appName):
-    component_resource = {
+def microservice_object(microserviceInfo, appName):
+    microservice_resource = {
         'apiVersion': 'ehu.gcis.org/v1alpha1',
-        'kind': 'Component',
+        'kind': 'Microservice',
         'metadata': {
-            'name': componentInfo['name'] + '-' + appName,
+            'name': microserviceInfo['name'] + '-' + appName,
             'labels': {
                 'applicationName': appName,
-                'shortName': componentInfo['name']
+                'shortName': microserviceInfo['name']
             }
         },
         'spec': {}
     }
 
-    for infoKey, infoValue in componentInfo.items():
-        component_resource['spec'][infoKey] = infoValue
+    for infoKey, infoValue in microserviceInfo.items():
+        microservice_resource['spec'][infoKey] = infoValue
 
-    if 'output' in componentInfo:
-        component_resource['metadata']['labels']['output'] = componentInfo['output']
-        component_resource['metadata']['labels']['output_port'] = componentInfo['output_port']
+    if 'output' in microserviceInfo:
+        microservice_resource['metadata']['labels']['output'] = microserviceInfo['output']
+        microservice_resource['metadata']['labels']['output_port'] = microserviceInfo['output_port']
 
-    return component_resource
+    return microservice_resource
 
 
-def service_object(componentInfo, appName):
+def service_object(microserviceInfo, appName):
     return {
         'apiVersion': 'v1',
         'kind': 'Service',
         'metadata': {
-            'name': componentInfo['name'] + '-' + appName,
+            'name': microserviceInfo['name'] + '-' + appName,
             'labels': {
-                'resource.name': componentInfo['name'] + '-' + appName
+                'resource.name': microserviceInfo['name'] + '-' + appName
             }
         },
         'spec': {
             'ports': [{
-                'name': componentInfo['inPort']['number'],
+                'name': microserviceInfo['inPort']['number'],
                 # 'name': componentInfo['inPort']['name'],
-                'port': int(componentInfo['inPort']['number']),
-                'targetPort': int(componentInfo['inPort']['number'])
+                'port': int(microserviceInfo['inPort']['number']),
+                'targetPort': int(microserviceInfo['inPort']['number'])
             }],
             'selector': {
-                'resource.name': componentInfo['name'] + '-' + appName
+                'resource.name': microserviceInfo['name'] + '-' + appName
             }
         }
     }
 
 
-def deploymentObject(component, controllerName, appName, componentName, **kwargs):
+def deploymentObject(microservice, controllerName, appName, microserviceName, **kwargs):
     deployObject = {
         'apiVersion': 'apps/v1',
         'kind': 'Deployment',
         'metadata': {
-            'name': component['metadata']['name'],
+            'name': microservice['metadata']['name'],
             'labels': {
                 'resource.controller': controllerName,
-                'resource.name': component['metadata']['name'],
-                'component.name': componentName,
+                'resource.name': microservice['metadata']['name'],
+                'microservice.name': microserviceName,
                 'applicationName': appName
             }
         },
@@ -149,23 +149,23 @@ def deploymentObject(component, controllerName, appName, componentName, **kwargs
             'replicas': 1,
             'selector': {
                 'matchLabels': {
-                    'resource.name': component['metadata']['name']
+                    'resource.name': microservice['metadata']['name']
                 }
             },
             'template': {
                 'metadata': {
                     'labels': {
-                        'resource.name': component['metadata']['name']
+                        'resource.name': microservice['metadata']['name']
                     }
                 },
                 'spec': {
                     'containers': [{
                         'imagePullPolicy': 'Always',
-                        'name': component['metadata']['name'],
+                        'name': microservice['metadata']['name'],
                         # 'name': componentName,
-                        'image': component['spec']['image'],
+                        'image': microservice['spec']['image'],
                         'env': [{'name': 'SERVICE',
-                                 'value': component['spec']['service']}]
+                                 'value': microservice['spec']['service']}]
                     }],
                     'nodeSelector': {
                         'node-type': 'multipass'
@@ -177,32 +177,32 @@ def deploymentObject(component, controllerName, appName, componentName, **kwargs
     }
 
     # Osagaiaren izena ezin dute 63 karaktere baino gehiago eduki
-    if len(componentName) > 63:
-        deployObject['spec']['template']['spec']['containers'][0]['name'] = componentName[0:63]
+    if len(microserviceName) > 63:
+        deployObject['spec']['template']['spec']['containers'][0]['name'] = microserviceName[0:63]
 
-    if "customization" in component['spec']:
+    if "customization" in microservice['spec']:
         envVarList = []
-        customJSON = json.loads(component['spec']['customization'])
+        customJSON = json.loads(microservice['spec']['customization'])
         for customAttr, customValue in customJSON.items():
             # if type(customValue) is int:
             #     customValue = "'" + str(customValue) + "'"
-            envVarList.append({'name': customAttr, 'value': str(customValue)})
+            envVarList.append({'name': str.upper(customAttr), 'value': str(customValue)})
         deployObject['spec']['template']['spec']['containers'][0]['env'] = \
             deployObject['spec']['template']['spec']['containers'][0]['env'] + envVarList
 
-    if "inPort" in component['spec']:
+    if "inPort" in microservice['spec']:
         deployObject['spec']['template']['spec']['containers'][0]['ports'] = [{
-            'containerPort': int(component['spec']['inPort']['number'])
+            'containerPort': int(microservice['spec']['inPort']['number'])
         }]
         deployObject['spec']['template']['spec']['containers'][0]['env'] = \
             deployObject['spec']['template']['spec']['containers'][0]['env'] + [{
-                'name': 'INPORT_NUMBER', 'value': component['spec']['inPort']['number']
+                'name': 'INPORT_NUMBER', 'value': microservice['spec']['inPort']['number']
             }]
-    if "outPort" in component['spec']:
+    if "outPort" in microservice['spec']:
         deployObject['spec']['template']['spec']['containers'][0]['env'] = \
             deployObject['spec']['template']['spec']['containers'][0]['env'] + [
-                {'name': 'OUTPUT', 'value': component['metadata']['labels']['output']},
-                {'name': 'OUTPUT_PORT', 'value': component['metadata']['labels']['output_port']},
+                {'name': 'OUTPUT', 'value': microservice['metadata']['labels']['output']},
+                {'name': 'OUTPUT_PORT', 'value': microservice['metadata']['labels']['output_port']},
             ]
 
     return deployObject
