@@ -15,7 +15,7 @@ version = "v1alpha1"
 namespace = "default"
 plural = "applications"
 
-# Osagai mailaren informazioa
+# Mikrozerbitzu mailaren informazioa
 microserviceVersion = "v1alpha1"
 microservicePlural = "microservices"
 
@@ -100,7 +100,7 @@ def deploy_application(appObject, custom_client):
     eventAPI = client.CoreV1Api()
     eventAPI.create_namespaced_event("default", eventObject)
 
-    # Ondoren, aplikazioaren objektuaren egoera atala sortzen da, adieraziz oraindik ez dela osagairik sortu.
+    # Ondoren, aplikazioaren objektuaren egoera atala sortzen da, adieraziz oraindik ez dela mikrozerbitzurik sortu.
     num_microservices = len(appObject['spec']['microservices'])
     status_object = {'status': {'microservices': [0] * num_microservices, 'ready': "0/" + str(num_microservices)}}
     for i in range(int(num_microservices)):
@@ -109,19 +109,19 @@ def deploy_application(appObject, custom_client):
     custom_client.patch_namespaced_custom_object_status(group, version, namespace, plural,
                                                         appObject['metadata']['name'], status_object)
 
-    # Orain, osagai bakoitza sortuko da
+    # Orain, mikrozerbitzu bakoitza sortuko da
     for microsvc in appObject['spec']['microservices']:
-        # Lehenik eta behin, beste osagaiek aztertzen ari den osagaiarekin komunikatu behar badira, Kubernetesen
-        # zerbitzu deituriko bat sortu beharra dago, osagaia eskuragarri egiteko
+        # Lehenik eta behin, beste mikrozerbitzuek aztertzen ari den mikrozerbitzuarekin komunikatu behar badira, Kubernetesen
+        # zerbitzu deituriko bat sortu beharra dago, mikrozerbitzua eskuragarri egiteko
         if 'inPort' in microsvc:
             create_service(microsvc, appObject)
 
-        # Orain, osagaia bera sortu daiteke
+        # Orain, mikrozerbitzua bera sortu daiteke
         create_microservice(custom_client, microsvc, appObject)
 
 
 def delete_application(appObject, custom_client):
-    # Aplikazioaren osagai guztiak ezabatuko dira
+    # Aplikazioaren mikrozerbitzu guztiak ezabatuko dira
     for microsvc in appObject['spec']['microservices']:
         custom_client.delete_namespaced_custom_object(group, microserviceVersion, namespace, microservicePlural,
                                                       microsvc['name'] + '-' + appObject['metadata']['name'])
@@ -133,34 +133,34 @@ def check_modifications(appObject, custom_client):
     # Lehenik, aztertuko da nor izan den aplikazio objektua aldatu duena
     lastManager = appObject['metadata']['managedFields'][len(appObject['metadata']['managedFields']) - 1]['manager']
     if "microservice" in lastManager:
-        # Bakarrik aplikazioaren barruko osagaiak alda dezakete aplikazioaren objektua, zehazki egoera atala
-        # Aldaketaren arduradunatik osagaiaren izena lortzen da
+        # Bakarrik aplikazioaren barruko mikrozerbitzuak alda dezakete aplikazioaren objektua, zehazki egoera atala
+        # Aldaketaren arduradunatik mikrozerbitzuaren izena lortzen da
         microserviceName = lastManager.replace('microservice-', '')
         microserviceName = microserviceName.replace('-' + appObject['metadata']['name'], '')
 
-        # Egoera atala aldatu denez, abiarazitako osagaiak aztertuko dira
+        # Egoera atala aldatu denez, abiarazitako mikrozerbitzuak aztertuko dira
         runningCount = 0
         for i in range(len(appObject['status']['microservices'])):
             if appObject['status']['microservices'][i]['status'] == "Running":
                 runningCount += 1
 
                 if appObject['status']['microservices'][i]['name'] == microserviceName:
-                    # Mezua bidali duen osagaia abiarazita badago, gertaera horren berri emango da
+                    # Mezua bidali duen mikrozerbitzua abiarazita badago, gertaera horren berri emango da
                     eventObject = utils.customResourceEventObject(action='Created', CR_type="Application",
-                                                                  CR_object=appObject,
-                                                                  message=microserviceName + ' osagaia zuzen abiarazita.',
-                                                                  reason='Deployed')
+                                                      CR_object=appObject,
+                                                      message=microserviceName + ' mikrozerbitzua zuzen abiarazita.',
+                                                      reason='Deployed')
                     eventAPI.create_namespaced_event("default", eventObject)
 
-        # Abiarazitako osagai guztiak aztertuta, baten bat abiarazita badago, egoera atala eguneratuko da
+        # Abiarazitako mikrozerbitzu guztiak aztertuta, baten bat abiarazita badago, egoera atala eguneratuko da
         if runningCount != 0:
             appObject['status']['ready'] = str(runningCount) + "/" + appObject['status']['ready'].split("/")[1]
 
             if runningCount == len(appObject['status']['microservices']):
-                # Osagai guztiak abiarazita badaude, gertaera horren berri emango dugu
+                # Mikrozerbitzu guztiak abiarazita badaude, gertaera horren berri emango dugu
                 eventObject = utils.customResourceEventObject(action='Deployed', CR_type="Application",
                                                               CR_object=appObject,
-                                                              message='Osagai guztiak zuzen abiarazita.',
+                                                              message='Mikrozerbitzu guztiak zuzen abiarazita.',
                                                               reason='Running')
                 eventAPI.create_namespaced_event("default", eventObject)
 
@@ -172,14 +172,15 @@ def check_modifications(appObject, custom_client):
 
 
 def create_microservice(custom_client, microsvcObject, appObject):
-    # Osagaiari beharrezko informazioa gehitu zaio (adibidez, hurrengo osagaiarekin komunikatzeko datuak)
+    # Mikrozerbitzuari beharrezko informazioa gehitu zaio (adibidez, hurrengo mikrozerbitzuarekin komunikatzeko datuak)
     microsvcObject = addFlowInfo(microsvcObject, appObject)
-    # Osagaiaren objetua eraikitzen da
+    # Mikrozerbitzuaren objetua eraikitzen da
     microservice_body = utils.microservice_object(microserviceInfo=microsvcObject, appName=appObject['metadata']['name'])
-    # Osagai berria sortzen da
+    # Mikrozerbitzu berria sortzen da
     custom_client.create_namespaced_custom_object(group, microserviceVersion, namespace, microservicePlural, microservice_body)
 
-    # Behin osagaiaren sorkuntza eskaera betez, bere objektuaren egoera atala eguneratuko da, aurkeztuz sortzen ari dela
+    # Behin mikrozerbitzuaren sorkuntza eskaera betez, bere objektuaren egoera atala eguneratuko da, sortzen ari dela
+    # adieraziz
     status_object = {'status': {'situation': 'Creating'}}
     custom_client.patch_namespaced_custom_object_status(group, microserviceVersion, namespace, microservicePlural,
                                                         microservice_body['metadata']['name'], status_object)
@@ -194,15 +195,15 @@ def create_service(microsvcObject, appObject):
 
 
 def addFlowInfo(microsvcObject, appObject):
-    # Metodo honi esker, hurrengo osagaiari buruzko informazio oraingo osagaiari gehituko zaio
-    if "outPort" in microsvcObject:  # bakarrik irteera badu osotu beharko da osagaiaren informazioa
+    # Metodo honi esker, hurrengo mikrozerbitzuari buruzko informazio oraingo mikrozerbitzuari gehituko zaio
+    if "outPort" in microsvcObject:  # bakarrik irteera badu osotu beharko da mikrozerbitzuaren informazioa
         currentMicrosvcOutPort = microsvcObject['outPort']['name']
         nextMicrosvcInPort = getChannelPort(appObject, currentMicrosvcOutPort, 'from')
         nextMicrosvcObject = getMicrosvcObjectByPortName(appObject, nextMicrosvcInPort, 'inPort')
 
-        # Datu guztiak edukita, osagaiari informazio berria gehi daiteke
+        # Datu guztiak edukita, mikrozerbitzuari informazio berria gehi daiteke
         microsvcObject['output'] = nextMicrosvcObject['name'] + '-' + \
-                                   appObject['metadata']['name']  # Kubernetesen osagaien izena beraiena
+                                   appObject['metadata']['name']  # Kubernetesen mikrozerbitzuen izena beraiena
         # gehi aplikazioarena da, bakarra izateko
         microsvcObject['output_port'] = nextMicrosvcObject['inPort']['number']
 
