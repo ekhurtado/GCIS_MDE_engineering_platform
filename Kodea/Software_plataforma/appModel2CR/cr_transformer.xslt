@@ -11,28 +11,28 @@ kind: Application
 metadata:
   name: <xsl:value-of select="replace(lower-case(@name), '_', '-')"/>
 spec:
-  components: <xsl:for-each select="microservice">
+  microservices: <xsl:for-each select="microservice">
     - name: <xsl:value-of select="lower-case(@name)"/>
       service: <xsl:value-of select="@service"/>
-      image: <xsl:value-of select="@image"/>
+      image: <xsl:value-of select="@imgBase"/>
     <xsl:if test="count(@customization) > 0">
       customization: '<xsl:value-of select="replace(@customization, $singleQuote, $doubleQuote)"/>'</xsl:if>
     <xsl:if test="count(inPort) > 0">
       inPort:
-        name: <xsl:value-of select="lower-case(inPort/@name)"/>
+        name: <xsl:value-of select="replace(lower-case(inPort/@name), 'iport', '-iport')"/>
         dataType: <xsl:value-of select="inPort/@dataType"/>
         protocol: <xsl:value-of select="inPort/@protocol"/>
         number: '<xsl:value-of select="inPort/@number"/>'</xsl:if>
     <xsl:if test="count(outPort) > 0">
       outPort:
-        name: <xsl:value-of select="lower-case(outPort/@name)"/>
+        name: <xsl:value-of select="replace(lower-case(outPort/@name), 'oport', '-oport')"/>
         dataType: <xsl:value-of select="outPort/@dataType"/>
         protocol: <xsl:value-of select="outPort/@protocol"/>
 	</xsl:if>
   </xsl:for-each>
   channels: <xsl:for-each select="channel">
-    - from: <xsl:value-of select="lower-case(@from)"/>
-      to: <xsl:value-of select="lower-case(@to)"/>
+    - from: <xsl:value-of select="replace(lower-case(@from), 'oport', '-oport')"/>
+      to: <xsl:value-of select="replace(lower-case(@to), 'iport', '-iport')"/>
   </xsl:for-each>
   </xsl:template>
 </xsl:stylesheet>

@@ -7,7 +7,8 @@ from flask import Flask, request
 function = os.environ.get('SERVICE')
 inPortNumber = os.environ.get('INPORT_NUMBER')
 # customization = os.environ.get('CUSTOMIZATION')
-step = os.environ.get('CUSTOM_STEP')
+step = os.environ.get('CUSTOM_URRATSA')
+multiplier = os.environ.get('CUSTOM_BIDERKATZAILEA')
 # step = json.loads(customization)['urratsa']
 output = os.environ.get('OUTPUT')
 output_port = os.environ.get('OUTPUT_PORT')
@@ -121,14 +122,13 @@ def multiplyValue(messageData):
     type = jsonData['type']
     value = jsonData['value']
 
-    # Funtzionalitatearen eragiketa betetzen dugu
-    value = value * step
-
     # Sartutako urratsa mota desberdinekoa izanez, emaitza desberdina izan daiteke, beraz ziurtatuko gara
     match type:
         case "natural" | "integer":
+            value = value * multiplier  # Funtzionalitatearen eragiketa betetzen dugu
             value = int(value)
         case "float":
+            value = value * float(multiplier)   # Funtzionalitatearen eragiketa betetzen dugu
             value = float(value)
         case _:
             pass

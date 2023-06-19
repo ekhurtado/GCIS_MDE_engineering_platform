@@ -6,8 +6,12 @@ public class ZenbakienSorkuntza
 
     static string function = Environment.GetEnvironmentVariable("SERVICE");
 //    static string customization = Environment.GetEnvironmentVariable("CUSTOMIZATION");
-    static string type = Environment.GetEnvironmentVariable("CUSTOM_TYPE");
-    static string firstValue = Environment.GetEnvironmentVariable("CUSTOM_FIRSTVALUE");
+
+//    static string type = Environment.GetEnvironmentVariable("CUSTOM_TYPE");
+    static string type = Environment.GetEnvironmentVariable("CUSTOM_MOTA");
+//    static string firstValue = Environment.GetEnvironmentVariable("CUSTOM_FIRSTVALUE");
+    static string firstValue = Environment.GetEnvironmentVariable("CUSTOM_HASIERAKOBALIOA");
+
     static string output = Environment.GetEnvironmentVariable("OUTPUT");
     static string output_port = Environment.GetEnvironmentVariable("OUTPUT_PORT");
 
@@ -38,13 +42,16 @@ public class ZenbakienSorkuntza
 
         switch (function)
         {
-            case "NaturalValue":
+//            case "NaturalValue":
+            case "BalioNaturalak":
                 await NaturalValue();
                 break;
-            case "IntegerValue":
+//            case "IntegerValue":
+            case "BalioOsoak":
                 await IntegerValue();
                 break;
-            case "FloatValue":
+//            case "FloatValue":
+            case "BalioDezimalak":
                 await FloatValue();
                 break;
             default:

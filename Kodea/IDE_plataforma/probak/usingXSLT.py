@@ -35,6 +35,6 @@ with PySaxonProcessor(license=False) as proc:
     document = proc.parse_xml(xml_text=contenido)
     executable = xsltproc.compile_stylesheet(stylesheet_file="../txantiloiak/customNode/webView.xslt")
     # executable = xsltproc.compile_stylesheet(stylesheet_file="../txantiloiak/customNode/functionalPart.xslt")
-    # executable = xsltproc.compile_stylesheet(stylesheet_file="../../Software_plataforma/appModel2CR/transformer.xslt")
+    # executable = xsltproc.compile_stylesheet(stylesheet_file="../../Software_plataforma/appModel2CR/cr_transformer.xslt")
     output = executable.transform_to_string(xdm_node=document)
     print(output)

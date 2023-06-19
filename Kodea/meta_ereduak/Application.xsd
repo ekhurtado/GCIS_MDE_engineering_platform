@@ -20,7 +20,7 @@
 			</xs:sequence>
 			<xs:attribute name="name" type="xs:string" use="required"/>
 			<xs:attribute name="service" type="xs:string" use="required"/>
-			<xs:attribute name="image" type="xs:string" use="required"/>
+			<xs:attribute name="imgBase" type="xs:string" use="required"/>
 			<xs:attribute name="customization" type="xs:string" use="optional"/>
 		</xs:complexType>
 	</xs:element>

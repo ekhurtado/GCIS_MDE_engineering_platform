@@ -52,13 +52,17 @@ public static class Utils
 
         switch (type)
         {
-            case "random":
+//            case "random":
+            case "ausazkoa":
                 Random random = new Random();
                 return random.Next(1, 1001);    // ausazko zenbakia 1 eta 1000 artean
-            case "increasingValue":
+//            case "increasingValue":
+//            case "increasingValue":
+            case "goranzkoa":
                 if (previousValue < 1) { previousValue = 1; }
                 return previousValue + 1;
-            case "decreasingValue":
+//            case "decreasingValue":
+            case "beheranzkoa":
                 int createdValue = previousValue - 1;
                 if (createdValue < 1) { createdValue = 1; }
                 return createdValue;
@@ -73,12 +77,15 @@ public static class Utils
 
         switch (type)
         {
-            case "random":
+//            case "random":
+            case "ausazkoa":
                 Random random = new Random();
                 return random.Next(-1000, 1001);    // ausazko zenbakia -1000 eta 1000 artean
-            case "increasingValue":
+//            case "increasingValue":
+            case "goranzkoa":
                 return previousValue + 1;
-            case "decreasingValue":
+//            case "decreasingValue":
+            case "beheranzkoa":
                 return previousValue - 1;
             default:
                 Console.WriteLine("Invalid customization name.");
@@ -91,18 +98,21 @@ public static class Utils
 
         switch (type)
         {
-            case "random":
+//            case "random":
+            case "ausazkoa":
                 Random random = new Random();
                 float minValue = -1000.0f;
                 float maxValue = 1000.0f;
                 return (float)(random.NextDouble() * (maxValue - minValue) + minValue);    // ausazko zenbakia -1000.0 eta 1000.0 artean
-            case "increasingValue":
+//            case "increasingValue":
+            case "goranzkoa":
                 return previousValue + 1.0f;
-            case "decreasingValue":
+//            case "decreasingValue":
+            case "beheranzkoa":
                 return previousValue - 1.0f;
             default:
                 Console.WriteLine("Invalid customization name.");
-                return -1.0f;
+                return -1.5f;
         }
     }
 

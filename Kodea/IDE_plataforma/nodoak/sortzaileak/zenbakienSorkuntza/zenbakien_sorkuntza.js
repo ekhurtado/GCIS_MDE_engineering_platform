@@ -11,7 +11,7 @@ const componentName = "ZenbakienSorkuntza";
 const imgBase = "gcr.io/gcis/creating-numbers:latest";
 
 module.exports = function(RED) {
-    function ArgazkienSorkuntza(config) {
+    function ZenbakienSorkuntza(config) {
         RED.nodes.createNode(this,config);
         
         this.function = config.function;
@@ -32,9 +32,9 @@ module.exports = function(RED) {
             // Funtzionalitate guztien informazioa betetzen dugu
             // --------------------
             const allFunctionsInfo= [
-                naturalValueInfo = new FunctionInfo("BalioNaturalak", null, "HTTP", null, "TNumber", "mota,hasierakobalioa"),
-                integerValue = new FunctionInfo("BalioOsoak", null, "HTTP", null, "TNumber", "mota,hasierakobalioa"),
-                floatValue = new FunctionInfo("BalioDezimalak", null, "HTTP", null, "TNumber", "mota,hasierakobalioa")
+                naturalValueInfo = new FunctionInfo("BalioNaturalak", null, "HTTP", null, "TZenbaki", "mota,hasierakobalioa"),
+                integerValue = new FunctionInfo("BalioOsoak", null, "HTTP", null, "TZenbaki", "mota,hasierakobalioa"),
+                floatValue = new FunctionInfo("BalioDezimalak", null, "HTTP", null, "TZenbaki", "mota,hasierakobalioa")
             ]
 
             // Hautatutako funtzionalitatearen informazioa lortzen dugu
@@ -87,5 +87,5 @@ module.exports = function(RED) {
         }
     }
 
-    RED.nodes.registerType("argazkienSorkuntza",ArgazkienSorkuntza);
+    RED.nodes.registerType("zenbakienSorkuntza",ZenbakienSorkuntza);
 }

@@ -13,27 +13,27 @@ import utils
 group = "ehu.gcis.org"
 version = "v1alpha1"
 namespace = "default"
-plural = "components"
+plural = "microservices"
 
 applicationPlural = "applications"
 
 
 def controller():
     # Lehenik eta behin, klusterraren konfigurazio fitxategia
-    # config.load_kube_config(os.path.join("../klusterKonfigurazioa/k3s.yaml"))
+    config.load_kube_config(os.path.join("../klusterKonfigurazioa/k3s.yaml"))
 
     # Kontroladorea Docker edukiontzi baten barruan, eta klusterrean hedatu badago, kode hau erabili
-    if 'KUBERNETES_PORT' in os.environ:
-        config.load_incluster_config()
-    else:
-        config.load_kube_config()
+    # if 'KUBERNETES_PORT' in os.environ:
+    #     config.load_incluster_config()
+    # else:
+    #     config.load_kube_config()
 
     custom_client = client.CustomObjectsApi()  # Custom objektuetarako APIa lortzen da
     client_extension = client.ApiextensionsV1Api()  # CRDekin lan egiteko APIa lortzen da
 
     # Ondoren, osagaiaren CRD sortuta ez badago kontrobatuko da
     try:
-        client_extension.create_custom_resource_definition(utils.CRD_comp())
+        client_extension.create_custom_resource_definition(utils.CRD_microsvc())
         time.sleep(2)  # 2 segundo itxaroten da ondo sortu dela ziurtatzeko
         print("Osagaientzako CRDa sortu da.")
     except urllib3.exceptions.MaxRetryError as e:
@@ -72,7 +72,7 @@ def watcher(custom_client):
         match eventType:
             case "ADDED":  # Osagai berria
                 # Osagaiarekin erlazionatutako gertaera sortzen da, abisatuz osagai berria sortu dela
-                eventObject = utils.customResourceEventObject(action='Created', CR_type="Component",
+                eventObject = utils.customResourceEventObject(action='Created', CR_type="Microservice",
                                                               CR_object=object,
                                                               message='Osagai berria zuzen sortu da.',
                                                               reason='Created')
@@ -80,32 +80,32 @@ def watcher(custom_client):
                 eventAPI.create_namespaced_event("default", eventObject)
 
                 # Osagaia abiarazten da
-                deploy_component(object, custom_client)
+                deploy_microservice(object, custom_client)
             case "DELETED":  # Osagaia ezabatuta
-                delete_component(object)
+                delete_microservice(object)
             case _:  # default case
                 pass
 
 
-def deploy_component(compObject, custom_client):
+def deploy_microservice(microsvcObject, custom_client):
     # Hasteko, osagaiaren egoera atala eguneratzen da
     status_object = {'status': {'situation': 'Deploying'}}
     custom_client.patch_namespaced_custom_object_status(group, version, namespace, plural,
-                                                        compObject['metadata']['name'], status_object)
+                                                        microsvcObject['metadata']['name'], status_object)
 
     # Bestalde, egoera horren berri emateko gertaera sortzen da
     eventAPI = client.CoreV1Api()
-    eventObject = utils.customResourceEventObject(action='deploying', CR_type="Component",
-                                                  CR_object=compObject,
+    eventObject = utils.customResourceEventObject(action='deploying', CR_type="Microservice",
+                                                  CR_object=microsvcObject,
                                                   message='Osagaiaren hedapena hasita.',
                                                   reason='Deploying')
     eventAPI.create_namespaced_event("default", eventObject)
 
-    myAppName = compObject['metadata']['labels']['applicationName']  # dagokion aplikazioaren izena jasoko dugu
-    shortName = compObject['metadata']['labels']['shortName']  # osagaiaren jatorrizko izena lortzen da
+    myAppName = microsvcObject['metadata']['labels']['applicationName']  # dagokion aplikazioaren izena jasoko dugu
+    shortName = microsvcObject['metadata']['labels']['shortName']  # osagaiaren jatorrizko izena lortzen da
 
     # Hedapen fitxategia lortzen da
-    deployment_yaml = utils.deploymentObject(compObject, "component-controller", myAppName, shortName)
+    deployment_yaml = utils.deploymentObject(microsvcObject, "microservice-controller", myAppName, shortName)
 
     # Kuberneteseko APIarekin, osagaia sisteman hedatzen da
     appsAPI = client.AppsV1Api()
@@ -120,8 +120,8 @@ def deploy_component(compObject, custom_client):
         availableReplicas = status_deployment.status.available_replicas
 
     # Osagaia zuzen hedatu dela komunikatzen da
-    eventObject = utils.customResourceEventObject(action='deployed', CR_type="Component",
-                                                  CR_object=compObject,
+    eventObject = utils.customResourceEventObject(action='deployed', CR_type="Microservice",
+                                                  CR_object=microsvcObject,
                                                   message='Osagaia zuzen hedatu da.',
                                                   reason='Running')
     eventAPI.create_namespaced_event("default", eventObject)
@@ -129,16 +129,16 @@ def deploy_component(compObject, custom_client):
     # Osagaiaren egoera eguneratzen da, abiarazita dagoela komunikatuz
     status_object = {'status': {'replicas': 1, 'situation': 'Running'}}
     custom_client.patch_namespaced_custom_object_status(group, version, namespace, plural,
-                                                        compObject['metadata']['name'], status_object)
+                                                        microsvcObject['metadata']['name'], status_object)
 
     # Azkenik, erlazionatutako aplikazioaren egoera aldatzen da. Horretarako, aplikazioaren objektua lortzen da,
     # osagaiaren informazioa bilatzen da eta informazio berria sartzen da (abiarazita dagoela)
     relatedApp = custom_client.get_namespaced_custom_object_status(group, version, namespace,
                                                                    applicationPlural, myAppName)
-    field_manager = 'component-' + shortName + '-' + relatedApp['metadata']['name']
-    for i in range(len(relatedApp['status']['components'])):
-        if relatedApp['status']['components'][i]['name'] == compObject['spec']['name']:
-            relatedApp['status']['components'][i]['status'] = "Running"
+    field_manager = 'microservice-' + shortName + '-' + relatedApp['metadata']['name']
+    for i in range(len(relatedApp['status']['microservices'])):
+        if relatedApp['status']['microservices'][i]['name'] == microsvcObject['spec']['name']:
+            relatedApp['status']['microservices'][i]['status'] = "Running"
             custom_client.patch_namespaced_custom_object_status(group, version, namespace,
                                                                 applicationPlural, myAppName,
                                                                 {'status': relatedApp['status']},
@@ -146,15 +146,15 @@ def deploy_component(compObject, custom_client):
             break
 
 
-def delete_component(compObject):
+def delete_microservice(microsvcObject):
     # Osagaiaren objektua ezabatu denez, berarekin erlazionatutako Deployment-a ere ezabatuko da
     client_deploys = client.AppsV1Api()
-    client_deploys.delete_namespaced_deployment(compObject['metadata']['name'], namespace)
+    client_deploys.delete_namespaced_deployment(microsvcObject['metadata']['name'], namespace)
 
     # Gainera, zerbitzuren bat erlazionaturik badu, ere ezabatu beharko da
-    if "inPort" in compObject['spec']:
+    if "inPort" in microsvcObject['spec']:
         coreAPI = client.CoreV1Api()
-        coreAPI.delete_namespaced_service(compObject['metadata']['name'], namespace)
+        coreAPI.delete_namespaced_service(microsvcObject['metadata']['name'], namespace)
 
 
 if __name__ == '__main__':
