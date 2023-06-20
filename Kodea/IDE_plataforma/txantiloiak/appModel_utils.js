@@ -31,11 +31,11 @@ function createFirstMicroservice(componentName, codePath, selectedFunctionInfo) 
         $ : {   // $ jarri behar da mikrozerbitzuen zerrendan sartutakoan "Microservice" objektu gisa hartzeko
             name: componentName,
             service: selectedFunctionInfo.name,
-            image: codePath
+            imgBase: codePath
         },
         outPort: {
             $: {
-                name: selectedFunctionInfo.portName + 'OPort',
+                name: componentName + 'OPort',
                 protocol: selectedFunctionInfo.outProtocol,
                 dataType: selectedFunctionInfo.outDataType
             }
@@ -49,11 +49,11 @@ function createNewMicroservice(componentName, codePath, selectedFunctionInfo, se
         $ : {   // $ jarri behar da mikrozerbitzuen zerrendan sartutakoan "Microservice" objektu gisa hartzeko
             name: componentName,
             service: selectedFunctionInfo.name,
-            image: codePath
+            imgBase: codePath
         },
         inPort: {
             $: {
-                name: selectedFunctionInfo.portName + 'IPort',
+                name: componentName + 'IPort',
                 protocol: selectedFunctionInfo.inProtocol,
                 dataType: selectedFunctionInfo.inDataType,
                 number: selectedPortNumber
@@ -61,7 +61,7 @@ function createNewMicroservice(componentName, codePath, selectedFunctionInfo, se
         },
         outPort: {
             $: {
-                name: selectedFunctionInfo.portName + 'OPort',
+                name: componentName + 'OPort',
                 protocol: selectedFunctionInfo.outProtocol,
                 dataType: selectedFunctionInfo.outDataType
             }
@@ -75,11 +75,11 @@ function createLastMicroservice(componentName, codePath, selectedFunctionInfo, s
         $ : {   // $ jarri behar da mikrozerbitzuen zerrendan sartutakoan "Microservice" objektu gisa hartzeko
             name: componentName,
             service: selectedFunctionInfo.name,
-            image: codePath
+            imgBase: codePath
         },
         inPort: {
             $: {
-                name: selectedFunctionInfo.portName + 'IPort',
+                name: componentName + 'IPort',
                 protocol: selectedFunctionInfo.inProtocol,
                 dataType: selectedFunctionInfo.inDataType,
                 number: selectedPortNumber

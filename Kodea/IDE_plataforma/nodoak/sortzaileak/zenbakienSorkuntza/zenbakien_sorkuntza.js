@@ -8,7 +8,7 @@ const {FunctionInfo, createFirstMicroservice} = require('../appModel_utils.js');
 
 // Osagaiaren aldagaiak
 const componentName = "ZenbakienSorkuntza";
-const imgBase = "gcr.io/gcis/creating-numbers:latest";
+const imgBase = "ekhurtado/gcis:zenbakien-sorkuntza";
 
 module.exports = function(RED) {
     function ZenbakienSorkuntza(config) {
@@ -32,9 +32,9 @@ module.exports = function(RED) {
             // Funtzionalitate guztien informazioa betetzen dugu
             // --------------------
             const allFunctionsInfo= [
-                naturalValueInfo = new FunctionInfo("BalioNaturalak", null, "HTTP", null, "TZenbaki", "mota,hasierakobalioa"),
-                integerValue = new FunctionInfo("BalioOsoak", null, "HTTP", null, "TZenbaki", "mota,hasierakobalioa"),
-                floatValue = new FunctionInfo("BalioDezimalak", null, "HTTP", null, "TZenbaki", "mota,hasierakobalioa")
+                naturalValueInfo = new FunctionInfo("BalioNaturalak", null, "HTTP", null, "TZenbaki", "custom_mota,custom_hasierakobalioa"),
+                integerValue = new FunctionInfo("BalioOsoak", null, "HTTP", null, "TZenbaki", "custom_mota,custom_hasierakobalioa"),
+                floatValue = new FunctionInfo("BalioDezimalak", null, "HTTP", null, "TZenbaki", "custom_mota,custom_hasierakobalioa")
             ]
 
             // Hautatutako funtzionalitatearen informazioa lortzen dugu

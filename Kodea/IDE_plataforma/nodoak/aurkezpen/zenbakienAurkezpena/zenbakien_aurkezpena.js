@@ -25,8 +25,8 @@ module.exports = function(RED) {
                 // --------------------
                 const allFunctionsInfo= [
                     consoleDisplay = new FunctionInfo("PantailaAurkezpen", "HTTP", null, "TZenbaki", null, null),
-                    saveTXT = new FunctionInfo("GordeTXT", "HTTP", null, "TZenbaki", null, "fitxategiizen"),
-                    saveCSV = new FunctionInfo("GordeCSV", "HTTP", null, "TZenbaki", null, "fitxategiizen"),
+                    saveTXT = new FunctionInfo("GordeTXT", "HTTP", null, "TZenbaki", null, "custom_fitxategiizen"),
+                    saveCSV = new FunctionInfo("GordeCSV", "HTTP", null, "TZenbaki", null, "custom_fitxategiizen"),
                 ]
 
                 // Hautatutako funtzionalitatearen informazioa lortzen dugu

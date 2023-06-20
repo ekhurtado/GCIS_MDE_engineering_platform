@@ -26,9 +26,9 @@ module.exports = function(RED) {
                 // Funtzionalitate guztien informazioa betetzen dugu
                 // --------------------
                 const allFunctionsInfo= [
-                    increaseValueInfo = new FunctionInfo("BalioaHanditu", "HTTP", "HTTP", "TNumber", "TNumber", "urratsa"),
-                    decreaseValueInfo = new FunctionInfo("BalioaTxikitu", "HTTP", "HTTP", "TNumber", "TNumber", "urratsa"),
-                    multiplyValueInfo = new FunctionInfo("BalioaBiderkatu", "HTTP", "HTTP", "TNumber", "TNumber", "biderkatzailea"),
+                    increaseValueInfo = new FunctionInfo("BalioaHanditu", "HTTP", "HTTP", "TZenbaki", "TZenbaki", "custom_urratsa"),
+                    decreaseValueInfo = new FunctionInfo("BalioaTxikitu", "HTTP", "HTTP", "TZenbaki", "TZenbaki", "custom_urratsa"),
+                    multiplyValueInfo = new FunctionInfo("BalioaBiderkatu", "HTTP", "HTTP", "TZenbaki", "TZenbaki", "custom_biderkatzailea"),
                 ]
 
                 // Hautatutako funtzionalitatearen informazioa lortzen dugu
