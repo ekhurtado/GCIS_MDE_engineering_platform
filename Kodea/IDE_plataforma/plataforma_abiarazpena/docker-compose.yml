@@ -1,0 +1,17 @@
+version: "3.6"
+
+services:
+      
+  nodered:
+    build:
+      context: .
+      dockerfile: Dockerfile_NodeRed
+    image: ekhurtado/gcis-fog:nodered
+    container_name: nodered
+    ports:
+      - 1880:1880
+    volumes:
+      - node-red-data:/data
+
+volumes:
+  node-red-data:
