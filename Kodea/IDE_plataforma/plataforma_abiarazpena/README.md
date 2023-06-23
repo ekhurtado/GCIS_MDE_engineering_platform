@@ -22,7 +22,7 @@ Irudia errepositorioan edukita, abiarazi ahalko dugu. Horretarako ere bi aukera 
 ### Gailu lokaleko abiarazpena
 Gailu lokalean exekuta nahi bada, hurrengo Docker komandoak erabil ditzakezu (aurrekoaren berdina, _docker-compose_ erabiltzea aukeratzen baduzu edo _Docker_ normala):
 ```
-docker-compose build
+docker-compose run
 ```
 edo
 ```
