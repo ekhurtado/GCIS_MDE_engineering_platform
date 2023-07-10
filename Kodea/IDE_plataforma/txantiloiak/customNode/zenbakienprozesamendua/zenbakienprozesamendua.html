@@ -1,0 +1,120 @@
+<script xmlns:fn="http://www.w3.org/2005/xpath-functions"
+         xmlns:str="http://exslt.org/strings"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         type="text/javascript">
+	function showZenbakienProzesamenduaCustomization() {
+		const selectElement = document.getElementById("node-input-function");
+		const customizationContainer = document.getElementById("contenedor-customization");
+
+		// Kode honen bitartez customization datuak lortzeko elementuak erakutsi edo izkatatu ditzakezu
+		// Nahi izanez gero, kode hau modifika dezakezu, garatutako osagaiaren arabera
+		switch (selectElement.value) {
+			case "":
+				customizationContainer.style.display = "none";
+				break;
+			default:
+				customizationContainer.style.display = "block";
+				break;
+		}
+	}
+</script>
+<script xmlns:fn="http://www.w3.org/2005/xpath-functions"
+         xmlns:str="http://exslt.org/strings"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         type="text/javascript">
+	RED.nodes.registerType('ZenbakienProzesamendua',{
+		category: 'prozesatze',
+		
+		defaults: {
+			function:{value: ""},
+			portnumber: {value: -1},
+			custom_urratsa: {value: ""},
+				custom_biderkatzailea: {value: ""},
+				
+		},
+		inputs:1,
+		outputs:1,
+			
+		icon: 'prozesatze.png',
+		label: function() {
+			return this.label || "ZenbakienProzesamendua";
+		},
+		oneditprepare: function() {
+			var node = this;
+			$("#node-input-function").on("change", function() {
+				node.label = $(this).val();
+			});
+		},
+		oneditsave: function () {
+			this.label = $("#node-input-function").val();
+		}
+	});
+</script>
+<script xmlns:fn="http://www.w3.org/2005/xpath-functions"
+         xmlns:str="http://exslt.org/strings"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         type="text/html"
+         data-template-name="ZenbakienProzesamendua">
+   <div class="form-row">
+      <label for="node-input-function">
+         <i class="fa fa-tag"/> Funtzionalitateak </label>
+      <span>  </span>
+      <select name="function"
+               id="node-input-function"
+               onchange="showZenbakienProzesamenduaCustomization()">
+         <option value="BalioaHanditu">Balioa handitu</option>
+         <option value="BalioaTxikitu">Balioa txikitu</option>
+         <option value="BalioaBiderkatu">Balioa biderkatu</option>
+      </select>
+      <label for="node-input-portnumber">
+         <i class="fa fa-tag"/> Aukeratu ataka zenbakia </label>
+      <input name="portnumber"
+              id="node-input-portnumber"
+              type="number"
+              min="0"
+              max="65536"
+              step="1"
+              placeholder="Sarrera-ataka zenbakia"/>
+      <div id="contenedor-customization" style="display: none;">
+         <label for="node-input-custom_urratsa">
+            <i class="fa fa-tag"/>custom_urratsa</label>
+         <!--Sar ezazu hemen customization balioa lortzeko elementu egokia, bere mota kontuan edukiz (select, input...)-->
+         <!--Defektuz, textuak lortzeko baliabideak gehituko da-->
+         <input name="custom_urratsa" id="node-input-custom_urratsa" type="text"/>
+         <label for="node-input-custom_biderkatzailea">
+            <i class="fa fa-tag"/>custom_biderkatzailea</label>
+         <!--Sar ezazu hemen customization balioa lortzeko elementu egokia, bere mota kontuan edukiz (select, input...)-->
+         <!--Defektuz, textuak lortzeko baliabideak gehituko da-->
+         <input name="custom_biderkatzailea"
+                 id="node-input-custom_biderkatzailea"
+                 type="text"/>
+      </div>
+   </div>
+</script>
+<script xmlns:fn="http://www.w3.org/2005/xpath-functions"
+         xmlns:str="http://exslt.org/strings"
+         xmlns:xs="http://www.w3.org/2001/XMLSchema"
+         type="text/html"
+         data-help-name="ZenbakienProzesamendua">
+   <p>Description of the component.</p>
+   <ul>
+      <li>
+         <b>Balioa handitu</b>: Jasotako balioa aukeratutako urratsarekin gehitzen du.
+			Input Protocol: HTTP.
+		
+			Output protocol: HTTP.
+		</li>
+      <li>
+         <b>Balioa txikitu</b>: Jasotako balioa aukeratutako urratsarekin kentzen du.
+			Input Protocol: HTTP.
+		
+			Output protocol: HTTP.
+		</li>
+      <li>
+         <b>Balioa biderkatu</b>: Jasotako balioa aukeratutako zenbakiarekin biderkatzen du.
+			Input Protocol: HTTP.
+		
+			Output protocol: HTTP.
+		</li>
+   </ul>
+</script>

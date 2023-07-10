@@ -121,8 +121,8 @@ Bestelako metodoak
 
 
 def getIconFilePath():
-    print("Osagairako ikono propia aukeratu nahi duzu? Ezesko kasuan kategoriako ikonoa (existitzen bada)"
-          "edo defekuzko ikonoa esleituko zaio")
+    print("Osagairako ikono propia aukeratu nahi duzu? Ezesko kasuan kategoriako ikonoa (existitzen bada) "
+          "edo defektuzko ikonoa esleituko zaio")
     print("\t\t -> 1: Bai.")
     print("\t\t -> 2: Ez.")
     while True:
