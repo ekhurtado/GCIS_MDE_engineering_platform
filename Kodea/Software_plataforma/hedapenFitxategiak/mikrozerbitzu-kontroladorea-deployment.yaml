@@ -6,13 +6,13 @@ metadata:
     kompose.version: 1.21.0 (992df58d8)
   creationTimestamp: null
   labels:
-    io.kompose.service: osagai-kontroladorea
-  name: osagai-kontroladorea
+    io.kompose.service: mikrozerbitzu-kontroladorea
+  name: mikrozerbitzu-kontroladorea
 spec:
   replicas: 1
   selector:
     matchLabels:
-      io.kompose.service: osagai-kontroladorea
+      io.kompose.service: mikrozerbitzu-kontroladorea
   strategy: {}
   template:
     metadata:
@@ -21,12 +21,12 @@ spec:
         kompose.version: 1.21.0 (992df58d8)
       creationTimestamp: null
       labels:
-        io.kompose.service: osagai-kontroladorea
+        io.kompose.service: mikrozerbitzu-kontroladorea
     spec:
       containers:
-      - image: ekhurtado/gcis:osagai-kontroladorea
+      - image: ekhurtado/gcis:mikrozerbitzu-kontroladorea
         imagePullPolicy: Always
-        name: osagai-kontroladorea
+        name: mikrozerbitzu-kontroladorea
         resources: {}
       restartPolicy: Always
       serviceAccountName: ""
