@@ -6,17 +6,12 @@ from flask import Flask, request
 
 function = os.environ.get('SERVICE')
 inPortNumber = os.environ.get('INPORT_NUMBER')
-# customization = os.environ.get('CUSTOMIZATION')
+
 step = os.environ.get('CUSTOM_URRATSA')
 multiplier = os.environ.get('CUSTOM_BIDERKATZAILEA')
-# step = json.loads(customization)['urratsa']
+
 output = os.environ.get('OUTPUT')
 output_port = os.environ.get('OUTPUT_PORT')
-
-# TODO ezabatu
-# function = 'BalioaHanditu'
-# step = 2
-# inPortNumber = 7000
 
 app = Flask(__name__)
 
@@ -128,7 +123,7 @@ def multiplyValue(messageData):
             value = value * multiplier  # Funtzionalitatearen eragiketa betetzen dugu
             value = int(value)
         case "float":
-            value = value * float(multiplier)   # Funtzionalitatearen eragiketa betetzen dugu
+            value = value * float(multiplier)  # Funtzionalitatearen eragiketa betetzen dugu
             value = float(value)
         case _:
             pass
@@ -137,8 +132,7 @@ def multiplyValue(messageData):
 
 
 def sendData(type, value):
-
-    url = 'http://'+output+':'+output_port
+    url = 'http://' + output + ':' + output_port
     headers = {'Content-Type': 'text/plain'}
     try:
         r = requests.post(url, headers=headers, data='{"type": "' + type + '", "value": ' + str(value) + '}')
