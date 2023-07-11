@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<component name="ZenbakienSorkuntza" category="sortzaile"
+			description="Osagai honek zenbaki desberdinak sortzen ditu." imgBase="ekhurtado/gcis:zenbakien-sorkuntza">
+	<functionality id="BalioNaturalak" name="Balio naturalak"
+				description="Balio naturalak sortzen ditu." customization="custom_mota,custom_hasierakobalioa">
+		<outputs name="BalioEmaitza" dataType="TZenbaki" protocol="HTTP"/>
+	</functionality>
+	<functionality id="BalioOsoak" name="Balio osoak"
+				description="Balio osoak sortzen ditu." customization="custom_mota,custom_hasierakobalioa">
+		<outputs name="BalioEmaitza" dataType="TZenbaki" protocol="HTTP"/>
+	</functionality>
+	<functionality id="BalioDezimalak" name="Balio dezimalak"
+				description="Balio dezimalak sortzen ditu." customization="custom_mota,custom_hasierakobalioa">
+		<outputs name="BalioEmaitza" dataType="TZenbaki" protocol="HTTP"/>
+	</functionality>
+</component>
+
+
+

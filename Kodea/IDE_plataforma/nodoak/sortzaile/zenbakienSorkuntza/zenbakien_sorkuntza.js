@@ -22,8 +22,8 @@ module.exports = function(RED) {
         var RED2 = require.main.require('node-red');
         var miflow = RED2.nodes.getFlow(this.z);    // this.z -> nodoa dagoen fluxuaren IDa
         var appName = miflow.label;
-        if (appName.includes(" "))
-            appName = appName.replace(" ", "_");
+        if (appName.includes(' '))
+            appName = appName.replace(/ /g, '_');
 
         if (node.function === "") {
             node.error(`Ez da funtzionalitaterik aukeratu nodo batean. Jakiteko zein den, klikatu errore mezu honetan.`);

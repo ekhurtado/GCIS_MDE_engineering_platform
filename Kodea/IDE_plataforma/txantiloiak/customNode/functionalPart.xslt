@@ -31,6 +31,8 @@ module.exports = function(RED) {
 		var RED2 = require.main.require('node-red');
         var nireflow = RED2.nodes.getFlow(this.z);    // this.z -> nodoa dagoen fluxuaren IDa
         var appName = nireflow.label;
+		if (appName.includes(' '))
+            appName = appName.replace(/ /g, '_');
 	  	</xsl:if>
 
 	  	 // Funtzionalitate guztien informazioa betetzen dugu

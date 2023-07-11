@@ -1,0 +1,19 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<component name="ZenbakienAurkezpena" category="aurkezpen"
+			description="Osagai honek zenbakiak aurkezteko era desberdinak eskaintzen ditu." imgBase="ekhurtado/gcis:zenbakien-aurkezpena">
+	<functionality id="PantailaAurkezpen" name="Pantaila aurkezpen"
+				description="Jasotako balioak programaren kontsolatik aurkezten ditu.">
+		<inputs name="JasotakoBalioa" dataType="TZenbaki" protocol="HTTP"/>
+	</functionality>
+	<functionality id="GordeTXT" name="Gorde TXT"
+				description="Jasotako balioak TXT fitxategi batean biltegiratzen ditu." customization="custom_fitxategiizen">
+		<inputs name="JasotakoBalioa" dataType="TZenbaki" protocol="HTTP"/>
+	</functionality>
+	<functionality id="GordeCSV" name="Gorde CSV"
+				description="Jasotako balioak CSV fitxategi batean biltegiratzen ditu." customization="custom_fitxategiizen">
+		<inputs name="JasotakoBalioa" dataType="TZenbaki" protocol="HTTP"/>
+	</functionality>
+</component>
+
+
+
