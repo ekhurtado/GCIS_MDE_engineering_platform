@@ -18,3 +18,9 @@ Aipatu beharra dago bakoitzak _README_ fitxategi bat duela, teknologia eta balia
 Ataza honetan Master Amaierako Lan honek proposatzen duen ikuspegiaren irudia aurkezten da, parte hartzen duten teknologiak barne.
 
 ![Soluzioaren teknologiak](Irudiak/Soluzioaren_deskribapena_teknologiak.png)
+
+## MALaren euskarri bisuala
+
+Master Amaierako Lan honetan proposatzen den ikuspegia argitzeko, eta bete behar diren jarduera guztiak era bisual batean aurkezteko euskarri bisual bat garatu da. _Youtube_ bideoa eskuragarri dago hemen:
+
+[![IMAGE ALT TEXT](https://img.youtube.com/vi/aXqGbZwOigg/0.jpg)](https://youtu.be/aXqGbZwOigg "Ekaitz Hurtadoren MALerako euskarri bisuala")
