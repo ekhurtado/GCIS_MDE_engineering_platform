@@ -1,5 +1,0 @@
-C:\Users\839073\IdeaProjects\Ekaitz-MAL-Java\src\prueba_CSharp\HelloWorld\out\NetCore.Docker.exe
-C:\Users\839073\IdeaProjects\Ekaitz-MAL-Java\src\prueba_CSharp\HelloWorld\out\NetCore.Docker.dll
-C:\Users\839073\IdeaProjects\Ekaitz-MAL-Java\src\prueba_CSharp\HelloWorld\out\NetCore.Docker.deps.json
-C:\Users\839073\IdeaProjects\Ekaitz-MAL-Java\src\prueba_CSharp\HelloWorld\out\NetCore.Docker.runtimeconfig.json
-C:\Users\839073\IdeaProjects\Ekaitz-MAL-Java\src\prueba_CSharp\HelloWorld\out\NetCore.Docker.pdb

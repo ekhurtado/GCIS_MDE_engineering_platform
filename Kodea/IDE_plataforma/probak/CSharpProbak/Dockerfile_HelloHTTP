@@ -1,7 +1,0 @@
-FROM mcr.microsoft.com/dotnet/aspnet:7.0
-
-COPY HelloHTTP /HelloHTTP
-
-WORKDIR /HelloHTTP
-
-CMD ["dotnet", "out/DotNet.Docker.dll"]

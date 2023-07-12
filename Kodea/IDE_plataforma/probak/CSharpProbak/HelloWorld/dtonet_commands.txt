@@ -1,5 +1,0 @@
-PARA CREAR LA CARPETA DEL PROYECTO
-> dotnet new console -o HelloWorld -n NetCore.Docker
-
-PARA GENERAR LOS FICHEROS DE EJECUCION (.dll o .exe)
-> dotnet publish -c Release -o out

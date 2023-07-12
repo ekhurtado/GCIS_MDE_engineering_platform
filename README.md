@@ -23,4 +23,4 @@ Ataza honetan Master Amaierako Lan honek proposatzen duen ikuspegiaren irudia au
 
 Master Amaierako Lan honetan proposatzen den ikuspegia argitzeko, eta bete behar diren jarduera guztiak era bisual batean aurkezteko euskarri bisual bat garatu da. _Youtube_ bideoa eskuragarri dago hemen:
 
-[![IMAGE ALT TEXT](https://img.youtube.com/vi/aXqGbZwOigg/0.jpg)](https://youtu.be/aXqGbZwOigg "Ekaitz Hurtadoren MALerako euskarri bisuala")
+[![IMAGE ALT TEXT](https://img.youtube.com/vi/qo2UXgE1e1Y/0.jpg)](https://youtu.be/qo2UXgE1e1Y "Ekaitz Hurtadoren MALerako euskarri bisuala")
