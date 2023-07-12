@@ -31,7 +31,7 @@ edo
 ### Kubernetesen abiarazpena
 Kubernetes inplementazio-plataforma bezala aukeratu denez, Node-RED tresna abiarazteko erabil daiteke, nahi izanez gero. Horretarako `Kubernetes_hedatze_fitxategiak` karpetako fitxategi guztiak Kubernetes klusterrean hedatu beharko dira.
 
-Egin behar den gauza bakarra, klusterraren nodo nagusian komando-lerroko interfaze bat ireki, fitxategi guzti horiek karpeta berdinean kopiatu, eta hurrengo komando exekutatu:
+Egin behar den gauza bakarra, klusterraren nodo nagusian komando-lerroko interfaze bat ireki, fitxategi horiek guztiak karpeta berdinean kopiatu, eta hurrengo komando exekutatu:
 ```
 kubectl apply -f .
 ```
@@ -46,7 +46,7 @@ Kubernetes abiarazpen-plataforma bezala erabili baduzu, nodo nagusiko IP helbide
 http://<nodo nagusiko IP helbidea>:31880
 ```
 
-Azkenik, plataformaren egitura aurkeztuko da. Bi aukerekin Dockerreko _volume_ baliabidea erabili denez, Node-REDen nodo perstonalizatuak gailuko karpeta batean egongo dira. Gailu lokala Linux sistema eragilea badauka, nodo pertsonalizatuak hurrengo karpeta egongo dira (agian `sudo` erabili behar da baimenengatik):
+Azkenik, plataformaren egitura aurkeztuko da. Bi aukerekin Dockerreko _volume_ baliabidea erabili denez, Node-REDen nodo pertsonalizatuak gailuko karpeta batean egongo dira. Gailu lokala Linux sistema eragilea badauka, nodo pertsonalizatuak hurrengo karpeta egongo dira (agian `sudo` erabili behar da baimenengatik):
 ```
 /var/lib/docker/volumes/nodered_node-red-data/_data/node_modules
 ```

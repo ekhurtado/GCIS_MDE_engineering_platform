@@ -14,7 +14,7 @@ Proiektu honetan ez da defektuzko Kubernetes plataforma erabili. Plataformari he
 
 Atal honetan software-plataformarako garatu diren fitxategien antolakuntza aurkeztuko da:
 
-- [appModel2CR](https://github.com/ekhurtado/EkaitzHurtado-MAL/tree/main/Kodea/Software_plataforma/appModel2CR): Karpeta honek sistemaren administratzaileak Kubernetes hedagarrirako hedatzeko-fitxategiak lortzeko programa gordetzen du.
+- [appModel2CR](https://github.com/ekhurtado/EkaitzHurtado-MAL/tree/main/Kodea/Software_plataforma/appModel2CR): Karpeta honek sistemaren administratzaileak Kubernetes hedagarrirako hedatze-fitxategiak lortzeko programa gordetzen du.
   - [appModelTransformer.py](https://github.com/ekhurtado/EkaitzHurtado-MAL/blob/main/Kodea/Software_plataforma/appModel2CR/appModelTransformer.py): Programa honek XMLen garatutako aplikazio-eredu bat erabiliz, proiektu honetan proposatzen den Kubernetes hedagarrian abiarazi daitekeen hedatze-fitxategia sortzen du, hau da, [CR](https://kubernetes.io/docs/concepts/extend-kubernetes/api-extension/custom-resources/) objektu bat. Sistemaren administratzaileak aplikazio-diseinatzailetik XML aplikazio-eredua lortuko du, eta hurrengo komandoarekin, programa martxan jarriko du, hedatze-fitxategia lortzeko:
     ```
     python3 appModelTransformer.py
