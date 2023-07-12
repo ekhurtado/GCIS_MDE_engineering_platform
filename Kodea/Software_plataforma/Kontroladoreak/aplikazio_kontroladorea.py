@@ -21,10 +21,10 @@ microservicePlural = "microservices"
 
 
 def controller():
-    # Lehenik eta behin, klusterraren konfigurazio fitxategia
+    # Klusterretik kanpo exekutatzen bada, klusterraren konfigurazio fitxategia zehaztu beharko da
     # config.load_kube_config(os.path.join("../klusterKonfigurazioa/k3s.yaml"))
 
-    # Kontroladorea Docker edukiontzi baten barruan, eta klusterrean hedatu badago, kode hau erabili
+    # Kontroladorea klusterrean eta Docker edukiontzi baten barruan hedatu badago, kode hau erabili
     if 'KUBERNETES_PORT' in os.environ:
         config.load_incluster_config()
     else:
@@ -111,8 +111,8 @@ def deploy_application(appObject, custom_client):
 
     # Orain, mikrozerbitzu bakoitza sortuko da
     for microsvc in appObject['spec']['microservices']:
-        # Lehenik eta behin, beste mikrozerbitzuek aztertzen ari den mikrozerbitzuarekin komunikatu behar badira, Kubernetesen
-        # zerbitzu deituriko bat sortu beharra dago, mikrozerbitzua eskuragarri egiteko
+        # Lehenik eta behin, beste mikrozerbitzuek aztertzen ari den mikrozerbitzuarekin komunikatu behar badira,
+        # Kubernetesen zerbitzu deituriko bat sortu beharra dago, mikrozerbitzua eskuragarri egiteko
         if 'inPort' in microsvc:
             create_service(microsvc, appObject)
 

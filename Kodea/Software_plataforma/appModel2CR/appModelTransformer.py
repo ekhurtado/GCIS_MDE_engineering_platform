@@ -1,6 +1,4 @@
 # Kode honek XML osagai-eredua edukita, Node-RED tresnarako prest dagoen nodo pertsonalizatua lortzeko beharrezko fitxategiak sortzen ditu
-import os
-import shutil
 from io import BytesIO
 
 # Fitxategiak aukeratzeko liburutegia
@@ -32,7 +30,6 @@ def getAppModel():
     print(selectedOption)
     match selectedOption:
         case 1:
-    # if selectedOption == 1:
             window = Tk()
             window.lift()
             window.attributes("-topmost", True)  # Leihoa pantailan erakusteko
@@ -46,7 +43,6 @@ def getAppModel():
             window.destroy()
             return content
         case 2:
-    # else:
             print("Osagai-eredua kopia eta hemen itsas ezazu (amaitu Enter sakatuz lerro huts batean):")
             stringAppModel = ''
             while True:
@@ -100,8 +96,6 @@ def getXSLT_transformation(originXML, stylesheetXSLT):
     with PySaxonProcessor(license=False) as proc:
         xsltproc = proc.new_xslt30_processor()
         document = proc.parse_xml(xml_text=originXML)
-        # executable = xsltproc.compile_stylesheet(stylesheet_file="../txantiloiak/webView.xslt")
-        # executable = xsltproc.compile_stylesheet(stylesheet_file="../txantiloiak/customNode/functionalPart.xslt")
         executable = xsltproc.compile_stylesheet(stylesheet_file=stylesheetXSLT)
         output = executable.transform_to_string(xdm_node=document)
         return output

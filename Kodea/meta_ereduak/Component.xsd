@@ -25,8 +25,6 @@
 			</xs:sequence>
 			<xs:attribute name="name" type="xs:string" use="required"/>
 			<xs:attribute name="category" type="xs:NMTOKEN" use="required"/>
-<!--			<xs:attribute name="codePath" type="xs:string" use="required"/>-->
-<!--			<xs:attribute name="codeName" type="xs:string" use="required"/>-->
 			<xs:attribute name="imgBase" type="xs:string" use="required"/>
 			<xs:attribute name="description" type="xs:string" use="optional"/>
 		</xs:complexType>

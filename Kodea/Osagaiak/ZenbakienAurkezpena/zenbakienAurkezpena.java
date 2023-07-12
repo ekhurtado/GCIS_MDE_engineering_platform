@@ -1,4 +1,3 @@
-import com.sun.net.httpserver.Headers;
 import com.sun.net.httpserver.HttpContext;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpServer;
@@ -10,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.InetSocketAddress;
-import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -25,15 +23,7 @@ public class ZenbakienAurkezpena {
 
      static String function = System.getenv("SERVICE");
      static int inPortNumber = Integer.parseInt(System.getenv("INPORT_NUMBER"));
-//     String customization = System.getenv("CUSTOMIZATION");
-//	static String fileName = System.getenv("CUSTOM_FILENAME");
 	static String fileName = System.getenv("CUSTOM_FITXATEGIIZEN");
-
-    // TODO Ezabatu
-//    static String function = "saveTXT";
-//    static int inPortNumber = Integer.parseInt("7000");
-////    static String customization = "{\"filename\": \"datu_fitxategia\"}";
-//    static String fileName = "datuak.txt";
 
     static JSONParser jsonParser = null;
     static JSONObject jsonObject = null;
@@ -44,27 +34,14 @@ public class ZenbakienAurkezpena {
         HttpServer server = HttpServer.create(new InetSocketAddress("0.0.0.0", inPortNumber), 0);
         HttpContext context = server.createContext("/");
         context.setHandler(ZenbakienAurkezpena::handleRequest);
-//        System.out.println("Starting HTTP server in port " + inPortNumber + "...");
         server.start();
     }
 
     private static void handleRequest(HttpExchange exchange) throws IOException {
 
-//        URI requestURI = exchange.getRequestURI();
-//        System.out.println("Request URI: " + requestURI);
-//        System.out.println("Query: " + requestURI.getQuery());
-
-//        System.out.println("Headers: ");
-//        Headers requestHeaders = exchange.getRequestHeaders();
-//        requestHeaders.entrySet().forEach(System.out::println);
-
-//        System.out.println("Principal: " + exchange.getPrincipal());
-//        System.out.println("HTTP method: " + exchange.getRequestMethod());
-
         String body = new BufferedReader(
                 new InputStreamReader(exchange.getRequestBody(), StandardCharsets.UTF_8)).lines()
                 .collect(Collectors.joining("\n"));
-//        System.out.println("Request body: " + body);
 
         // Aurreko osagaiari mezua ondo lortu dela esaten diogu
         String response = "OK\n";
@@ -76,15 +53,12 @@ public class ZenbakienAurkezpena {
 
         // Mezu lortuta, aukeratutako funtzionalitatea exekutatuko da
         switch (function) {
-//            case "consoleDisplay":
             case "PantailaAurkezpen":
                 consoleDisplay(body);
                 break;
-//            case "saveTXT":
             case "GordeTXT":
                 saveTXT(body);
                 break;
-//            case "saveCSV":
             case "GordeCSV":
                 saveCSV(body);
                 break;

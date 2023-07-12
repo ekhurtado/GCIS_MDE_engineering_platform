@@ -1,0 +1,7 @@
+C# proiektu karpeta sortzeko, ondorengo komandoa sar ezazu:
+> dotnet new console -o <Aplikazio izena> -n DotNet.Docker
+
+Iturri-kodea "Program.cs" fitxategian garatuta egonda, exekuzio-fitxategiak sortzeko (.dll o .exe), hurrengo komandoa sar ezazu:
+> dotnet publish -c Release -o out
+
+    (*: komando honek "out" karpetan .dll eta .exe fitxategiak sortuko ditu)

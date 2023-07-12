@@ -9,4 +9,5 @@ Hurrengo bi irudiek fitxategi hauetan zehazten diren meta-ereduak grafikoki aurk
 ![Aplikazio_meta_eredua](../../Irudiak/Fog_application_metamodel.png)
 
 ### Fog osagaien meta-ereduaren irudikapen grafikoa
+
 ![Osagai_meta_eredua](../../Irudiak/Fog_component_metamodel.png)

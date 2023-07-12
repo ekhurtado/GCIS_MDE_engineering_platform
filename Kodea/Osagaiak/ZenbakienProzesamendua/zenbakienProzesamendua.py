@@ -29,30 +29,15 @@ def main():
         # Handle POST requests
         if "text/plain" in request.headers.get("Content-Type"):
             messageData = request.get_data(as_text=True)
-        # for key, value in request.form.items():
-        #     print("Key: {}, Value: {}".format(key, value))
-        # print("Full HTTP Message:")
-        # print("POST Request:")
-        # print("Headers: ", request.headers)
-        # print("Body: ", request.get_data(as_text=True))
-        # return "Hello, POST request"
-
-    print(messageData)
-
-    # TODO ezabatu
-    # function = "BalioaHanditu"
 
     thread_func = None  # Exekuzio-hari berria erabiltzen dugu aurreko osagaiari "OK" mezua lehen baino lehen bidaltzeko
     match function:
         case "BalioaHanditu":
             thread_func = Thread(target=increaseValue, args=(messageData,))
-            # increaseValue(messageData)
         case "BalioaTxikitu":
             thread_func = Thread(target=decreaseValue, args=(messageData,))
-            # decreaseValue(messageData)
         case "BalioaBiderkatu":
             thread_func = Thread(target=multiplyValue, args=(messageData,))
-            # multiplyValue(messageData)
         case _:
             return "Not function selected"
     # Aukeratu den funtzionalitatea exekuzio-hari berri batean abiarazten dugu
@@ -71,9 +56,6 @@ def increaseValue(messageData):
     jsonData = json.loads(messageData)
     type = jsonData['type']
     value = jsonData['value']
-
-    # TODO ezabatu
-    step = 2
 
     # Funtzionalitatearen eragiketa betetzen dugu
     value += step

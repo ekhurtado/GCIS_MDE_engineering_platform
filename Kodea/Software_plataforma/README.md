@@ -28,7 +28,7 @@ Atal honetan software-plataformarako garatu diren fitxategien antolakuntza aurke
     ```
     kubectl apply -f .
     ```
-- [klusterKonfigurazioa](https://github.com/ekhurtado/EkaitzHurtado-MAL/tree/main/Kodea/Software_plataforma/klusterKonfigurazioa): Aplikazio eta mikrozerbitzu mailen kontroladoreak Kubernetes klusterratik kanpo abiarazi nahi badira, Kubernetes APIa erabiltzeko beharrezko baimenak dituen `k3s.yaml` fitxategia beharko da. Kontroladoreak era honetan exekutatu nahi badira, klusterreko `k3s.yaml` fitxategia lortu eta karpeta honetan kopiatu beharko da, eta [Kontroladoreak](https://github.com/ekhurtado/EkaitzHurtado-MAL/tree/main/Kodea/Software_plataforma/Kontroladoreak) karpetako Python programak abiarazi:
+- [klusterKonfigurazioa](https://github.com/ekhurtado/EkaitzHurtado-MAL/tree/main/Kodea/Software_plataforma/klusterKonfigurazioa): Aplikazio eta mikrozerbitzu mailen kontroladoreak Kubernetes klusterratik kanpo abiarazi nahi badira, Kubernetes APIa erabiltzeko beharrezko baimenak dituen `k3s.yaml` fitxategia beharko da. Kontroladoreak era honetan exekutatu nahi badira, klusterreko `k3s.yaml` fitxategia lortu (defektuz `/etc/rancher/k3s` bide-izenean dago) eta karpeta honetan kopiatu beharko da, eta [Kontroladoreak](https://github.com/ekhurtado/EkaitzHurtado-MAL/tree/main/Kodea/Software_plataforma/Kontroladoreak) karpetako Python programak abiarazi:
     ```
     python3 aplikazio_kontroladorea.py
     ```

@@ -49,7 +49,7 @@ spec:
             status:
               type: object
               properties:
-                situation:  # CAMBIAR ESTE NOMBRE?
+                situation:
                   type: string
       additionalPrinterColumns:
         - jsonPath: .spec.name

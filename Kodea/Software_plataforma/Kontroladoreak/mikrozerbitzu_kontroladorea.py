@@ -19,10 +19,10 @@ applicationPlural = "applications"
 
 
 def controller():
-    # Lehenik eta behin, klusterraren konfigurazio fitxategia
+    # Klusterretik kanpo exekutatzen bada, klusterraren konfigurazio fitxategia zehaztu beharko da
     # config.load_kube_config(os.path.join("../klusterKonfigurazioa/k3s.yaml"))
 
-    # Kontroladorea Docker edukiontzi baten barruan, eta klusterrean hedatu badago, kode hau erabili
+    # Kontroladorea klusterrean eta Docker edukiontzi baten barruan hedatu badago, kode hau erabili
     if 'KUBERNETES_PORT' in os.environ:
         config.load_incluster_config()
     else:

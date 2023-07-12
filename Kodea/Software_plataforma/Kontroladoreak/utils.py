@@ -14,6 +14,7 @@ import yaml
 # --------------------------------
 def CRD_app():
     path = os.path.abspath(os.path.dirname(__file__))
+    # Kodearen fitxategiko karpeta berdinean dagoen "CRD" karpetatik aplikazioen definizioa lortzen da
     rel_path = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), "CRD", "application_definition.yaml")
     with open(rel_path, 'r') as stream:
         CRD_applicacion = yaml.safe_load(stream)
@@ -22,6 +23,7 @@ def CRD_app():
 
 def CRD_microsvc():
     path = os.path.abspath(os.path.dirname(__file__))
+    # Kodearen fitxategiko karpeta berdinean dagoen "CRD" karpetatik mikrozerbitzuen definizioa lortzen da
     rel_path = os.path.join(os.path.abspath(os.path.join(path, os.pardir)), "CRD", "microservice_definition.yaml")
     with open(rel_path, 'r') as stream:
         CRD_microservice = yaml.safe_load(stream)
@@ -184,8 +186,6 @@ def deploymentObject(microservice, controllerName, appName, microserviceName, **
         envVarList = []
         customJSON = json.loads(microservice['spec']['customization'])
         for customAttr, customValue in customJSON.items():
-            # if type(customValue) is int:
-            #     customValue = "'" + str(customValue) + "'"
             envVarList.append({'name': str.upper(customAttr), 'value': str(customValue)})
         deployObject['spec']['template']['spec']['containers'][0]['env'] = \
             deployObject['spec']['template']['spec']['containers'][0]['env'] + envVarList
