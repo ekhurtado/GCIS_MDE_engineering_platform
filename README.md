@@ -1,26 +1,26 @@
-# EkaitzHurtado-MAL
+# GCIS_MDE_methodology
 
-Honakoa Ekaitz Hurtado ikaslearen "**Fog aplikazioen garapena eta operazioa bateratzeko eta automatizatzeko ereduetan oinarritutako ikuspegia**" izendatutako Master Amaierako Lanerako (MAL) garatutako kodea antolatzeko errepositorioa da. Lan hau Bilboko Ingeniaritza Eskolan (UPV/EHU), eta, zehazki, Kontrol Ingeniaritza, Automatika eta Robotika masterrean garatu da.
+This repository contains the files developed in the paper "Microservice-based applications methodology".
 
-## Antolakuntza
+## Repository structure
 
-Ataza honetan errepositorioaren antolakuntza aurkeztu du. Azter daitekeenez, bi karpeta nagusi daude: `Irudiak` eta `Kodea`. Lehenengoak errepositorioko _README_ fitxategietan zehar agertzen diren irudiak biltegiratzeko balio du. Bigarrenak, proiektu osoaren kodea barneratzen du. `Kodea` karpetaren antolaketa hurrengokoa da.
+In this section the structure of this repository will be shown. The main folders are the following:
 
-- [IDE_plataforma](https://github.com/ekhurtado/EkaitzHurtado-MAL/tree/main/Kodea/IDE_plataforma): Honek lan honek proposatzen duen IDE plataformaren fitxategi guztiak barneratzen ditu. Hain zuzen ere, MAL honetan Node-RED plataforma hautatu da ardura honetarako. 
-- [Osagaiak](https://github.com/ekhurtado/EkaitzHurtado-MAL/tree/main/Kodea/Osagaiak): Karpeta honek Fog osagaientzako garatutako baliabideak barneratzen ditu.
-- [Software plataforma](https://github.com/ekhurtado/EkaitzHurtado-MAL/tree/main/Kodea/Software_plataforma): Karpeta honetan Fog aplikazioen inplementazio edo operaziorako software-plataformaren baliabideak biltegiratzen dira. Proiektu honek aukeratutako software-plataforma Kubernetes izan da. 
-- [Meta-ereduak](https://github.com/ekhurtado/EkaitzHurtado-MAL/tree/main/Kodea/meta_ereduak): MAL honek proposatzen dituen Fog osagai eta aplikazioentzako meta-ereduak karpeta honetan aurkezten dira.
+- [IDE_platform](https://github.com/ekhurtado/GCIS_MDE_methodology/tree/main/IDE_platform): This folder includes all the files of the IDE platform that this work proposes. Precisely the Node-RED platform has been selected for this responsibility.
+- [Components](https://github.com/ekhurtado/EkaitzHurtado-MAL/tree/main/Kodea/Osagaiak): In this folder all the files related to the components are stored. 
+- [Orchestration platform](https://github.com/ekhurtado/EkaitzHurtado-MAL/tree/main/Kodea/Software_plataforma): This folder stores the resources of the container orchestration platform for the delivery and operation of microservide-based applications. The platform selected in this project has been Kubernetes.
+- [Meta-models](https://github.com/ekhurtado/EkaitzHurtado-MAL/tree/main/Kodea/meta_ereduak): The meta-models proposed in this paper are presented in this folder.
 
-Aipatu beharra dago bakoitzak _README_ fitxategi bat duela, teknologia eta baliabideen erabilerarako jarraibideekin.
+It should be noted that each of them has a file _README_ with instructions and resources for using the technologies.
 
-## MALaren ikuspegia
+## Overview of the methodology
 
-Ataza honetan Master Amaierako Lan honek proposatzen duen ikuspegiaren irudia aurkezten da, parte hartzen duten teknologiak barne.
+This section introduces the model-driven methodology for the design, development, delivery and operation of microservice-based applications, displaying the technologies involved:
 
-![Soluzioaren teknologiak](Irudiak/Soluzioaren_deskribapena_teknologiak.png)
+![Overview_methodology_technologies](Figures/Overview_methodology_technologies.jpg)
 
-## MALaren euskarri bisuala
+## Contribution visual support
 
-Master Amaierako Lan honetan proposatzen den ikuspegia argitzeko, eta bete behar diren jarduera guztiak era bisual batean aurkezteko euskarri bisual bat garatu da. _Youtube_ bideoa eskuragarri dago hemen:
+In order to clarify the contribution proposed in this work, a visual support has been developed, available as _Youtube_ video:
 
-[![IMAGE ALT TEXT](https://img.youtube.com/vi/qo2UXgE1e1Y/0.jpg)](https://youtu.be/qo2UXgE1e1Y "Ekaitz Hurtadoren MALerako euskarri bisuala")
+[![visual_support](https://img.youtube.com/vi/qo2UXgE1e1Y/0.jpg)](https://youtu.be/qo2UXgE1e1Y "Visual support for GCIS group contribution")

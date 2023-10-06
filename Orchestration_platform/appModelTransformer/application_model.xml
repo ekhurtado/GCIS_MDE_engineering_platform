@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Application name="DataProcessing">
+  <Microservice name="eXist" service="GetAssemblyStationData" imgBase="gcr.io/upv-ehu/gcis:exist-services" customization="{'custom_stationID': 'AS1'}">
+    <outPort name="eXistOPort" protocol="HTTP" dataType="TDBStation"/>
+  </Microservice>
+  <Microservice name="AssemblyStation" service="ProcessingOEE" imgBase="gcr.io/upv-ehu/gcis:processing-services">
+    <inPort name="AssemblyStationIPort" protocol="HTTP" dataType="TDBStation" number="6000"/>
+    <outPort name="AssemblyStationOPort" protocol="HTTP" dataType="TStationOEE"/>
+  </Microservice>
+  <Microservice name="OEEEvents" service="NotifyOperator" imgBase="gcr.io/upv-ehu/gcis:oee-events" customization="{'custom_threshold': 70}">
+    <inPort name="OEEEventsIPort" protocol="HTTP" dataType="TStationOEE" number="7000"/>
+    <outPort name="OEEEventsOPort" protocol="HTTP" dataType="TDBOEE"/>
+  </Microservice>
+  <Microservice name="Influx" service="StoreOEEData" imgBase="gcr.io/upv-ehu/gcis:influx-services">
+    <inPort name="InfluxIPort" protocol="HTTP" dataType="TDBOEE" number="8000"/>
+  </Microservice>
+
+  <channel from="eXistOPort" to="AssemblyStationIPort"/>
+  <channel from="AssemblyStationOPort" to="OEEEventsIPort"/>
+  <channel from="OEEEventsOPort" to="InfluxIPort"/>
+</Application>
+
+

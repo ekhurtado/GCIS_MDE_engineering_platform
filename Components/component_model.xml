@@ -1,0 +1,17 @@
+<?xml version="1.1" encoding="UTF-8"?>
+<Component name="AssemblyStation" category="processing" description="This component calculates several data related to the operation of an assembly station" imgBase="processing_assembly_base_image">
+    <functionality id="ProcessingOEE" name="Calculate OEE" description="It calculates the OEE related to the station" customization="custom_threshold">
+        <inputs name="DBdata" dataType="TDBStation" protocol="HTTP"/>
+        <outputs name="StationOEE" dataType="TStationOEE" protocol="HTTP"/>
+    </functionality>
+    <functionality id="ProcessingPerformance" name="Calculate performance" description="It calculates the performance of the station">
+        <inputs name="DBdata" dataType="TDBPerformance" protocol="HTTP"/>
+        <outputs name="StationPerformance" dataType="TStationPerformance" protocol="HTTP"/>
+    </functionality>
+    <functionality id="ProcessingTrend" name="Calculate Trend" description="It calculates the trend of the station">
+        <inputs name="DBdata" dataType="TDBTrend" protocol="HTTP"/>
+        <outputs name="StationTrend" dataType="TStationTrend" protocol="HTTP"/>
+    </functionality>
+</Component>
+
+
