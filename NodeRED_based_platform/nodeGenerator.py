@@ -72,7 +72,7 @@ Saxonche liburutegiarekin erlazionatutako metodoak
 def checkComponentMetaModel(componentXML):
     result = False
     while not result:
-        xmlschema_doc = etree.parse("../../../../Meta_models/Component.xsd")
+        xmlschema_doc = etree.parse("../Meta_models/Component.xsd")
         xmlschema = etree.XMLSchema(xmlschema_doc)
 
         some_file_or_file_like_object = BytesIO(componentXML.encode('utf-8'))
@@ -89,7 +89,7 @@ def getCompName(originXML):
         xp = proc.new_xpath_processor()
         node = proc.parse_xml(xml_text=originXML)
         xp.set_context(xdm_item=node)
-        result = xp.evaluate_single('/component/@name')
+        result = xp.evaluate_single('/Component/@name')
         return str.lower(result.string_value)
 
 
@@ -98,7 +98,7 @@ def getCategory(originXML):
         xp = proc.new_xpath_processor()
         node = proc.parse_xml(xml_text=originXML)
         xp.set_context(xdm_item=node)
-        result = xp.evaluate_single('/component/@category')
+        result = xp.evaluate_single('/Component/@category')
         return result.string_value
 
 
@@ -158,7 +158,7 @@ def copyRelatedIcon(compModelXML, compName):
         if os.path.isfile('./icons/' + category + '.png'):
             shutil.copy2('./icons/' + category + '.png', './' + compName + '/icons/' + category + '.png')
         else:
-            shutil.copy2('./icons/fog_component.png', './' + compName + '/icons/fog_component.png')
+            shutil.copy2('./customNode/icons/fog_component.png', './' + compName + '/icons/fog_component.png')
             updateIconOnHTML(compName, category, './icons/fog_component.png')
 
 

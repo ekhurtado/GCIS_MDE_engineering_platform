@@ -6,7 +6,7 @@ spec:
   microservices: 
     - name: exist
       service: GetAssemblyStationData
-      image: gcr.io/upv-ehu/gcis:exist-services
+      image: ekhurtado/gcis:exist
       customization: '{"custom_stationID": "AS1"}'
       outPort:
         name: exist-oport
@@ -14,7 +14,7 @@ spec:
         protocol: HTTP
     - name: assemblystation
       service: ProcessingOEE
-      image: gcr.io/upv-ehu/gcis:processing-services
+      image: ekhurtado/gcis:assembly_station
       inPort:
         name: assemblystation-iport
         dataType: TDBStation
@@ -26,7 +26,7 @@ spec:
         protocol: HTTP
     - name: oeeevents
       service: NotifyOperator
-      image: gcr.io/upv-ehu/gcis:oee-events
+      image: ekhurtado/gcis:oee_events
       customization: '{"custom_threshold": 70}'
       inPort:
         name: oeeevents-iport
@@ -39,7 +39,7 @@ spec:
         protocol: HTTP
     - name: influx
       service: StoreOEEData
-      image: gcr.io/upv-ehu/gcis:influx-services
+      image: ekhurtado/gcis:influx
       inPort:
         name: influx-iport
         dataType: TDBOEE

@@ -20,7 +20,7 @@ applicationPlural = "applications"
 
 def controller():
     # Klusterretik kanpo exekutatzen bada, klusterraren konfigurazio fitxategia zehaztu beharko da
-    # config.load_kube_config(os.path.join("../klusterKonfigurazioa/k3s.yaml"))
+    # config.load_kube_config("k3s.yaml")
 
     # Kontroladorea klusterrean eta Docker edukiontzi baten barruan hedatu badago, kode hau erabili
     if 'KUBERNETES_PORT' in os.environ:
@@ -74,7 +74,7 @@ def watcher(custom_client):
                 # Mikrozerbitzuarekin erlazionatutako gertaera sortzen da, abisatuz mikrozerbitzu berria sortu dela
                 eventObject = utils.customResourceEventObject(action='Created', CR_type="Microservice",
                                                               CR_object=object,
-                                                              message='Mikrozerbitzu berria zuzen sortu da.',
+                                                              message='The new microservice is correctly created.',
                                                               reason='Created')
                 eventAPI = client.CoreV1Api()
                 eventAPI.create_namespaced_event("default", eventObject)
@@ -97,7 +97,7 @@ def deploy_microservice(microsvcObject, custom_client):
     eventAPI = client.CoreV1Api()
     eventObject = utils.customResourceEventObject(action='deploying', CR_type="Microservice",
                                                   CR_object=microsvcObject,
-                                                  message='Mikrozerbitzuaren hedapena hasita.',
+                                                  message='Microservice deployment started.',
                                                   reason='Deploying')
     eventAPI.create_namespaced_event("default", eventObject)
 
@@ -122,7 +122,7 @@ def deploy_microservice(microsvcObject, custom_client):
     # Mikrozerbitzua zuzen hedatu dela komunikatzen da
     eventObject = utils.customResourceEventObject(action='deployed', CR_type="Microservice",
                                                   CR_object=microsvcObject,
-                                                  message='Mikrozerbitzua zuzen hedatu da.',
+                                                  message='The microservice has correctly deployed.',
                                                   reason='Running')
     eventAPI.create_namespaced_event("default", eventObject)
 

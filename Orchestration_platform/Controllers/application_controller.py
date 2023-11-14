@@ -22,7 +22,7 @@ microservicePlural = "microservices"
 
 def controller():
     # Klusterretik kanpo exekutatzen bada, klusterraren konfigurazio fitxategia zehaztu beharko da
-    # config.load_kube_config(os.path.join("../klusterKonfigurazioa/k3s.yaml"))
+    # config.load_kube_config("k3s.yaml")
 
     # Kontroladorea klusterrean eta Docker edukiontzi baten barruan hedatu badago, kode hau erabili
     if 'KUBERNETES_PORT' in os.environ:
@@ -76,7 +76,7 @@ def watcher(custom_client):
                 # Aplikazioarekin erlazionatutako gertaera sortzen da, abisatuz aplikazio berria sortu dela
                 eventObject = utils.customResourceEventObject(action='Created', CR_type="Application",
                                                               CR_object=object,
-                                                              message='Aplikazio berria zuzen sortu da.',
+                                                              message='The new app has been created correctly.',
                                                               reason='Created')
                 eventAPI = client.CoreV1Api()
                 eventAPI.create_namespaced_event("default", eventObject)
@@ -95,7 +95,7 @@ def deploy_application(appObject, custom_client):
     # Hasi aurretik, aplikazioaren egoera eguneratzeko gertaera sortzen da
     eventObject = utils.customResourceEventObject(action='Deploy', CR_type="Application",
                                                   CR_object=appObject,
-                                                  message='Aplikazioaren hedapen hasita.',
+                                                  message='Application deployment started.',
                                                   reason='Deploying')
     eventAPI = client.CoreV1Api()
     eventAPI.create_namespaced_event("default", eventObject)
@@ -148,7 +148,7 @@ def check_modifications(appObject, custom_client):
                     # Mezua bidali duen mikrozerbitzua abiarazita badago, gertaera horren berri emango da
                     eventObject = utils.customResourceEventObject(action='Created', CR_type="Application",
                                                                   CR_object=appObject,
-                                                                  message=microserviceName + ' mikrozerbitzua zuzen abiarazita.',
+                                                                  message=microserviceName + ' microservice correctly deployed.',
                                                                   reason='Deployed')
                     eventAPI.create_namespaced_event("default", eventObject)
 
@@ -160,7 +160,7 @@ def check_modifications(appObject, custom_client):
                 # Mikrozerbitzu guztiak abiarazita badaude, gertaera horren berri emango dugu
                 eventObject = utils.customResourceEventObject(action='Deployed', CR_type="Application",
                                                               CR_object=appObject,
-                                                              message='Mikrozerbitzu guztiak zuzen abiarazita.',
+                                                              message='All microservices correctly deployed.',
                                                               reason='Running')
                 eventAPI.create_namespaced_event("default", eventObject)
 
