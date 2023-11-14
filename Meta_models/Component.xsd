@@ -18,7 +18,7 @@
 			<xs:attribute name="customization" type="xs:string" use="optional"/>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="component">
+	<xs:element name="Component">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element ref="functionality" minOccurs="1" maxOccurs="unbounded"/>

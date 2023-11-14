@@ -17,16 +17,16 @@ Component Model-ekin erlazionatutako metodoak
 
 
 def getAppModel():
-    print("Aplikazio-eredua sartzeko hautatu ezazu hurrengo aukeretako bat:")
-    print("\t\t -> 1: Aplikazio-eredua fitxategi moduan sartu.")
-    print("\t\t -> 2: Aplikazio-eredua zuzenean sartu.")
-    print("\t\t -> 3: Programatik irten.")
+    print("To enter the application model select one of the following options:")
+    print("\t\t -> 1: Enter the application model as a file.")
+    print("\t\t -> 2: Enter the application model directly as a plain text.")
+    print("\t\t -> 3: Get out of the program.")
     while True:
-        selectedOption = int(input("Aukera zenbakia sar ezazu: "))
+        selectedOption = int(input("Enter the number of options.: "))
         if 1 <= selectedOption <= 3:
             break
         else:
-            print("Sartutako aukera ez da zuzena, sar ezazu berriro, mesedez.")
+            print("The option introduced is not correct, please reintroduce it.")
     print(selectedOption)
     match selectedOption:
         case 1:
@@ -35,7 +35,7 @@ def getAppModel():
             window.attributes("-topmost", True)  # Leihoa pantailan erakusteko
             window.after_idle(window.attributes, '-topmost', False)
             Tk().withdraw()
-            archivo_xml = askopenfilename(filetypes=[("Archivos XML", "*.xml")], title="Aukeratu fitxategia")
+            archivo_xml = askopenfilename(filetypes=[("XML file", "*.xml")], title="Select application model")
             with open(archivo_xml,
                       "r") as archivo:
                 # Lee el contenido del archivo y almacénalo en una cadena
@@ -43,7 +43,7 @@ def getAppModel():
             window.destroy()
             return content
         case 2:
-            print("Osagai-eredua kopia eta hemen itsas ezazu (amaitu Enter sakatuz lerro huts batean):")
+            print("Copy the element model and paste it here (end by pressing Enter on an empty line):")
             stringAppModel = ''
             while True:
 
@@ -57,7 +57,7 @@ def getAppModel():
         case 3:
             exit()
         case _:
-            print("Aukera ez eskuragarria.")
+            print("Option not available.")
 
 
 '''
@@ -77,7 +77,7 @@ def checkApplicationMetaModel(appXML):
         xml_doc = etree.parse(some_file_or_file_like_object)
         result = xmlschema.validate(xml_doc)
         if not result:
-            print("Sartutako XML fitxategia ez da zuzena, sar ezazu berriro mesedez.")
+            print("The XML file entered is not correct, please re-enter it.")
             appXML = getAppModel()
     return appXML
 
@@ -87,7 +87,7 @@ def getAppName(originXML):
         xp = proc.new_xpath_processor()
         node = proc.parse_xml(xml_text=originXML)
         xp.set_context(xdm_item=node)
-        result = xp.evaluate_single('/application/@name')
+        result = xp.evaluate_single('/Application/@name')
         return str.lower(result.string_value)
 
 
@@ -116,13 +116,13 @@ def createFile(content, fileName):
 
 def main():
     appModelXML = getAppModel()
-    print("Prozesua hasi aurretik, sartutako aplikazio-eredua zuzena baden konprobatuko da.")
+    print("Before the process begins, it will be verified whether the model of application introduced is correct..")
     appModelXML = checkApplicationMetaModel(appModelXML)
     appName = getAppName(appModelXML)
 
-    print("Ereduaren zuzentasuna konprobatuta, Custom Resource transformazioa lortuko da.")
+    print("Once the integrity of the model is checked, the Custom Resource transformation will be achieved..")
     customResourceContent = getXSLT_transformation(appModelXML, 'appModelTransformer.xslt')
-    createFile(customResourceContent, './' + appName + '.yaml')
+    createFile(customResourceContent, './' + appName + '_delivery.yaml')
 
 
 main()

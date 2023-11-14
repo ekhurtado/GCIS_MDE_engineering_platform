@@ -3,7 +3,7 @@ kind: Application
 metadata:
   name: dataprocessing
 spec:
-  microservices:
+  microservices: 
     - name: exist
       service: GetAssemblyStationData
       image: gcr.io/upv-ehu/gcis:exist-services
@@ -45,7 +45,7 @@ spec:
         dataType: TDBOEE
         protocol: HTTP
         number: '8000'
-  channels:
+  channels: 
     - from: exist-oport
       to: assemblystation-iport
     - from: assemblystation-oport

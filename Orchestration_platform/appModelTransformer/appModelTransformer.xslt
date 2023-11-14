@@ -4,14 +4,14 @@
 				xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fn="http://www.w3.org/2005/xpath-functions">
 				<xsl:output omit-xml-declaration="yes" indent="yes"/>
 
-  <xsl:template match="application">
+  <xsl:template match="Application">
 <xsl:param name="singleQuote">'</xsl:param>
 <xsl:param name="doubleQuote">"</xsl:param>apiVersion: ehu.gcis.org/v1alpha1
 kind: Application
 metadata:
   name: <xsl:value-of select="replace(lower-case(@name), '_', '-')"/>
 spec:
-  microservices: <xsl:for-each select="microservice">
+  microservices: <xsl:for-each select="Microservice">
     - name: <xsl:value-of select="lower-case(@name)"/>
       service: <xsl:value-of select="@service"/>
       image: <xsl:value-of select="@imgBase"/>

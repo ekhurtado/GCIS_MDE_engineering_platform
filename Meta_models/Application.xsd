@@ -12,7 +12,7 @@
 		<xs:attribute name="protocol" type="xs:string" use="required"/>
 		<xs:attribute name="dataType" type="xs:NMTOKEN" use="required"/>
 	</xs:complexType>
-	<xs:element name="microservice">
+	<xs:element name="Microservice">
 		<xs:complexType>
 			<xs:sequence>
 				<xs:element name="inPort" type="InPort" minOccurs="0" maxOccurs="1"/>
@@ -30,16 +30,16 @@
 			<xs:attribute name="to" type="xs:string" use="required"/>
 		</xs:complexType>
 	</xs:element>
-	<xs:element name="application">
+	<xs:element name="Application">
 		<xs:complexType>
 			<xs:sequence>
-				<xs:element ref="microservice" minOccurs="2" maxOccurs="unbounded"/>
+				<xs:element ref="Microservice" minOccurs="2" maxOccurs="unbounded"/>
 				<xs:element ref="channel" minOccurs="1" maxOccurs="unbounded"/>
 			</xs:sequence>
 			<xs:attribute name="name" type="xs:string" use="required"/>
 		</xs:complexType>
 		<xs:key name="inPort">
-			<xs:selector xpath="./microservice/inPort"/>
+			<xs:selector xpath="./Microservice/inPort"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
 		<xs:keyref name="refTo" refer="inPort">
@@ -47,7 +47,7 @@
 			<xs:field xpath="@to"/>
 		</xs:keyref>
 		<xs:key name="outPort">
-			<xs:selector xpath="./microservice/outPort"/>
+			<xs:selector xpath="./Microservice/outPort"/>
 			<xs:field xpath="@name"/>
 		</xs:key>
 		<xs:keyref name="refFrom" refer="outPort">
