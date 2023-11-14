@@ -1,4 +1,4 @@
-# IDE_platform
+# Node-RED-based platform
 
 This folder contains the entire Node-RED-based platform code. The organization of this folder is as follows:
 
