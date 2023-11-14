@@ -1,6 +1,6 @@
 # IDE_platform
 
-This folder contains the entire IDE platform code. Since the selected IDE is Node-RED, the organization of this folder is as follows:
+This folder contains the entire Node-RED-based platform code. The organization of this folder is as follows:
 
   - [customNode](https://github.com/ekhurtado/GCIS_MDE_methodology/tree/main/IDE_platform/customNode): This presents the resources needed to create custom nodes for the Node-RED platform. These include:
     - [webView.xslt](https://github.com/ekhurtado/GCIS_MDE_methodology/blob/main/IDE_platform/customNode/webView.xslt): XSLT file to create the custom nodes visual part using M2T transformations.
