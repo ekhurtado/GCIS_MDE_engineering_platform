@@ -20,13 +20,13 @@ applicationPlural = "applications"
 
 def controller():
     # Klusterretik kanpo exekutatzen bada, klusterraren konfigurazio fitxategia zehaztu beharko da
-    # config.load_kube_config("k3s.yaml")
+    config.load_kube_config("k3s.yaml")
 
     # Kontroladorea klusterrean eta Docker edukiontzi baten barruan hedatu badago, kode hau erabili
-    if 'KUBERNETES_PORT' in os.environ:
-        config.load_incluster_config()
-    else:
-        config.load_kube_config()
+    # if 'KUBERNETES_PORT' in os.environ:
+    #     config.load_incluster_config()
+    # else:
+    #     config.load_kube_config()
 
     custom_client = client.CustomObjectsApi()  # Custom objektuetarako APIa lortzen da
     client_extension = client.ApiextensionsV1Api()  # CRDekin lan egiteko APIa lortzen da

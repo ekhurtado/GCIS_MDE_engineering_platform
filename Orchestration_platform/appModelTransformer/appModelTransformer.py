@@ -20,9 +20,9 @@ def getAppModel():
     print("To enter the application model select one of the following options:")
     print("\t\t -> 1: Enter the application model as a file.")
     print("\t\t -> 2: Enter the application model directly as a plain text.")
-    print("\t\t -> 3: Get out of the program.")
+    print("\t\t -> 3: Exit the program.")
     while True:
-        selectedOption = int(input("Enter the number of options.: "))
+        selectedOption = int(input("Enter the number of the option: "))
         if 1 <= selectedOption <= 3:
             break
         else:
@@ -35,7 +35,7 @@ def getAppModel():
             window.attributes("-topmost", True)  # Leihoa pantailan erakusteko
             window.after_idle(window.attributes, '-topmost', False)
             Tk().withdraw()
-            archivo_xml = askopenfilename(filetypes=[("XML file", "*.xml")], title="Select application model")
+            archivo_xml = askopenfilename(filetypes=[("XML files", "*.xml")], title="Select application model")
             with open(archivo_xml,
                       "r") as archivo:
                 # Lee el contenido del archivo y almacénalo en una cadena
@@ -43,7 +43,7 @@ def getAppModel():
             window.destroy()
             return content
         case 2:
-            print("Copy the element model and paste it here (end by pressing Enter on an empty line):")
+            print("Copy the application model and paste it here (end by pressing Enter on an empty line):")
             stringAppModel = ''
             while True:
 

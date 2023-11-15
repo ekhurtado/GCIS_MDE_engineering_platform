@@ -19,25 +19,26 @@ Component Model-ekin erlazionatutako metodoak
 
 
 def getCompModel():
-    print("Osagai-eredua sartzeko hautatu ezazu hurrengo aukeretako bat:")
-    print("\t\t -> 1: Osagai-eredua fitxategi moduan sartu.")
-    print("\t\t -> 2: Osagai-eredua zuzenean sartu.")
-    print("\t\t -> 3: Programatik irten.")
+    print("Choose one of the following options to include the component model:")
+    print("\t\t -> 1: Enter the component model as a file.")
+    print("\t\t -> 2: Enter the component model directly as a plain text.")
+    print("\t\t -> 3: Exit the program.")
     while True:
-        selectedOption = int(input("Aukera zenbakia sar ezazu: "))
+        selectedOption = int(input("Enter the number of the option: "))
         if 1 <= selectedOption <= 3:
             break
         else:
-            print("Sartutako aukera ez da zuzena, sar ezazu berriro, mesedez.")
+            print("The option introduced is not correct, please reintroduce it.")
     print(selectedOption)
     match selectedOption:
         case 1:
             window = Tk()
+            window.eval('tk::PlaceWindow . center')  # Leihoa pantaila erdian irekitzeko
             window.lift()
             window.attributes("-topmost", True)  # Leihoa pantailan erakusteko
             window.after_idle(window.attributes, '-topmost', False)
             Tk().withdraw()
-            archivo_xml = askopenfilename(filetypes=[("Archivos XML", "*.xml")], title="Aukeratu fitxategia")
+            archivo_xml = askopenfilename(filetypes=[("XML files", "*.xml")], title="Select component model")
             with open(archivo_xml,
                       "r") as archivo:
                 # Lee el contenido del archivo y almacénalo en una cadena
@@ -45,7 +46,7 @@ def getCompModel():
             window.destroy()
             return content
         case 2:
-            print("Osagai-eredua kopia eta hemen itsas ezazu (amaitu Enter sakatuz lerro huts batean):")
+            print("Copy the component model and paste it here (end by pressing Enter on an empty line):")
             stringAppModel = ''
             while True:
 
@@ -59,7 +60,7 @@ def getCompModel():
         case 3:
             exit()
         case _:
-            print("Aukera ez eskuragarria.")
+            print("Option not available.")
 
 
 '''
@@ -79,7 +80,7 @@ def checkComponentMetaModel(componentXML):
         xml_doc = etree.parse(some_file_or_file_like_object)
         result = xmlschema.validate(xml_doc)
         if not result:
-            print("Sartutako XML fitxategia ez da zuzena, sar ezazu berriro mesedez.")
+            print("The XML file entered is not correct, please re-enter it.")
             componentXML = getCompModel()
     return componentXML
 
@@ -119,26 +120,27 @@ Bestelako metodoak
 
 
 def getIconFilePath():
-    print("Osagairako ikono propia aukeratu nahi duzu? Ezesko kasuan kategoriako ikonoa (existitzen bada) "
-          "edo defektuzko ikonoa esleituko zaio")
-    print("\t\t -> 1: Bai.")
-    print("\t\t -> 2: Ez.")
+    print("Would you like to choose your own icon for the component? In case you don't, it will be assigned the icon "
+          "of its category (if it exists) or a default one.")
+    print("\t\t -> 1: Yes.")
+    print("\t\t -> 2: No.")
     while True:
-        selectedOption = int(input("Aukera zenbakia sar ezazu: "))
+        selectedOption = int(input("Enter the number of the option: "))
         if 1 <= selectedOption <= 2:
             break
         else:
-            print("Sartutako aukera ez da zuzena, sar ezazu berriro, mesedez.")
+            print("The option introduced is not correct, please reintroduce it.")
     print(selectedOption)
     match selectedOption:
         case 1:
             window = Tk()
+            window.eval('tk::PlaceWindow . center')  # Leihoa pantaila erdian irekitzeko
             window.lift()
             window.attributes("-topmost", True)  # Leihoa pantailan erakusteko
             window.after_idle(window.attributes, '-topmost', False)
             Tk().withdraw()
-            icon_file_path = askopenfilename(filetypes=[("PNG fitxategiak", "*.png")],
-                                             title="Aukeratu ikonorako fitxategia")
+            icon_file_path = askopenfilename(filetypes=[("PNG files", "*.png")],
+                                             title="Select the file for the icon")
             window.destroy()
             return icon_file_path
         case _:
@@ -189,24 +191,24 @@ def createFile(content, fileName):
 
 def main():
     compModelXML = getCompModel()
-    print("Prozesua hasi aurretik, sartutako osagai-eredua zuzena baden konprobatuko da.")
+    print("Before the process begins, it will be verified whether the model of components introduced is correct..")
     compModelXML = checkComponentMetaModel(compModelXML)
 
-    print("Osagai-eredua zuzena denez, NodeRED nodo bat lortzeko beharrezko fitxategiak lortuko dira. Fitxategi "
-          "horiek gordetzeko karpeta bat sortuko da.")
+    print("As the component model is correct, the necessary files will be obtained to obtain a NodeRED node. A folder "
+          "will be created to store those files..")
     compName = getCompName(compModelXML)
     if not os.path.exists("./" + compName):
         os.makedirs("./" + compName)
 
-    print("Lehenik eta behin, web-ikuspegia lortuko da.")
+    print("First of all, the web view will be generated.")
     webViewContent = getXSLT_transformation(compModelXML, './customNode/webView.xslt')
     createFile(webViewContent, compName + '/' + compName + '.html')
 
-    print("Ondoren, funztionalitaterako fitxategia lortuko da.")
+    print("Then, the functional part will be generated.")
     functionalityContent = getXSLT_transformation(compModelXML, './customNode/functionalPart.xslt')
     createFile(functionalityContent, compName + '/' + compName + '.js')
 
-    print("Azkenik, konfigurazio fitxategia lortuko da.")
+    print("Finally, configuration file will be generated.")
     configFileContent = getConfigurationFile(compName)
     createFile(configFileContent, compName + '/package.json')
 
