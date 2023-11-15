@@ -31,6 +31,7 @@ def getAppModel():
     match selectedOption:
         case 1:
             window = Tk()
+            window.eval('tk::PlaceWindow . center')  # Leihoa pantaila erdian irekitzeko
             window.lift()
             window.attributes("-topmost", True)  # Leihoa pantailan erakusteko
             window.after_idle(window.attributes, '-topmost', False)
