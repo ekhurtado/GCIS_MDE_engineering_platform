@@ -23,4 +23,4 @@ This section introduces the model-driven methodology for the design, development
 
 In order to clarify the contribution proposed in this work, a visual support has been developed, available as _Youtube_ video:
 
-[![visual_support](https://img.youtube.com/vi/qo2UXgE1e1Y/0.jpg)](https://youtu.be/qo2UXgE1e1Y "Visual support for GCIS group contribution")
+[![visual_support](https://img.youtube.com/vi/PmmU9Uzqxfs/0.jpg)](https://youtu.be/PmmU9Uzqxfs "Visual support for GCIS research group contribution")
