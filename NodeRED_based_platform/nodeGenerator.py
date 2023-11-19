@@ -1,7 +1,7 @@
 # Kode honek XML osagai-eredua edukita, Node-RED tresnarako prest dagoen nodo pertsonalizatua lortzeko beharrezko fitxategiak sortzen ditu
 import os
 import shutil
-from io import BytesIO
+from io import BytesIO, StringIO
 
 # Fitxategiak aukeratzeko liburutegia
 from tkinter import Tk
@@ -9,6 +9,7 @@ from tkinter.filedialog import askopenfilename
 
 # XML, XSLT eta XSD fitxategiekin lan egiteko liburutegiak
 from saxonche import *
+# from saxonpy import *
 from lxml import etree
 
 '''
@@ -95,11 +96,20 @@ def getCompName(originXML):
 
 
 def getCategory(originXML):
+    # Using saxonche package
     with PySaxonProcessor(license=False) as proc:
         xp = proc.new_xpath_processor()
         node = proc.parse_xml(xml_text=originXML)
         xp.set_context(xdm_item=node)
         result = xp.evaluate_single('/Component/@category')
+        # print("RESULTADO XPATH SAXONCHE: " + result.string_value)
+
+        # Using lxml package
+        # xml_doc = etree.parse(BytesIO(originXML.encode('utf-8')))
+        # root = xml_doc.getroot()
+        # print("RESULTADO LXML: " + root.attrib['category'])
+        # print("RESULTADO XPATH LXML: " + root.xpath('/Component/@category')[0])
+
         return result.string_value
 
 

@@ -4,7 +4,7 @@
 				xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:fn="http://www.w3.org/2005/xpath-functions">
 				<xsl:output omit-xml-declaration="yes" indent="yes"/>
 
-  <xsl:template match="component">
+  <xsl:template match="Component">
 
 const fs = require('fs');
 
