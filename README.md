@@ -1,6 +1,6 @@
-# GCIS_MDE_methodology
+# GCIS_MDE_engineering_platform
 
-This repository contains the files developed in the paper "Enabling DevOps for Fog Applications in the Smart Manufacturing domain: a MDE-based Platform Engineering approach".
+This repository contains the files developed in the paper "Enabling DevOps for Fog Applications in the Smart Manufacturing domain: a Model-Driven Platform Engineering approach".
 
 ## Repository structure
 
