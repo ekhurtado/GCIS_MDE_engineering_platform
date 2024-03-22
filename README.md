@@ -13,9 +13,9 @@ In this section the structure of this repository will be shown. The main folders
 
 It should be noted that each of them has a file _README_ with instructions and resources for using the technologies.
 
-## Overview of the methodology
+## Overview of the engineering platform
 
-This section introduces the model-driven methodology for the design, development, delivery and operation of microservice-based applications, displaying the technologies involved:
+This section introduces the model-driven engineering platform for the design, development, delivery and operation of microservice-based applications, displaying the technologies involved:
 
 ![Overview_methodology_technologies](Figures/Overview_methodology_technologies.jpg)
 
